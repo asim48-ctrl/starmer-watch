@@ -8,140 +8,155 @@
       content="Starmer Watch tracks Labour MP pressure, public support, faction moves, resignations, news signals, and Polymarket odds."
     />
     <title>Starmer Watch</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="./assets/westminster-signal.png" as="image" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <header class="hero">
-        <img class="hero-image" src="./assets/westminster-signal.png" alt="" />
-        <div class="hero-overlay"></div>
-        <nav class="command-bar" aria-label="Dashboard controls">
-          <a class="brand" href="#top" aria-label="Starmer Watch home">
-            <span class="brand-mark" aria-hidden="true">SW</span>
-            <span>Starmer Watch</span>
-          </a>
-          <div class="command-actions">
-            <a class="ghost-button" href="#sources">Sources</a>
-            <a class="solid-button" href="data/latest.json">Data JSON</a>
-          </div>
+    <div class="dashboard-shell">
+      <aside class="side-rail" aria-label="Primary dashboard navigation">
+        <button class="rail-menu" type="button" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="rail-nav">
+          <a class="active" href="#overview"><span>▣</span>Overview</a>
+          <a href="#pressure"><span>◎</span>MPs</a>
+          <a href="#maneuvers"><span>⌬</span>Manoeuvres</a>
+          <a href="#resignations"><span>▯</span>Resignations</a>
+          <a href="#news"><span>☷</span>News</a>
+          <a href="#odds"><span>⌁</span>Odds</a>
+          <a href="#sources"><span>◌</span>Sources</a>
         </nav>
-        <section id="top" class="hero-content" aria-labelledby="page-title">
-          <div>
-            <p class="dateline" id="dateline">Loading latest feed...</p>
-            <h1 id="page-title">Labour leadership pressure board</h1>
-            <p class="lede" id="headline">
-              Tracking resignation calls, support signals, faction moves, proxy exits, and market odds.
-            </p>
+        <a class="rail-about" href="data/latest.json" aria-label="Open data JSON">i</a>
+      </aside>
+
+      <div class="workspace">
+        <header class="masthead" id="overview">
+          <div class="mast-brand">
+            <a class="wordmark" href="#overview" aria-label="Starmer Watch home">
+              <span>STARMER</span>
+              <strong>WATCH</strong>
+            </a>
+            <p>Labour Political<br />Intelligence Dashboard</p>
           </div>
-          <div class="hero-status" aria-label="Data status">
-            <span class="status-dot" id="status-dot"></span>
-            <span id="data-status">Fetching data</span>
+          <div class="mast-etching" aria-hidden="true">
+            <img src="./assets/westminster-signal.png" alt="" />
           </div>
-        </section>
-      </header>
-
-      <main>
-        <section class="kpi-grid" id="kpi-grid" aria-label="Headline metrics"></section>
-
-        <section class="main-grid" aria-label="Leadership pressure dashboard">
-          <article class="panel pressure-panel">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Pressure meter</p>
-                <h2>MP balance and contest threshold</h2>
-              </div>
-              <span class="time-chip" id="pressure-asof">Live feed</span>
-            </div>
-            <div class="meter-stack" id="pressure-meter"></div>
-            <div class="threshold-note" id="threshold-note"></div>
-            <div class="two-column-list">
-              <div>
-                <h3>Recent public callers</h3>
-                <ul class="compact-list" id="resign-mps"></ul>
-              </div>
-              <div>
-                <h3>Known support bloc</h3>
-                <ul class="compact-list" id="supporters"></ul>
-              </div>
-            </div>
-          </article>
-
-          <aside class="panel market-panel" aria-labelledby="markets-title">
-            <div class="section-heading compact">
-              <div>
-                <p class="eyebrow">Polymarket</p>
-                <h2 id="markets-title">Market signal</h2>
-              </div>
-              <span class="time-chip" id="market-count">0 markets</span>
-            </div>
-            <div class="market-list" id="market-list"></div>
-          </aside>
-        </section>
-
-        <section class="panel faction-board" aria-labelledby="factions-title">
-          <div class="section-heading">
+          <div class="status-strip" aria-label="Data status">
             <div>
-              <p class="eyebrow">Maneuver board</p>
-              <h2 id="factions-title">Who is applying pressure, and how</h2>
+              <span>Refreshed</span>
+              <strong id="refreshed-time">--:--</strong>
+              <small id="refreshed-date">Loading</small>
             </div>
-            <div class="segmented-control" role="tablist" aria-label="Faction filter">
-              <button class="active" type="button" data-filter="all">All</button>
-              <button type="button" data-filter="streeting">Streeting</button>
-              <button type="button" data-filter="burnham">Burnham</button>
-              <button type="button" data-filter="starmer">Starmer</button>
-            </div>
-          </div>
-          <div class="faction-grid" id="faction-grid"></div>
-        </section>
-
-        <section class="analysis-grid" aria-label="News and resignations">
-          <article class="panel">
-            <div class="section-heading compact">
-              <div>
-                <p class="eyebrow">Resignations and proxy moves</p>
-                <h2>Ministerial exits and pressure signals</h2>
-              </div>
-              <span class="time-chip" id="resignation-count">0 exits</span>
-            </div>
-            <div class="resignation-list" id="resignation-list"></div>
-          </article>
-
-          <article class="panel">
-            <div class="section-heading compact">
-              <div>
-                <p class="eyebrow">Newsflow</p>
-                <h2>Latest source hits</h2>
-              </div>
-              <label class="search-box">
-                <span>Filter</span>
-                <input id="news-filter" type="search" placeholder="Streeting, Burnham, ministers..." />
-              </label>
-            </div>
-            <div class="news-list" id="news-list"></div>
-          </article>
-        </section>
-
-        <section class="panel pipeline-panel" id="sources" aria-labelledby="pipeline-title">
-          <div class="section-heading">
             <div>
-              <p class="eyebrow">Pipeline</p>
-              <h2 id="pipeline-title">Refresh path and source health</h2>
+              <span>Source status</span>
+              <strong><i class="status-dot" id="status-dot"></i><span id="data-status">Fetching</span></strong>
+              <small id="source-count">0 / 0 online</small>
             </div>
-            <a class="ghost-button" href="scripts/refresh-data.mjs">Refresh script</a>
+            <div>
+              <span>Next refresh</span>
+              <strong>30 min</strong>
+              <small>GitHub Actions</small>
+            </div>
           </div>
-          <div class="pipeline-grid" id="pipeline-grid"></div>
-        </section>
-      </main>
+        </header>
+
+        <main class="dashboard-content">
+          <section class="kpi-grid" id="kpi-grid" aria-label="Headline metrics"></section>
+
+          <section class="top-grid" aria-label="Pressure and market dashboard">
+            <article class="panel pressure-index" id="pressure">
+              <div class="panel-title-row">
+                <h2 id="pressure-title">Pressure index</h2>
+                <span class="info-dot" aria-label="Modeled threshold note">i</span>
+              </div>
+              <div class="pressure-layout">
+                <div class="gauge-wrap" id="pressure-gauge"></div>
+                <div class="trend-card">
+                  <div class="trend-legend">
+                    <span><i class="red-line"></i>Calling for exit</span>
+                    <span><i class="blue-line"></i>Backing Starmer</span>
+                    <span><i class="dash-line"></i>Threshold</span>
+                  </div>
+                  <svg id="trend-chart" class="trend-chart" viewBox="0 0 560 260" role="img" aria-label="Seven day pressure trend"></svg>
+                  <div class="range-tabs" aria-label="Trend range">
+                    <button class="active" type="button">7D</button>
+                    <button type="button">14D</button>
+                    <button type="button">30D</button>
+                    <button type="button">90D</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <aside class="panel polymarket-card" id="odds" aria-labelledby="odds-title">
+              <div class="panel-title-row">
+                <h2 id="odds-title">Polymarket odds</h2>
+                <a href="https://polymarket.com" target="_blank" rel="noreferrer">View market ↗</a>
+              </div>
+              <div id="featured-market"></div>
+              <div class="market-list" id="market-list"></div>
+            </aside>
+          </section>
+
+          <section class="lower-grid" aria-label="News and maneuvers">
+            <article class="panel live-news" id="news">
+              <div class="panel-title-row">
+                <h2>Live news</h2>
+                <label class="source-select">
+                  <span>Filter</span>
+                  <input id="news-filter" type="search" placeholder="Streeting, Burnham..." />
+                </label>
+              </div>
+              <div class="news-list" id="news-list"></div>
+            </article>
+
+            <section class="panel faction-panel" id="maneuvers" aria-labelledby="maneuver-title">
+              <div class="panel-title-row">
+                <h2 id="maneuver-title">Faction &amp; manoeuvre board</h2>
+                <div class="segmented-control" role="tablist" aria-label="Faction filter">
+                  <button class="active" type="button" data-filter="all">All</button>
+                  <button type="button" data-filter="streeting">Streeting</button>
+                  <button type="button" data-filter="burnham">Burnham</button>
+                  <button type="button" data-filter="starmer">Starmer</button>
+                </div>
+              </div>
+              <div class="faction-grid" id="faction-grid"></div>
+              <div class="proxy-board" aria-label="Allies and proxy groups">
+                <div class="panel-title-row tight">
+                  <h3>Allies / proxies / support groups</h3>
+                  <span class="info-dot">i</span>
+                </div>
+                <div class="proxy-grid" id="proxy-grid"></div>
+              </div>
+              <div class="resignation-strip" id="resignations">
+                <div class="panel-title-row tight">
+                  <h3>Recent ally / proxy resignations</h3>
+                  <span id="resignation-count">0 tracked</span>
+                </div>
+                <div class="resignation-list" id="resignation-list"></div>
+              </div>
+            </section>
+          </section>
+
+          <section class="panel pipeline-panel" id="sources" aria-labelledby="pipeline-title">
+            <div class="panel-title-row">
+              <h2 id="pipeline-title">Source health &amp; refresh path</h2>
+              <a href="scripts/refresh-data.mjs">Refresh script</a>
+            </div>
+            <div class="pipeline-grid" id="pipeline-grid"></div>
+          </section>
+        </main>
+      </div>
     </div>
 
     <template id="kpi-template">
       <article class="kpi-card">
-        <div class="kpi-top">
-          <span class="kpi-label"></span>
-          <span class="kpi-source"></span>
-        </div>
+        <div class="kpi-icon" aria-hidden="true"></div>
         <strong class="kpi-value"></strong>
+        <span class="kpi-label"></span>
         <p class="kpi-note"></p>
       </article>
     </template>
