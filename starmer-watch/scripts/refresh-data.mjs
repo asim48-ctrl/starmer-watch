@@ -769,12 +769,48 @@ function tokenSentiment(text) {
   return { pos, neg };
 }
 
+const STOP_WORDS = new Set([
+  "the", "a", "an", "of", "to", "in", "on", "at", "for", "with", "as", "is",
+  "and", "or", "but", "by", "from", "that", "this", "his", "her", "he", "she",
+  "it", "be", "are", "was", "were", "has", "have", "had", "will", "would",
+  "after", "before", "over", "into", "new", "uk", "starmer", "labour",
+]);
+
+function storyKey(title) {
+  const words = String(title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w && !STOP_WORDS.has(w))
+    .slice(0, 5);
+  return words.join("-");
+}
+
+function dedupStories(items) {
+  // Cluster by storyKey; keep the earliest item per cluster, track count of duplicates.
+  const map = new Map();
+  for (const item of items) {
+    const key = storyKey(item.title) || normalizeUrl(item.url);
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, { ...item, _cluster: 1 });
+    } else {
+      existing._cluster += 1;
+      if (new Date(item.publishedAt || 0) < new Date(existing.publishedAt || 0)) {
+        const cluster = existing._cluster;
+        map.set(key, { ...item, _cluster: cluster });
+      }
+    }
+  }
+  return Array.from(map.values());
+}
+
 function scoreNewsSentiment(news) {
   const now = Date.now();
-  const recent = (news || []).filter((item) => {
+  const recent = dedupStories((news || []).filter((item) => {
     const t = new Date(item.publishedAt || 0).getTime();
     return Number.isFinite(t) && now - t <= 48 * 3600 * 1000;
-  });
+  }));
   if (!recent.length) {
     return { normalised: null, raw: "no recent items", count: 0, avg: 0, perEntity: {} };
   }
@@ -812,7 +848,7 @@ function scoreNewsSentiment(news) {
 
   return {
     normalised,
-    raw: `${recent.length} items (48h), ${scored} sentiment-scored, avg ${avg.toFixed(2)}`,
+    raw: `${recent.length} unique stories (48h, deduped across sources), ${scored} sentiment-scored, avg ${avg.toFixed(2)}`,
     count: recent.length,
     avg,
     perEntity: perEntityOut,
