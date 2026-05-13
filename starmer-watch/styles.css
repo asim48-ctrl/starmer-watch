@@ -1269,3 +1269,29 @@ button {
 .wiki-item a { font-weight: 600; color: #0f172a; text-decoration: none; }
 .wiki-item a:hover { text-decoration: underline; }
 .wiki-user { font-size: 0.75rem; color: #64748b; text-align: right; }
+
+.drill {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+}
+.drill > summary {
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--blue);
+  list-style: none;
+}
+.drill > summary::before { content: "▸ "; }
+.drill[open] > summary::before { content: "▾ "; }
+.drill-body { padding: 8px 0 4px; }
+.drill-body .drill-h {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.drill-body p { margin: 4px 0 0; font-size: 0.82rem; color: #334155; }

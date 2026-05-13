@@ -525,6 +525,28 @@ function renderFactions() {
     const move = create("div", "latest-move");
     move.textContent = faction.latestMove || "Watching";
     card.append(move);
+
+    const perEntity = state.pressureIndex?.perEntitySentiment || {};
+    const entity = perEntity[faction.id];
+    if (entity && entity.mentions) {
+      const details = document.createElement("details");
+      details.className = "drill";
+      const summary = document.createElement("summary");
+      summary.textContent = "Sentiment + all signals";
+      details.append(summary);
+      const body = create("div", "drill-body");
+      const tone = entity.avg > 0.2 ? "Negative" : entity.avg < -0.2 ? "Positive" : "Mixed";
+      body.append(create("strong", "drill-h", "48h headline sentiment"));
+      body.append(create("p", "", `${entity.mentions} mentions · avg score ${entity.avg.toFixed(2)} (${tone})`));
+      if ((faction.signals || []).length) {
+        body.append(create("strong", "drill-h", "All parsed signals"));
+        const ul = create("ul", "signal-list");
+        for (const signal of faction.signals) ul.append(create("li", "", signal));
+        body.append(ul);
+      }
+      details.append(body);
+      card.append(details);
+    }
     container.append(card);
   }
 }
@@ -563,6 +585,26 @@ function renderProxyBoard() {
       create("span", group.lean === "tilting against" ? "down" : group.lean === "holding" ? "up" : "", leanLabel),
     );
     if (group.note) card.append(create("small", "", group.note));
+
+    if ((group.callingNames || []).length || (group.backingNames || []).length) {
+      const details = document.createElement("details");
+      details.className = "drill";
+      const summary = document.createElement("summary");
+      summary.textContent = "Show MP breakdown";
+      details.append(summary);
+      const body = create("div", "drill-body");
+      if ((group.callingNames || []).length) {
+        body.append(create("strong", "drill-h", "Calling for exit"), create("p", "", group.callingNames.join(", ")));
+      }
+      if ((group.backingNames || []).length) {
+        body.append(create("strong", "drill-h", "Backing PM"), create("p", "", group.backingNames.join(", ")));
+      }
+      if (group.undeclared) {
+        body.append(create("strong", "drill-h", "Undeclared"), create("p", "", `${group.undeclared} member${group.undeclared > 1 ? "s" : ""} with no public position parsed.`));
+      }
+      details.append(body);
+      card.append(details);
+    }
     grid.append(card);
   }
 }
