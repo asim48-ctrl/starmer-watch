@@ -1077,12 +1077,16 @@ button {
   }
 
   .side-rail {
-    position: static;
+    position: sticky;
+    top: 0;
+    z-index: 5;
     display: block;
     width: 100%;
     min-width: 0;
     height: auto;
     overflow: hidden;
+    background: var(--rail);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
   }
 
   .rail-menu,
