@@ -33,6 +33,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+          cache: npm
+          cache-dependency-path: starmer-watch/package-lock.json
+
+      - name: Install dependencies
+        working-directory: starmer-watch
+        run: npm ci
 
       - name: Refresh dashboard data
         env:

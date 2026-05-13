@@ -3,6 +3,20 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
+let winkNlpInstance = null;
+async function getWinkNlp() {
+  if (winkNlpInstance !== null) return winkNlpInstance;
+  try {
+    const winkNLP = (await import("wink-nlp")).default;
+    const model = (await import("wink-eng-lite-web-model")).default;
+    winkNlpInstance = winkNLP(model);
+  } catch (error) {
+    console.warn(`winkNLP unavailable, falling back to lexicon only: ${error.message}`);
+    winkNlpInstance = false;
+  }
+  return winkNlpInstance;
+}
+
 const rootDir = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const dataDir = path.join(rootDir, "data");
 const latestPath = path.join(dataDir, "latest.json");
@@ -148,7 +162,7 @@ async function main() {
   const resignations = buildResignations(labour, news);
   const factions = buildFactions({ counts, labour, news, markets, resignations, manual });
   const proxyGroups = buildProxyGroups(manual, labour);
-  const pressureIndex = buildPressureIndex({ counts, markets, manual, news });
+  const pressureIndex = await buildPressureIndex({ counts, markets, manual, news });
   const history = await updateHistory({ generatedAt, counts, pressureIndex });
   await maybeFireAlerts({ pressureIndex, history, counts, manual });
   const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
@@ -797,44 +811,80 @@ const STOP_WORDS = new Set([
   "after", "before", "over", "into", "new", "uk", "starmer", "labour",
 ]);
 
-function storyKey(title) {
-  const words = String(title || "")
+function titleTokens(title) {
+  return String(title || "")
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, " ")
     .split(/\s+/)
-    .filter((w) => w && !STOP_WORDS.has(w))
-    .slice(0, 5);
-  return words.join("-");
+    .filter((w) => w && !STOP_WORDS.has(w));
+}
+
+function shingles(tokens, k = 3) {
+  if (tokens.length < k) return new Set(tokens);
+  const out = new Set();
+  for (let i = 0; i <= tokens.length - k; i += 1) {
+    out.add(tokens.slice(i, i + k).join(" "));
+  }
+  return out;
+}
+
+function jaccard(a, b) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0;
+  for (const v of a) if (b.has(v)) inter += 1;
+  return inter / (a.size + b.size - inter);
 }
 
 function dedupStories(items) {
-  // Cluster by storyKey; keep the earliest item per cluster, track count of duplicates.
-  const map = new Map();
-  for (const item of items) {
-    const key = storyKey(item.title) || normalizeUrl(item.url);
-    const existing = map.get(key);
-    if (!existing) {
-      map.set(key, { ...item, _cluster: 1 });
-    } else {
-      existing._cluster += 1;
-      if (new Date(item.publishedAt || 0) < new Date(existing.publishedAt || 0)) {
-        const cluster = existing._cluster;
-        map.set(key, { ...item, _cluster: cluster });
+  // 3-shingle Jaccard clustering. MinHash + LSH would be needed at >1k items; at
+  // ~40 items per refresh a direct O(n^2) Jaccard scan is faster and clearer.
+  const enriched = items.map((item) => ({ item, sh: shingles(titleTokens(item.title)) }));
+  const clusters = [];
+  for (const cand of enriched) {
+    let placed = false;
+    for (const cluster of clusters) {
+      if (jaccard(cand.sh, cluster.sh) >= 0.5) {
+        cluster.members.push(cand.item);
+        if (new Date(cand.item.publishedAt || 0) < new Date(cluster.rep.publishedAt || 0)) {
+          cluster.rep = cand.item;
+        }
+        placed = true;
+        break;
       }
     }
+    if (!placed) clusters.push({ sh: cand.sh, rep: cand.item, members: [cand.item] });
   }
-  return Array.from(map.values());
+  return clusters.map((c) => ({ ...c.rep, _cluster: c.members.length }));
 }
 
-function scoreNewsSentiment(news) {
+async function scoreNewsSentiment(news) {
   const now = Date.now();
   const recent = dedupStories((news || []).filter((item) => {
     const t = new Date(item.publishedAt || 0).getTime();
     return Number.isFinite(t) && now - t <= 48 * 3600 * 1000;
   }));
   if (!recent.length) {
-    return { normalised: null, raw: "no recent items", count: 0, avg: 0, perEntity: {} };
+    return { normalised: null, raw: "no recent items", count: 0, avg: 0, perEntity: {}, scorer: "none" };
   }
+
+  const wink = await getWinkNlp();
+  const winkScore = (text) => {
+    if (!wink) return null;
+    try {
+      const doc = wink.readDoc(text);
+      const sents = doc.sentences();
+      if (!sents.length()) return null;
+      let s = 0;
+      let n = 0;
+      sents.each((sent) => {
+        const v = sent.out(wink.its.sentiment);
+        if (Number.isFinite(v)) { s += v; n += 1; }
+      });
+      return n ? -(s / n) : null; // wink positive = good news; we want negativity = bad-for-Starmer = positive
+    } catch {
+      return null;
+    }
+  };
 
   let net = 0;
   let scored = 0;
@@ -842,14 +892,21 @@ function scoreNewsSentiment(news) {
   for (const id of Object.keys(ENTITIES)) perEntity[id] = { net: 0, n: 0 };
 
   for (const item of recent) {
-    const text = String(item.title || "").toLowerCase();
-    const { pos, neg } = tokenSentiment(text);
-    if (pos + neg === 0) continue;
-    const score = (neg - pos) / (pos + neg);
+    const text = String(item.title || "");
+    const lower = text.toLowerCase();
+    const { pos, neg } = tokenSentiment(lower);
+    const lex = pos + neg ? (neg - pos) / (pos + neg) : null;
+    const w = winkScore(text);
+    let score;
+    if (lex != null && w != null) score = (lex + w) / 2; // ensemble
+    else if (lex != null) score = lex;
+    else if (w != null) score = w;
+    else continue;
+
     net += score;
     scored += 1;
     for (const [id, aliases] of Object.entries(ENTITIES)) {
-      if (aliases.some((alias) => text.includes(alias))) {
+      if (aliases.some((alias) => lower.includes(alias))) {
         perEntity[id].net += score;
         perEntity[id].n += 1;
       }
@@ -859,6 +916,7 @@ function scoreNewsSentiment(news) {
   const intensity = Math.min(1, recent.length / 20);
   const negativity = Math.max(0, Math.min(1, (avg + 1) / 2));
   const normalised = intensity * negativity;
+  const scorer = wink ? "ensemble (winkNLP + lexicon)" : "lexicon only";
 
   const perEntityOut = {};
   for (const [id, v] of Object.entries(perEntity)) {
@@ -869,14 +927,15 @@ function scoreNewsSentiment(news) {
 
   return {
     normalised,
-    raw: `${recent.length} unique stories (48h, deduped across sources), ${scored} sentiment-scored, avg ${avg.toFixed(2)}`,
+    raw: `${recent.length} clusters (48h, 3-shingle Jaccard ≥0.5), ${scored} scored via ${scorer}, avg ${avg.toFixed(2)}`,
     count: recent.length,
     avg,
     perEntity: perEntityOut,
+    scorer,
   };
 }
 
-function buildPressureIndex({ counts, markets, manual, news }) {
+async function buildPressureIndex({ counts, markets, manual, news }) {
   const pressure = counts.resignCalls.value || 0;
   const support = counts.supporters.value || 0;
   const threshold = counts.threshold.value || 81;
@@ -890,7 +949,7 @@ function buildPressureIndex({ counts, markets, manual, news }) {
   const supportDeficit = Math.max(0, Math.min(1, (40 - supportLead) / 40));
   const ministerMomentum = Math.max(0, Math.min(1, ministers / 5));
 
-  const newsScore = scoreNewsSentiment(news);
+  const newsScore = await scoreNewsSentiment(news);
   const parts = [
     { id: "exitShare", label: "PLP exit-call share vs trigger", weight: INDEX_WEIGHTS.exitShare, normalised: exitShare, raw: `${pressure} / ${threshold}` },
     { id: "supportDeficit", label: "Support deficit", weight: INDEX_WEIGHTS.supportDeficit, normalised: supportDeficit, raw: `lead ${supportLead}` },
