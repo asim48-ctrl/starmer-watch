@@ -169,6 +169,7 @@ async function main() {
     news: news.map(({ description, ...item }) => item),
     wikipediaEdits: wikiEdits,
     ccNewsCrawl: ccNewsMeta,
+    baselines: await readBaselines(),
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
 
@@ -911,6 +912,15 @@ function buildPressureIndex({ counts, markets, manual, news }) {
     components: parts,
     marketProb: marketProbNorm,
   };
+}
+
+async function readBaselines() {
+  try {
+    const raw = await readFile(path.join(rootDir, "data/baselines.json"), "utf8");
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 
 async function readAlertState() {

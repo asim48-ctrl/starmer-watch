@@ -24,6 +24,7 @@ const fallbackData = {
   sources: [],
   history: [],
   pressureIndex: { value: 0, band: "contained", formula: "", components: [] },
+  baselines: null,
 };
 
 let state = fallbackData;
@@ -171,6 +172,7 @@ function renderPressure() {
   gauge.append(
     buildIndexGauge(index),
     buildPressureSummary({ pressure, support, threshold }),
+    buildBaselineStrip(index),
     buildIndexBreakdown(index),
   );
   renderTrendChart({ pressure, support, threshold });
@@ -238,6 +240,34 @@ function buildIndexGauge(index) {
   svg.append(valueText, label, pill);
   frame.append(svg);
   return frame;
+}
+
+function buildBaselineStrip(index) {
+  const wrap = create("div", "baseline-strip");
+  const events = state.baselines?.events || [];
+  if (!events.length) return wrap;
+  wrap.append(create("h4", "", "Historical reference — peak index at prior PM crises"));
+  const rows = create("div", "baseline-rows");
+  for (const ev of events) {
+    const row = create("div", `baseline-row ${ev.outcome}`);
+    const bar = create("div", "baseline-bar");
+    const fill = create("div", "baseline-fill");
+    fill.style.width = `${Math.max(2, Math.min(100, ev.indexEquivalent))}%`;
+    bar.append(fill);
+    const me = create("div", "baseline-now");
+    me.style.left = `${Math.max(0, Math.min(100, index.value))}%`;
+    bar.append(me);
+    row.append(
+      create("span", "baseline-label", ev.label),
+      bar,
+      create("strong", "baseline-value", String(ev.indexEquivalent)),
+      create("small", "baseline-outcome", ev.outcome === "resigned" ? "→ resigned" : "→ survived"),
+    );
+    wrap.append(row);
+  }
+  wrap.append(rows);
+  wrap.append(create("p", "baseline-note", state.baselines?.notes || ""));
+  return wrap;
 }
 
 function buildIndexBreakdown(index) {

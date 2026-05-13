@@ -1295,3 +1295,49 @@ button {
   color: var(--muted);
 }
 .drill-body p { margin: 4px 0 0; font-size: 0.82rem; color: #334155; }
+
+.baseline-strip {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-top: 1px dashed var(--line);
+}
+.baseline-strip h4 {
+  margin: 0 0 10px;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+}
+.baseline-row {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 0.4fr 0.7fr;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 0.8rem;
+}
+.baseline-bar {
+  position: relative;
+  height: 8px;
+  background: rgba(15, 23, 42, 0.06);
+  border-radius: 6px;
+  overflow: visible;
+}
+.baseline-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: #94a3b8;
+}
+.baseline-row.resigned .baseline-fill { background: var(--red); }
+.baseline-row.survived .baseline-fill { background: var(--blue); }
+.baseline-now {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 14px;
+  background: var(--ink);
+}
+.baseline-value { font-variant-numeric: tabular-nums; }
+.baseline-outcome { color: var(--muted); }
+.baseline-note { margin: 10px 0 0; color: var(--muted); font-size: 0.72rem; }
