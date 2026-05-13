@@ -153,6 +153,7 @@ async function main() {
   const wikiEdits = await collectWikipediaEdits(sourceHealth);
   const ccNewsMeta = await collectCcNewsMeta(sourceHealth);
   const parliament = await collectParliamentState(sourceHealth);
+  const parliamentaryActivity = await collectParliamentaryActivity(sourceHealth);
   const gdeltNews =
     process.env.ENABLE_GDELT === "1" ? await collectGdeltNews(sourceHealth) : noteGdeltDisabled(sourceHealth);
   const markets = await collectPolymarket(sourceHealth);
@@ -186,6 +187,7 @@ async function main() {
     ccNewsCrawl: ccNewsMeta,
     baselines: await readBaselines(),
     parliament,
+    parliamentaryActivity,
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
 
@@ -636,6 +638,89 @@ async function collectParliamentState(sourceHealth) {
     sourceHealth.push(source);
     return null;
   }
+}
+
+async function collectParliamentaryActivity(sourceHealth) {
+  const source = {
+    id: "parliamentary-activity",
+    name: "Parliamentary activity (Written Q + Commons Votes)",
+    url: "https://writtenquestions-api.parliament.uk/ + https://commonsvotes-api.parliament.uk/",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: "Querying free Parliament APIs",
+  };
+  const today = new Date().toISOString().slice(0, 10);
+  const d7 = new Date(Date.now() - 7 * 86400 * 1000).toISOString().slice(0, 10);
+  const d14 = new Date(Date.now() - 14 * 86400 * 1000).toISOString().slice(0, 10);
+  const d30 = new Date(Date.now() - 30 * 86400 * 1000).toISOString().slice(0, 10);
+
+  let wq7 = null;
+  let wq14 = null;
+  const recentQuestions = [];
+  let divisionsCount = null;
+  const recentDivisions = [];
+
+  try {
+    const wqUa = { "user-agent": "StarmerWatch/1.0 (https://github.com/asim48-ctrl/starmer-watch)" };
+    const wq14Json = await fetchJson(
+      `https://writtenquestions-api.parliament.uk/api/writtenquestions/questions?searchTerm=Starmer&answeringDateStart=${d14}&answeringDateEnd=${today}&take=10`,
+      wqUa,
+    );
+    wq14 = wq14Json?.totalResults ?? null;
+    for (const r of (wq14Json?.results || []).slice(0, 5)) {
+      const v = r.value || {};
+      recentQuestions.push({
+        heading: v.heading,
+        askingMember: v.askingMember?.nameDisplayAs || null,
+        answeringBody: v.answeringBodyName,
+        dateTabled: v.dateTabled,
+        url: `https://questions-statements.parliament.uk/written-questions/detail/${v.dateTabled?.slice(0, 10)}/${v.uin}`,
+      });
+    }
+
+    const wq7Json = await fetchJson(
+      `https://writtenquestions-api.parliament.uk/api/writtenquestions/questions?searchTerm=Starmer&answeringDateStart=${d7}&answeringDateEnd=${today}&take=1`,
+      wqUa,
+    );
+    wq7 = wq7Json?.totalResults ?? null;
+  } catch (error) {
+    source.note = `Written Questions failed: ${error.message}`;
+  }
+
+  try {
+    const divisions = await fetchJson(
+      `https://commonsvotes-api.parliament.uk/data/divisions.json/search?queryParameters.startDate=${d30}&queryParameters.endDate=${today}`,
+      { "user-agent": "StarmerWatch/1.0 (https://github.com/asim48-ctrl/starmer-watch)" },
+    );
+    if (Array.isArray(divisions)) {
+      divisionsCount = divisions.length;
+      for (const v of divisions.slice(0, 5)) {
+        recentDivisions.push({
+          title: v.Title,
+          date: v.Date,
+          ayes: v.AyeCount,
+          noes: v.NoCount,
+          margin: (v.AyeCount ?? 0) - (v.NoCount ?? 0),
+          url: `https://commonsvotes.digiminster.com/Divisions/Details/${v.DivisionId}`,
+        });
+      }
+    }
+  } catch (error) {
+    source.note = `Commons Votes failed: ${error.message}`;
+  }
+
+  if (wq7 == null && divisionsCount == null) {
+    source.note = source.note || "Both Parliament endpoints failed.";
+    sourceHealth.push(source);
+    return null;
+  }
+  source.ok = true;
+  source.note = `${wq7 ?? "?"} written Qs mentioning Starmer (7d); ${wq14 ?? "?"} (14d); ${divisionsCount ?? "?"} Commons divisions (30d).`;
+  sourceHealth.push(source);
+  return {
+    writtenQuestionsStarmer: { last7d: wq7, last14d: wq14, recent: recentQuestions },
+    commonsDivisions: { last30d: divisionsCount, recent: recentDivisions },
+  };
 }
 
 async function collectCcNewsMeta(sourceHealth) {
