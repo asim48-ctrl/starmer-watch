@@ -32,7 +32,7 @@ const RSS_FEEDS = [
   { id: "inews-politics", name: "i Politics", url: "https://inews.co.uk/category/news/politics/feed" },
   { id: "itv-politics", name: "ITV Politics", url: "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en" },
   { id: "independent-uk-politics", name: "Independent UK Politics", url: "https://www.independent.co.uk/news/uk/politics/rss" },
-  { id: "sam-freedman", name: "Sam Freedman — Comment is Freed", url: "https://samf.substack.com/feed" },
+  { id: "sam-freedman", name: "Sam Freedman — Comment is Freed", url: "https://news.google.com/rss/search?q=site:samf.substack.com+OR+%22Sam+Freedman%22+Starmer&hl=en-GB&gl=GB&ceid=GB:en" },
   { id: "byline-times", name: "Byline Times", url: "https://bylinetimes.com/feed/" },
   { id: "novara-media", name: "Novara Media", url: "https://novaramedia.com/feed/" },
 ];
@@ -114,7 +114,7 @@ const ENTITIES = {
   rayner: ["rayner", "angela rayner"],
 };
 
-const REDDIT_SUBS = ["ukpolitics", "LabourUK", "unitedkingdom"];
+const REDDIT_SUBS = ["ukpolitics", "LabourUK"];
 const WIKI_PAGES = [
   "Keir_Starmer", "Wes_Streeting", "Andy_Burnham", "Angela_Rayner",
   "Rachel_Reeves", "Yvette_Cooper", "Pat_McFadden", "Starmer_ministry",
