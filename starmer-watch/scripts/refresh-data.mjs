@@ -164,7 +164,8 @@ async function main() {
   const resignations = buildResignations(labour, news);
   const factions = buildFactions({ counts, labour, news, markets, resignations, manual });
   const proxyGroups = buildProxyGroups(manual, labour);
-  const pressureIndex = await buildPressureIndex({ counts, markets, manual, news });
+  const priorHistory = await readPriorHistory();
+  const pressureIndex = await buildPressureIndex({ counts, markets, manual, news, priorHistory });
   const history = await updateHistory({ generatedAt, counts, pressureIndex });
   await maybeFireAlerts({ pressureIndex, history, counts, manual });
   const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
@@ -902,10 +903,84 @@ function buildPressure(counts, labour) {
   };
 }
 
+function parseHorizonDate(question) {
+  // Extract a date from market questions like "Starmer out by June 30, 2026?"
+  const m = String(question || "").match(/by ([A-Z][a-z]+ \d{1,2},? \d{4})/);
+  if (!m) return null;
+  const d = new Date(m[1].replace(",", ""));
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function starmerExitMarkets(markets) {
+  return markets.filter((market) =>
+    /Starmer.*(out|resign|cease|exit|depart)|resign.*Starmer|Starmer 2026/i.test(market.question),
+  );
+}
+
 function topStarmerExitMarket(markets) {
-  return markets
-    .filter((market) => /Starmer.*(out|resign|cease|exit|depart)|resign.*Starmer|Starmer 2026/i.test(market.question))
-    .sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0))[0];
+  // Shortest-dated still-future market. Longer horizons trivially carry higher
+  // YES probabilities (cumulative hazard), so they're the wrong signal for
+  // 'is pressure building right now'. Fall back to highest-YES if no horizon
+  // parseable.
+  const now = Date.now();
+  const filtered = starmerExitMarkets(markets);
+  const dated = filtered
+    .map((m) => ({ m, d: parseHorizonDate(m.question) }))
+    .filter((x) => x.d && x.d.getTime() > now)
+    .sort((a, b) => a.d - b.d);
+  if (dated.length) return dated[0].m;
+  return filtered.sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0))[0];
+}
+
+function marketDeltasFromHistory(currentProb, history) {
+  if (!Number.isFinite(currentProb) || !Array.isArray(history) || !history.length) return null;
+  const now = Date.now();
+  const find = (msAgo) => {
+    let best = null;
+    let bestDiff = Infinity;
+    for (const h of history) {
+      const t = new Date(h.t).getTime();
+      if (!Number.isFinite(t)) continue;
+      const target = now - msAgo;
+      const diff = Math.abs(t - target);
+      if (t <= now - msAgo * 0.5 && diff < bestDiff) {
+        best = h;
+        bestDiff = diff;
+      }
+    }
+    return best;
+  };
+  const lastEntry = history.length >= 2 ? history[history.length - 2] : null;
+  const oneHour = find(60 * 60 * 1000);
+  const dayAgo = find(24 * 60 * 60 * 1000);
+  const pp = (h) => {
+    const prev = Number(h?.marketProb);
+    if (!Number.isFinite(prev)) return null;
+    return Math.round((currentProb - prev) * 1000) / 10;
+  };
+  return {
+    sinceLast: pp(lastEntry),
+    last1h: pp(oneHour),
+    last24h: pp(dayAgo),
+  };
+}
+
+function biggestMarketMover(markets, history) {
+  const prev = history?.length >= 2 ? history[history.length - 2] : null;
+  if (!prev) return null;
+  const prevProb = Number(prev.marketProb);
+  if (!Number.isFinite(prevProb)) return null;
+  const exitMarkets = starmerExitMarkets(markets);
+  let biggest = null;
+  for (const m of exitMarkets) {
+    const curr = Number(m.yesPrice);
+    if (!Number.isFinite(curr)) continue;
+    const deltaPp = Math.abs(curr * 100 - prevProb * 100);
+    if (!biggest || deltaPp > biggest.deltaPp) {
+      biggest = { market: m, deltaPp, curr, prev: prevProb };
+    }
+  }
+  return biggest;
 }
 
 function tokenSentiment(text) {
@@ -1066,7 +1141,7 @@ async function scoreNewsSentiment(news) {
   };
 }
 
-async function buildPressureIndex({ counts, markets, manual, news }) {
+async function buildPressureIndex({ counts, markets, manual, news, priorHistory }) {
   const pressure = counts.resignCalls.value || 0;
   const support = counts.supporters.value || 0;
   const threshold = counts.threshold.value || 81;
@@ -1074,6 +1149,8 @@ async function buildPressureIndex({ counts, markets, manual, news }) {
   const exitMarket = topStarmerExitMarket(markets);
   const marketProb = Number(exitMarket?.yesPrice);
   const marketProbNorm = Number.isFinite(marketProb) ? Math.max(0, Math.min(1, marketProb)) : null;
+  const marketDeltas = marketDeltasFromHistory(marketProbNorm, priorHistory);
+  const mover = biggestMarketMover(markets, priorHistory);
 
   const exitShare = Math.max(0, Math.min(1, pressure / threshold));
   const supportLead = support - pressure;
@@ -1119,6 +1196,22 @@ async function buildPressureIndex({ counts, markets, manual, news }) {
     perEntitySentiment: newsScore.perEntity || {},
     components: parts,
     marketProb: marketProbNorm,
+    featuredMarket: exitMarket ? {
+      question: exitMarket.question,
+      yesPrice: exitMarket.yesPrice,
+      noPrice: exitMarket.noPrice,
+      url: exitMarket.url,
+      volume: exitMarket.volume,
+      horizonDate: parseHorizonDate(exitMarket.question)?.toISOString() || null,
+    } : null,
+    marketDeltas,
+    biggestMover: mover ? {
+      question: mover.market.question,
+      yesPrice: mover.market.yesPrice,
+      url: mover.market.url,
+      deltaPp: Math.round(mover.deltaPp * 10) / 10,
+      direction: mover.curr > mover.prev ? "up" : "down",
+    } : null,
   };
 }
 
@@ -1270,6 +1363,16 @@ async function maybeFireAlerts({ pressureIndex, history, counts, manual }) {
     lastMarketProb: Number.isFinite(currentProb) ? currentProb : state.lastMarketProb || null,
     lastAlertAt: messages.length ? new Date().toISOString() : state.lastAlertAt || null,
   });
+}
+
+async function readPriorHistory() {
+  try {
+    const raw = await readFile(historyPath, "utf8");
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 async function updateHistory({ generatedAt, counts, pressureIndex }) {

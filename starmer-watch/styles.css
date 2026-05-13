@@ -1335,3 +1335,36 @@ button {
 .baseline-value { font-variant-numeric: tabular-nums; }
 .baseline-outcome { color: var(--muted); }
 .baseline-note { margin: 10px 0 0; color: var(--muted); font-size: 0.72rem; }
+
+.market-horizon {
+  display: block;
+  color: var(--muted);
+  font-size: 0.74rem;
+  margin: 2px 0 8px;
+}
+.market-deltas {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 8px;
+  flex-wrap: wrap;
+}
+.market-deltas .delta {
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.06);
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+.market-deltas .delta.up { background: rgba(223, 30, 47, 0.12); color: var(--red); }
+.market-deltas .delta.down { background: rgba(31, 103, 189, 0.12); color: var(--blue); }
+.market-mover {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.04);
+  display: grid;
+  gap: 4px;
+}
+.market-mover strong { font-size: 0.78rem; }
+.market-mover a { font-size: 0.82rem; }
