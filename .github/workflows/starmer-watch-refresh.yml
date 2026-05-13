@@ -37,7 +37,7 @@ jobs:
       - name: Refresh dashboard data
         env:
           ENABLE_GDELT: "1"
-          GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
+          GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY || secrets.GUARDIAN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: node starmer-watch/scripts/refresh-data.mjs
