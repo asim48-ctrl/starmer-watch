@@ -152,12 +152,13 @@ async function main() {
   const redditNews = []; // Reddit JSON 403s persistently from GH Actions IP ranges; collector disabled.
   const wikiEdits = await collectWikipediaEdits(sourceHealth);
   const ccNewsMeta = await collectCcNewsMeta(sourceHealth);
+  const parliament = await collectParliamentState(sourceHealth);
   const gdeltNews =
     process.env.ENABLE_GDELT === "1" ? await collectGdeltNews(sourceHealth) : noteGdeltDisabled(sourceHealth);
   const markets = await collectPolymarket(sourceHealth);
 
   const news = mergeNews([...rssNews, ...gdeltNews, ...bskyNews, ...guardianNews, ...redditNews]);
-  const counts = buildCounts(labour, manual);
+  const counts = buildCounts(labour, manual, parliament);
   const pressure = buildPressure(counts, labour);
   const resignations = buildResignations(labour, news);
   const factions = buildFactions({ counts, labour, news, markets, resignations, manual });
@@ -184,10 +185,12 @@ async function main() {
     wikipediaEdits: wikiEdits,
     ccNewsCrawl: ccNewsMeta,
     baselines: await readBaselines(),
+    parliament,
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
 
   await writeFile(latestPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  await writePublicFeeds(output);
   await saveHttpCache();
   console.log(`Wrote ${path.relative(process.cwd(), latestPath)}`);
   console.log(
@@ -596,6 +599,45 @@ async function collectWikipediaEdits(sourceHealth) {
   }
 }
 
+async function collectParliamentState(sourceHealth) {
+  const source = {
+    id: "parliament-members-api",
+    name: "UK Parliament Members API",
+    url: "https://members-api.parliament.uk/api/Parties/StateOfTheParties",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: "Querying State of the Parties for live PLP size",
+  };
+  const date = new Date().toISOString().slice(0, 10);
+  const url = `https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/${date}`;
+  try {
+    const json = await fetchJson(url, {
+      "user-agent": "StarmerWatch/1.0 (https://github.com/asim48-ctrl/starmer-watch)",
+    });
+    const items = Array.isArray(json.items) ? json.items : [];
+    const parties = items.map((item) => item.value).filter(Boolean);
+    const labour = parties.find((p) => p?.party?.name === "Labour");
+    const plpSize = labour?.total ?? null;
+    if (!plpSize) {
+      source.note = "API returned no Labour entry for today.";
+      sourceHealth.push(source);
+      return null;
+    }
+    source.ok = true;
+    source.note = `PLP size ${plpSize}; 20% trigger = ${Math.ceil(plpSize * 0.2)}.`;
+    sourceHealth.push(source);
+    return {
+      plpSize,
+      threshold20pct: Math.ceil(plpSize * 0.2),
+      partySplit: parties.map((p) => ({ name: p.party?.name, total: p.total })),
+    };
+  } catch (error) {
+    source.note = `Members API failed: ${error.message}`;
+    sourceHealth.push(source);
+    return null;
+  }
+}
+
 async function collectCcNewsMeta(sourceHealth) {
   const source = {
     id: "cc-news-meta",
@@ -713,10 +755,12 @@ function parseMarket(event, market) {
   };
 }
 
-function buildCounts(labour, manual) {
+function buildCounts(labour, manual, parliament) {
   const resignValue = labour.resignCalls ?? labour.resignationCalls.length;
   const supportValue = labour.supporters ?? 0;
-  const threshold = manual.contestThreshold ?? DEFAULT_MANUAL.contestThreshold;
+  const livePlpSize = parliament?.plpSize;
+  const liveThreshold = livePlpSize ? Math.ceil(livePlpSize * 0.2) : null;
+  const threshold = liveThreshold ?? manual.contestThreshold ?? DEFAULT_MANUAL.contestThreshold;
   const ministerExits = labour.exits.filter((exit) => /minister/i.test(exit.role)).length;
 
   return {
@@ -735,8 +779,10 @@ function buildCounts(labour, manual) {
     threshold: {
       value: threshold,
       label: "Contest threshold",
-      note: "Modeled 20 percent PLP trigger threshold. Keep this override current.",
-      source: "Manual",
+      note: livePlpSize
+        ? `20% of current PLP (${livePlpSize}) per UK Parliament Members API.`
+        : "Modeled 20 percent PLP trigger threshold (manual override; live PLP size unavailable).",
+      source: livePlpSize ? "UK Parliament Members API" : "Manual",
     },
     ministersOut: {
       value: ministerExits,
@@ -989,6 +1035,80 @@ async function buildPressureIndex({ counts, markets, manual, news }) {
     components: parts,
     marketProb: marketProbNorm,
   };
+}
+
+const SITE_URL = process.env.SITE_URL || "https://asim48-ctrl.github.io/starmer-watch";
+
+function escapeXml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+async function writePublicFeeds(output) {
+  const feedItems = [];
+  const idx = output.pressureIndex;
+  const headlineId = `pressure-${output.generatedAt}`;
+  feedItems.push({
+    id: headlineId,
+    url: `${SITE_URL}/#overview`,
+    title: `Pressure Index ${idx?.value ?? "?"}/100 (${idx?.band ?? "n/a"})`,
+    summary: output.headline,
+    publishedAt: output.generatedAt,
+  });
+  for (const item of (output.news || []).slice(0, 10)) {
+    feedItems.push({
+      id: item.url,
+      url: item.url,
+      title: `${item.source}: ${item.title}`,
+      summary: item.title,
+      publishedAt: item.publishedAt || output.generatedAt,
+    });
+  }
+
+  const jsonFeed = {
+    version: "https://jsonfeed.org/version/1.1",
+    title: "Starmer Watch — Pressure Index",
+    home_page_url: SITE_URL,
+    feed_url: `${SITE_URL}/data/feed.json`,
+    description: "Composite pressure index, top news, and market signals for Keir Starmer's leadership.",
+    language: "en-GB",
+    items: feedItems.map((it) => ({
+      id: it.id,
+      url: it.url,
+      title: it.title,
+      content_text: it.summary,
+      date_published: it.publishedAt,
+    })),
+  };
+  await writeFile(path.join(dataDir, "feed.json"), `${JSON.stringify(jsonFeed, null, 2)}\n`, "utf8");
+
+  const rssItems = feedItems
+    .map((it) => `    <item>
+      <title>${escapeXml(it.title)}</title>
+      <link>${escapeXml(it.url)}</link>
+      <guid isPermaLink="false">${escapeXml(it.id)}</guid>
+      <pubDate>${new Date(it.publishedAt || Date.now()).toUTCString()}</pubDate>
+      <description>${escapeXml(it.summary)}</description>
+    </item>`)
+    .join("\n");
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Starmer Watch — Pressure Index</title>
+    <link>${escapeXml(SITE_URL)}</link>
+    <atom:link href="${escapeXml(SITE_URL)}/data/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Composite pressure index, top news, and market signals for Keir Starmer's leadership.</description>
+    <language>en-GB</language>
+    <lastBuildDate>${new Date(output.generatedAt).toUTCString()}</lastBuildDate>
+${rssItems}
+  </channel>
+</rss>
+`;
+  await writeFile(path.join(dataDir, "feed.xml"), rss, "utf8");
 }
 
 async function readBaselines() {

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "watch-topic-config.v1",
+  "_doc": "Reusable topic schema. Today the Starmer pipeline still uses inline constants in scripts/refresh-data.mjs; this file documents the abstraction so future targets (other PMs, leaders, CEOs, sports managers) can fork and edit a single config rather than the code.",
+  "target": {
+    "id": "starmer",
+    "displayName": "Keir Starmer",
+    "kind": "politician",
+    "aliases": ["Starmer", "Keir", "Prime Minister", "PM"],
+    "primaryRoles": ["Labour leader", "Prime Minister"],
+    "geo": ["GB", "UK"],
+    "language": ["en"]
+  },
+  "context": {
+    "topicTags": ["labour", "uk-politics", "leadership", "cabinet"],
+    "successorPool": ["Wes Streeting", "Angela Rayner", "Andy Burnham"],
+    "factionMap": {
+      "targetBloc": ["frontbench loyalists", "soft-left loyalists"],
+      "rivalBlocs": ["successor camp", "union pressure", "backbench rebels"],
+      "officeTiers": {
+        "cabinet": 5,
+        "minister": 4,
+        "ppsOrJunior": 3,
+        "mpOrEquivalent": 2,
+        "affiliateOrCommentator": 1
+      }
+    },
+    "organizations": ["Labour Party", "PLP", "Cabinet", "NEC"],
+    "institutions": ["UK Parliament", "No. 10", "party conference", "committees"]
+  },
+  "baselines": {
+    "comparatorCohort": ["Truss", "Johnson", "May", "Corbyn", "Brown"],
+    "historicalWindowsDays": [7, 30, 90, 365]
+  },
+  "sourceAdapters": {
+    "newsRss": "RSS_FEEDS in refresh-data.mjs",
+    "social": {
+      "blueskyHandles": "manual-overrides.bskyHandles",
+      "redditSubs": "DISABLED — IP-blocked from Actions runners"
+    },
+    "officialInstitutions": {
+      "parliamentMembersApi": "collectParliamentState in refresh-data.mjs",
+      "theyWorkForYou": "TODO — needs free API key"
+    },
+    "polls": "TODO — YouGov/Ipsos public tracker scrape (fragile HTML, deferred)",
+    "markets": {
+      "polymarket": "POLYMARKET_QUERIES in refresh-data.mjs",
+      "kalshiOptional": "TODO",
+      "manifoldOptional": "TODO"
+    }
+  },
+  "nlp": {
+    "scorer": "ensemble (winkNLP + negation-aware lexicon)",
+    "entityAliases": "ENTITIES in refresh-data.mjs",
+    "lexicons": {
+      "negative": "NEGATIVE_LEXICON in refresh-data.mjs",
+      "positive": "POSITIVE_LEXICON in refresh-data.mjs",
+      "negations": "NEGATIONS in refresh-data.mjs"
+    }
+  },
+  "clustering": {
+    "method": "3-shingle Jaccard ≥ 0.5",
+    "windowHours": 48
+  },
+  "index": {
+    "components": ["exitShare", "supportDeficit", "ministerMomentum", "marketExitProb", "newsSentiment"],
+    "weights": { "exitShare": 35, "supportDeficit": 15, "ministerMomentum": 10, "marketExitProb": 25, "newsSentiment": 15 },
+    "thresholds": { "building": 35, "elevated": 55, "critical": 75 }
+  },
+  "alerts": {
+    "channels": ["discordWebhook", "slackWebhook"],
+    "triggers": ["pressureIndexCrossUp", "marketProbJumpPp"]
+  },
+  "publishedFeeds": {
+    "jsonFeed": "data/feed.json",
+    "rss": "data/feed.xml"
+  },
+  "todoForFullPortability": [
+    "Move RSS_FEEDS, POLYMARKET_QUERIES, ENTITIES, NEGATIVE_LEXICON, POSITIVE_LEXICON, NEGATIONS into this config and read from it at script start.",
+    "Move INDEX_WEIGHTS into this config so weights can be tuned per topic without code changes.",
+    "Move historical baselines into this config or leave them in baselines.json keyed by topic id."
+  ]
+}
