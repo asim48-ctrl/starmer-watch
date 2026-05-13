@@ -32,6 +32,11 @@ const RSS_FEEDS = [
   { id: "inews-politics", name: "i Politics", url: "https://inews.co.uk/category/news/politics/feed" },
   { id: "itv-politics", name: "ITV Politics", url: "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en" },
   { id: "independent-uk-politics", name: "Independent UK Politics", url: "https://www.independent.co.uk/news/uk/politics/rss" },
+  { id: "sam-freedman", name: "Sam Freedman — Comment is Freed", url: "https://samf.substack.com/feed" },
+  { id: "ian-dunt", name: "Ian Dunt — Striking 13", url: "https://www.striking13.co.uk/feed" },
+  { id: "politicshome", name: "PoliticsHome", url: "https://www.politicshome.com/feed" },
+  { id: "byline-times", name: "Byline Times", url: "https://bylinetimes.com/feed/" },
+  { id: "novara-media", name: "Novara Media", url: "https://novaramedia.com/feed/" },
 ];
 
 const POLYMARKET_QUERIES = [
@@ -110,11 +115,12 @@ async function main() {
 
   const labour = await collectLabourList(sourceHealth);
   const rssNews = await collectRssNews(sourceHealth);
+  const bskyNews = await collectBluesky(sourceHealth, manual);
   const gdeltNews =
     process.env.ENABLE_GDELT === "1" ? await collectGdeltNews(sourceHealth) : noteGdeltDisabled(sourceHealth);
   const markets = await collectPolymarket(sourceHealth);
 
-  const news = mergeNews([...rssNews, ...gdeltNews]);
+  const news = mergeNews([...rssNews, ...gdeltNews, ...bskyNews]);
   const counts = buildCounts(labour, manual);
   const pressure = buildPressure(counts, labour);
   const resignations = buildResignations(labour, news);
@@ -351,6 +357,60 @@ async function collectGdeltNews(sourceHealth) {
     sourceHealth.push(source);
     return [];
   }
+}
+
+async function collectBluesky(sourceHealth, manual) {
+  const handles = Array.isArray(manual.bskyHandles) ? manual.bskyHandles : [];
+  const source = {
+    id: "bluesky-lobby",
+    name: "Bluesky lobby journalists",
+    url: "https://public.api.bsky.app",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: handles.length ? `Querying ${handles.length} handles` : "No bskyHandles configured",
+  };
+  if (!handles.length) {
+    sourceHealth.push(source);
+    return [];
+  }
+
+  const all = [];
+  let okHandles = 0;
+  for (const handle of handles) {
+    try {
+      const url = `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=20&filter=posts_no_replies`;
+      const json = await fetchJson(url);
+      const feed = Array.isArray(json.feed) ? json.feed : [];
+      okHandles += 1;
+      for (const entry of feed) {
+        const post = entry?.post;
+        const record = post?.record;
+        const text = String(record?.text || "").trim();
+        if (!text) continue;
+        if (!isRelevantNews(text)) continue;
+        const rkey = post?.uri?.split("/").pop();
+        const did = post?.author?.did;
+        const webUrl = rkey && did ? `https://bsky.app/profile/${handle}/post/${rkey}` : `https://bsky.app/profile/${handle}`;
+        all.push({
+          title: text.length > 220 ? `${text.slice(0, 217)}...` : text,
+          url: webUrl,
+          source: `Bluesky · @${handle}`,
+          publishedAt: parseDate(record?.createdAt),
+          description: "",
+          tags: tagText(text),
+        });
+      }
+    } catch (error) {
+      source.note = `${handle} failed: ${error.message}`;
+    }
+  }
+
+  source.ok = okHandles > 0;
+  source.note = okHandles > 0
+    ? `Pulled ${all.length} relevant posts from ${okHandles}/${handles.length} handles.`
+    : source.note;
+  sourceHealth.push(source);
+  return all;
 }
 
 function noteGdeltDisabled(sourceHealth) {
