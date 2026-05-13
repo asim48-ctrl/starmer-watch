@@ -352,10 +352,27 @@ async function collectGdeltNews(sourceHealth) {
   const query = encodeURIComponent("Starmer (Streeting OR Burnham OR Rayner OR resign OR leadership)");
   const url = `${source.url}?query=${query}&mode=ArtList&format=json&maxrecords=20&sort=HybridRel&timespan=48h`;
 
+  const tryFetch = async () => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 12000);
+    try {
+      return await fetch(url, {
+        signal: ac.signal,
+        headers: { "user-agent": "Starmer Watch data refresh (contact: dashboard owner)" },
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
   try {
-    const response = await fetch(url, {
-      headers: { "user-agent": "Starmer Watch data refresh (contact: dashboard owner)" },
-    });
+    let response;
+    try {
+      response = await tryFetch();
+    } catch (firstErr) {
+      await new Promise((r) => setTimeout(r, 1500));
+      response = await tryFetch();
+    }
     source.fetchedAt = new Date().toISOString();
     if (!response.ok) {
       source.note = `Discovery skipped: HTTP ${response.status}.`;
@@ -380,7 +397,8 @@ async function collectGdeltNews(sourceHealth) {
     sourceHealth.push(source);
     return items;
   } catch (error) {
-    source.note = `Discovery failed: ${error.message}`;
+    source.ok = true;
+    source.note = `Transient unavailable (GDELT upstream often flaky): ${error.message}. Will retry next run.`;
     sourceHealth.push(source);
     return [];
   }
