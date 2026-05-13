@@ -30,6 +30,9 @@ jobs:
           node-version: "24"
 
       - name: Refresh dashboard data
+        env:
+          ENABLE_GDELT: "1"
+          GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
         run: node starmer-watch/scripts/refresh-data.mjs
 
       - name: Commit updated feed

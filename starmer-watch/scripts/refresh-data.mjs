@@ -33,8 +33,6 @@ const RSS_FEEDS = [
   { id: "itv-politics", name: "ITV Politics", url: "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en" },
   { id: "independent-uk-politics", name: "Independent UK Politics", url: "https://www.independent.co.uk/news/uk/politics/rss" },
   { id: "sam-freedman", name: "Sam Freedman — Comment is Freed", url: "https://samf.substack.com/feed" },
-  { id: "ian-dunt", name: "Ian Dunt — Striking 13", url: "https://www.striking13.co.uk/feed" },
-  { id: "politicshome", name: "PoliticsHome", url: "https://www.politicshome.com/feed" },
   { id: "byline-times", name: "Byline Times", url: "https://bylinetimes.com/feed/" },
   { id: "novara-media", name: "Novara Media", url: "https://novaramedia.com/feed/" },
 ];
@@ -108,7 +106,18 @@ const POSITIVE_LEXICON = [
   "endorses", "stands by", "unites behind", "show of support", "secures",
 ];
 
+const REDDIT_SUBS = ["ukpolitics", "LabourUK", "unitedkingdom"];
+const WIKI_PAGES = [
+  "Keir_Starmer", "Wes_Streeting", "Andy_Burnham", "Angela_Rayner",
+  "Rachel_Reeves", "Yvette_Cooper", "Pat_McFadden", "Starmer_ministry",
+];
+const HTTP_THROTTLE_MS = 350;
+const httpCachePath = "data/http-cache.json";
+let httpCache = {};
+let lastFetchAt = 0;
+
 async function main() {
+  await loadHttpCache();
   const manual = await readManualOverrides();
   const generatedAt = new Date().toISOString();
   const sourceHealth = [];
@@ -116,11 +125,15 @@ async function main() {
   const labour = await collectLabourList(sourceHealth);
   const rssNews = await collectRssNews(sourceHealth);
   const bskyNews = await collectBluesky(sourceHealth, manual);
+  const guardianNews = await collectGuardianApi(sourceHealth);
+  const redditNews = await collectReddit(sourceHealth);
+  const wikiEdits = await collectWikipediaEdits(sourceHealth);
+  const ccNewsMeta = await collectCcNewsMeta(sourceHealth);
   const gdeltNews =
     process.env.ENABLE_GDELT === "1" ? await collectGdeltNews(sourceHealth) : noteGdeltDisabled(sourceHealth);
   const markets = await collectPolymarket(sourceHealth);
 
-  const news = mergeNews([...rssNews, ...gdeltNews, ...bskyNews]);
+  const news = mergeNews([...rssNews, ...gdeltNews, ...bskyNews, ...guardianNews, ...redditNews]);
   const counts = buildCounts(labour, manual);
   const pressure = buildPressure(counts, labour);
   const resignations = buildResignations(labour, news);
@@ -144,10 +157,13 @@ async function main() {
     resignations,
     markets,
     news: news.map(({ description, ...item }) => item),
+    wikipediaEdits: wikiEdits,
+    ccNewsCrawl: ccNewsMeta,
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
 
   await writeFile(latestPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  await saveHttpCache();
   console.log(`Wrote ${path.relative(process.cwd(), latestPath)}`);
   console.log(
     `Counts: ${counts.resignCalls.value} calling exit, ${counts.supporters.value} supporting, ${markets.length} markets, ${news.length} news hits.`,
@@ -411,6 +427,163 @@ async function collectBluesky(sourceHealth, manual) {
     : source.note;
   sourceHealth.push(source);
   return all;
+}
+
+async function collectGuardianApi(sourceHealth) {
+  const key = process.env.GUARDIAN_API_KEY;
+  const source = {
+    id: "guardian-open-platform",
+    name: "Guardian Open Platform",
+    url: "https://content.guardianapis.com/search",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: key ? "Querying Guardian content API" : "Set GUARDIAN_API_KEY (free signup at open-platform.theguardian.com) to enable.",
+  };
+  if (!key) {
+    sourceHealth.push(source);
+    return [];
+  }
+
+  try {
+    const q = encodeURIComponent('("Keir Starmer" OR "Labour leadership" OR Streeting OR Burnham OR Rayner)');
+    const url = `https://content.guardianapis.com/search?q=${q}&section=politics&order-by=newest&page-size=30&show-fields=trailText&api-key=${encodeURIComponent(key)}`;
+    const json = await fetchJson(url);
+    const results = json?.response?.results || [];
+    const items = results.map((r) => ({
+      title: cleanText(r.webTitle),
+      url: r.webUrl,
+      source: "Guardian (Open Platform)",
+      publishedAt: parseDate(r.webPublicationDate),
+      description: cleanText(r.fields?.trailText || ""),
+      tags: tagText(`${r.webTitle} ${r.fields?.trailText || ""}`),
+    }));
+    source.ok = true;
+    source.note = `Pulled ${items.length} Guardian politics items via Open Platform.`;
+    sourceHealth.push(source);
+    return items;
+  } catch (error) {
+    source.note = `Guardian API failed: ${error.message}`;
+    sourceHealth.push(source);
+    return [];
+  }
+}
+
+async function collectReddit(sourceHealth) {
+  const source = {
+    id: "reddit-uk-politics",
+    name: "Reddit UK politics",
+    url: "https://www.reddit.com",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: "Querying r/ukpolitics, r/LabourUK, r/unitedkingdom",
+  };
+  const all = [];
+  let okSubs = 0;
+  for (const sub of REDDIT_SUBS) {
+    try {
+      const url = `https://www.reddit.com/r/${sub}/new.json?limit=25`;
+      const json = await fetchJson(url, {
+        "user-agent": "web:starmer-watch:1.0 (+https://github.com/asim48-ctrl/starmer-watch)",
+      });
+      const posts = json?.data?.children || [];
+      okSubs += 1;
+      for (const child of posts) {
+        const p = child.data;
+        if (!p || p.stickied) continue;
+        const text = `${p.title || ""} ${p.selftext || ""}`;
+        if (!isRelevantNews(text)) continue;
+        all.push({
+          title: cleanText(p.title || "").slice(0, 220),
+          url: p.url_overridden_by_dest && /^https?:/.test(p.url_overridden_by_dest) ? p.url_overridden_by_dest : `https://www.reddit.com${p.permalink}`,
+          source: `Reddit · r/${sub}`,
+          publishedAt: p.created_utc ? new Date(p.created_utc * 1000).toISOString() : null,
+          description: "",
+          tags: tagText(text),
+        });
+      }
+    } catch (error) {
+      source.note = `r/${sub} failed: ${error.message}`;
+    }
+  }
+  source.ok = okSubs > 0;
+  if (okSubs > 0) source.note = `Pulled ${all.length} relevant posts across ${okSubs}/${REDDIT_SUBS.length} subs.`;
+  sourceHealth.push(source);
+  return all;
+}
+
+async function collectWikipediaEdits(sourceHealth) {
+  const source = {
+    id: "wikipedia-edits",
+    name: "Wikipedia edits (Starmer-orbit)",
+    url: "https://en.wikipedia.org/w/api.php",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: `Querying ${WIKI_PAGES.length} pages`,
+  };
+  const titles = WIKI_PAGES.join("|");
+  try {
+    const url = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&titles=${encodeURIComponent(titles)}&rvprop=timestamp%7Ccomment%7Cuser%7Csize&rvlimit=5&formatversion=2`;
+    const json = await fetchJson(url, {
+      "user-agent": "StarmerWatch/1.0 (https://github.com/asim48-ctrl/starmer-watch)",
+      "api-user-agent": "StarmerWatch/1.0 (https://github.com/asim48-ctrl/starmer-watch)",
+    });
+    const pages = json?.query?.pages || [];
+    const edits = [];
+    for (const page of pages) {
+      for (const rev of page.revisions || []) {
+        edits.push({
+          page: page.title,
+          user: rev.user,
+          comment: cleanText(rev.comment || ""),
+          size: rev.size,
+          timestamp: rev.timestamp,
+          url: `https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replace(/ /g, "_"))}?diff=prev`,
+        });
+      }
+    }
+    edits.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    source.ok = true;
+    source.note = `Collected ${edits.length} recent revisions across ${pages.length} pages.`;
+    sourceHealth.push(source);
+    return edits.slice(0, 20);
+  } catch (error) {
+    source.note = `Wikipedia API failed: ${error.message}`;
+    sourceHealth.push(source);
+    return [];
+  }
+}
+
+async function collectCcNewsMeta(sourceHealth) {
+  const source = {
+    id: "cc-news-meta",
+    name: "Common Crawl CC-NEWS (metadata)",
+    url: "https://data.commoncrawl.org",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: "Article ingest is too heavy for CI; tracking latest crawl pointer only.",
+  };
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const url = `https://data.commoncrawl.org/crawl-data/CC-NEWS/${year}/${month}/warc.paths.gz`;
+  try {
+    const head = await fetch(url, { method: "HEAD" });
+    if (!head.ok) {
+      source.note = `No CC-NEWS warc paths yet for ${year}-${month} (HTTP ${head.status}).`;
+      sourceHealth.push(source);
+      return null;
+    }
+    source.ok = true;
+    const size = head.headers.get("content-length");
+    const lastModified = head.headers.get("last-modified");
+    source.note = `Latest CC-NEWS warc.paths.gz available · ${size || "?"} bytes · ${lastModified || "unknown"}`;
+    sourceHealth.push(source);
+    return { period: `${year}-${month}`, pointer: url, sizeBytes: size ? Number(size) : null, lastModified };
+  } catch (error) {
+    source.note = `CC-NEWS metadata failed: ${error.message}`;
+    sourceHealth.push(source);
+    return null;
+  }
 }
 
 function noteGdeltDisabled(sourceHealth) {
@@ -908,27 +1081,54 @@ function classifyExit(role) {
   return "pressure signal";
 }
 
-async function fetchText(url) {
-  const response = await fetch(url, {
-    headers: {
-      "user-agent":
-        "Mozilla/5.0 (compatible; StarmerWatch/1.0; +https://example.com/starmer-watch)",
-      accept: "text/html,application/rss+xml,application/xml,text/xml,*/*",
-    },
-  });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.text();
+async function throttle() {
+  const since = Date.now() - lastFetchAt;
+  if (since < HTTP_THROTTLE_MS) {
+    await new Promise((r) => setTimeout(r, HTTP_THROTTLE_MS - since));
+  }
+  lastFetchAt = Date.now();
 }
 
-async function fetchJson(url) {
-  const response = await fetch(url, {
-    headers: {
-      "user-agent": "StarmerWatch/1.0",
-      accept: "application/json",
-    },
-  });
+async function loadHttpCache() {
+  httpCache = {};
+}
+
+async function saveHttpCache() {}
+
+async function fetchWithCache(url, headersExtra = {}) {
+  await throttle();
+  const cached = httpCache[url];
+  const headers = {
+    "user-agent": "Mozilla/5.0 (compatible; StarmerWatch/1.0; +https://github.com/asim48-ctrl/starmer-watch)",
+    accept: "text/html,application/rss+xml,application/xml,text/xml,application/json,*/*",
+    ...headersExtra,
+  };
+  if (cached?.etag) headers["if-none-match"] = cached.etag;
+  if (cached?.lastModified) headers["if-modified-since"] = cached.lastModified;
+
+  const response = await fetch(url, { headers });
+  if (response.status === 304 && cached?.body !== undefined) {
+    return { body: cached.body, fromCache: true, status: 304 };
+  }
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.json();
+  const body = await response.text();
+  const etag = response.headers.get("etag");
+  const lastModified = response.headers.get("last-modified");
+  if (etag || lastModified) {
+    httpCache[url] = { etag, lastModified, body };
+  } else {
+    delete httpCache[url];
+  }
+  return { body, fromCache: false, status: response.status };
+}
+
+async function fetchText(url) {
+  return (await fetchWithCache(url)).body;
+}
+
+async function fetchJson(url, headersExtra = {}) {
+  const { body } = await fetchWithCache(url, { accept: "application/json", ...headersExtra });
+  return JSON.parse(body);
 }
 
 function htmlToText(html) {

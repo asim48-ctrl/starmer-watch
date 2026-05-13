@@ -40,6 +40,23 @@ function $(selector) {
   return document.querySelector(selector);
 }
 
+function safeUrl(value) {
+  try {
+    const url = new URL(value, window.location.href);
+    return /^https?:$/.test(url.protocol) ? url.toString() : "#";
+  } catch {
+    return "#";
+  }
+}
+
+function externalLink(href, text) {
+  const a = create("a", "", text);
+  a.href = safeUrl(href);
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  return a;
+}
+
 function create(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -450,10 +467,7 @@ function renderMarkets() {
 
   for (const market of markets.filter((item) => item !== featured).slice(0, 4)) {
     const row = create("article", "market-row");
-    const link = create("a", "", market.question);
-    link.href = market.url;
-    link.target = "_blank";
-    link.rel = "noreferrer";
+    const link = externalLink(market.url, market.question);
     row.append(link, create("strong", "", priceLabel(market.yesPrice)));
     list.append(row);
   }
@@ -589,12 +603,31 @@ function renderNews() {
     const card = create("article", "news-item");
     const time = create("time", "", formatCompactDate(item.publishedAt));
     const source = create("span", "news-source", item.source.replace(" Politics RSS", "").replace(" RSS", ""));
-    const link = create("a", "", item.title);
-    link.href = item.url;
-    link.target = "_blank";
-    link.rel = "noreferrer";
+    const link = externalLink(item.url, item.title);
     card.append(time, source, link);
     container.append(card);
+  }
+}
+
+function renderWikiEdits() {
+  const list = document.getElementById("wiki-list");
+  if (!list) return;
+  list.replaceChildren();
+  const edits = state.wikipediaEdits || [];
+  if (!edits.length) {
+    list.append(create("div", "empty-state", "No recent Wikipedia revisions returned."));
+    return;
+  }
+  for (const edit of edits.slice(0, 8)) {
+    const row = create("article", "wiki-item");
+    const link = externalLink(edit.url, edit.page);
+    row.append(
+      create("time", "", formatCompactDate(edit.timestamp)),
+      link,
+      create("span", "wiki-user", edit.user ? `@${edit.user}` : ""),
+      create("p", "", edit.comment || "(no edit summary)"),
+    );
+    list.append(row);
   }
 }
 
@@ -627,6 +660,7 @@ function renderAll() {
   renderProxyBoard();
   renderResignations();
   renderNews();
+  renderWikiEdits();
   renderPipeline();
 }
 
