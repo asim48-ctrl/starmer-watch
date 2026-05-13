@@ -85,11 +85,23 @@ const DEFAULT_MANUAL = {
 };
 
 const INDEX_WEIGHTS = {
-  exitShare: 40,
-  supportDeficit: 20,
-  ministerMomentum: 15,
+  exitShare: 35,
+  supportDeficit: 15,
+  ministerMomentum: 10,
   marketExitProb: 25,
+  newsSentiment: 15,
 };
+
+const NEGATIVE_LEXICON = [
+  "resign", "quit", "ousted", "crisis", "blow", "humiliat", "mutiny", "rebellion",
+  "challenge", "no confidence", "step down", "ditch", "topple", "trigger", "calls grow",
+  "under pressure", "in turmoil", "embattled", "showdown", "ultimatum", "defies",
+  "splinter", "revolt", "leadership bid", "collapse",
+];
+const POSITIVE_LEXICON = [
+  "backs starmer", "support starmer", "defends", "rallies behind", "loyal",
+  "endorses", "stands by", "unites behind", "show of support", "secures",
+];
 
 async function main() {
   const manual = await readManualOverrides();
@@ -108,7 +120,7 @@ async function main() {
   const resignations = buildResignations(labour, news);
   const factions = buildFactions({ counts, labour, news, markets, resignations, manual });
   const proxyGroups = buildProxyGroups(manual, labour);
-  const pressureIndex = buildPressureIndex({ counts, markets, manual });
+  const pressureIndex = buildPressureIndex({ counts, markets, manual, news });
   const history = await updateHistory({ generatedAt, counts, pressureIndex });
   const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
 
@@ -489,7 +501,37 @@ function topStarmerExitMarket(markets) {
     .sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0))[0];
 }
 
-function buildPressureIndex({ counts, markets, manual }) {
+function scoreNewsSentiment(news) {
+  const now = Date.now();
+  const recent = (news || []).filter((item) => {
+    const t = new Date(item.publishedAt || 0).getTime();
+    return Number.isFinite(t) && now - t <= 48 * 3600 * 1000;
+  });
+  if (!recent.length) return { normalised: null, raw: "no recent items", count: 0, avg: 0 };
+
+  let net = 0;
+  let scored = 0;
+  for (const item of recent) {
+    const text = String(item.title || "").toLowerCase();
+    const neg = NEGATIVE_LEXICON.reduce((sum, term) => sum + (text.includes(term) ? 1 : 0), 0);
+    const pos = POSITIVE_LEXICON.reduce((sum, term) => sum + (text.includes(term) ? 1 : 0), 0);
+    if (neg + pos === 0) continue;
+    net += (neg - pos) / (neg + pos);
+    scored += 1;
+  }
+  const avg = scored ? net / scored : 0;
+  const intensity = Math.min(1, recent.length / 20);
+  const negativity = Math.max(0, Math.min(1, (avg + 1) / 2));
+  const normalised = intensity * negativity;
+  return {
+    normalised,
+    raw: `${recent.length} items (48h), ${scored} sentiment-scored, avg ${avg.toFixed(2)}`,
+    count: recent.length,
+    avg,
+  };
+}
+
+function buildPressureIndex({ counts, markets, manual, news }) {
   const pressure = counts.resignCalls.value || 0;
   const support = counts.supporters.value || 0;
   const threshold = counts.threshold.value || 81;
@@ -503,6 +545,7 @@ function buildPressureIndex({ counts, markets, manual }) {
   const supportDeficit = Math.max(0, Math.min(1, (40 - supportLead) / 40));
   const ministerMomentum = Math.max(0, Math.min(1, ministers / 5));
 
+  const newsScore = scoreNewsSentiment(news);
   const parts = [
     { id: "exitShare", label: "PLP exit-call share vs trigger", weight: INDEX_WEIGHTS.exitShare, normalised: exitShare, raw: `${pressure} / ${threshold}` },
     { id: "supportDeficit", label: "Support deficit", weight: INDEX_WEIGHTS.supportDeficit, normalised: supportDeficit, raw: `lead ${supportLead}` },
@@ -513,6 +556,13 @@ function buildPressureIndex({ counts, markets, manual }) {
       weight: INDEX_WEIGHTS.marketExitProb,
       normalised: marketProbNorm,
       raw: exitMarket ? `${priceLabel(marketProb)} · ${exitMarket.question}` : "no market",
+    },
+    {
+      id: "newsSentiment",
+      label: "News intensity × negativity",
+      weight: INDEX_WEIGHTS.newsSentiment,
+      normalised: newsScore.normalised,
+      raw: newsScore.raw,
     },
   ];
 
@@ -530,7 +580,7 @@ function buildPressureIndex({ counts, markets, manual }) {
   return {
     value,
     band,
-    formula: "Weighted: 40% PLP exit-call share, 20% support deficit, 15% minister exits, 25% Polymarket exit probability. Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
+    formula: "Weighted: 35% PLP exit-call share, 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity. Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
     components: parts,
     marketProb: marketProbNorm,
   };

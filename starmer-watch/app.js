@@ -157,6 +157,19 @@ function renderPressure() {
     buildIndexBreakdown(index),
   );
   renderTrendChart({ pressure, support, threshold });
+
+  const infoDot = document.querySelector(".pressure-index .info-dot");
+  const breakdown = gauge.querySelector(".index-breakdown");
+  if (infoDot && breakdown) {
+    breakdown.hidden = true;
+    infoDot.style.cursor = "pointer";
+    infoDot.setAttribute("role", "button");
+    infoDot.setAttribute("aria-label", "Show index methodology");
+    infoDot.onclick = () => {
+      breakdown.hidden = !breakdown.hidden;
+      infoDot.classList.toggle("active", !breakdown.hidden);
+    };
+  }
 }
 
 function buildIndexGauge(index) {
