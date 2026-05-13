@@ -3,7 +3,7 @@ name: Starmer Watch refresh and deploy
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17,47 * * * *"
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
@@ -36,7 +36,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add starmer-watch/data/latest.json
+          git add starmer-watch/data/latest.json starmer-watch/data/history.json
           if git diff --cached --quiet; then
             echo "No data changes to commit."
           else

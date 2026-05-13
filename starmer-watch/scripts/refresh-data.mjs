@@ -7,38 +7,51 @@ const rootDir = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const dataDir = path.join(rootDir, "data");
 const latestPath = path.join(dataDir, "latest.json");
 const manualPath = path.join(dataDir, "manual-overrides.json");
+const historyPath = path.join(dataDir, "history.json");
+const HISTORY_LIMIT = 240;
 
 const LABOURLIST_URL =
   "https://labourlist.org/2026/05/labourlist-labour-mp-starmer-resignation-tracker/";
 
 const RSS_FEEDS = [
-  {
-    id: "sky-politics",
-    name: "Sky News Politics RSS",
-    url: "https://feeds.skynews.com/feeds/rss/politics.xml",
-  },
-  {
-    id: "guardian-politics",
-    name: "Guardian Politics RSS",
-    url: "https://www.theguardian.com/politics/rss",
-  },
-  {
-    id: "bbc-politics",
-    name: "BBC Politics RSS",
-    url: "https://feeds.bbci.co.uk/news/politics/rss.xml",
-  },
-  {
-    id: "labourlist-feed",
-    name: "LabourList RSS",
-    url: "https://labourlist.org/feed/",
-  },
+  { id: "sky-politics", name: "Sky News Politics", url: "https://feeds.skynews.com/feeds/rss/politics.xml" },
+  { id: "guardian-politics", name: "Guardian Politics", url: "https://news.google.com/rss/search?q=site:theguardian.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "bbc-politics", name: "BBC Politics", url: "https://feeds.bbci.co.uk/news/politics/rss.xml" },
+  { id: "labourlist-feed", name: "LabourList", url: "https://labourlist.org/feed/" },
+  { id: "ft-uk-politics", name: "FT UK Politics", url: "https://www.ft.com/uk-politics?format=rss" },
+  { id: "telegraph-politics", name: "Telegraph Politics", url: "https://news.google.com/rss/search?q=site:telegraph.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "times-redbox", name: "The Times Politics", url: "https://news.google.com/rss/search?q=site:thetimes.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "politico-uk", name: "Politico UK", url: "https://www.politico.eu/section/uk/feed/" },
+  { id: "new-statesman-politics", name: "New Statesman Politics", url: "https://www.newstatesman.com/politics/feed" },
+  { id: "spectator", name: "Spectator", url: "https://news.google.com/rss/search?q=site:spectator.co.uk+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "conservativehome", name: "ConservativeHome", url: "https://conservativehome.com/feed/" },
+  { id: "tortoise", name: "Tortoise", url: "https://news.google.com/rss/search?q=site:tortoisemedia.com+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "reuters-uk", name: "Reuters UK", url: "https://news.google.com/rss/search?q=site:reuters.com+UK+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "bloomberg-uk", name: "Bloomberg UK", url: "https://news.google.com/rss/search?q=site:bloomberg.com+UK+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "mirror-politics", name: "Mirror Politics", url: "https://news.google.com/rss/search?q=site:mirror.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "inews-politics", name: "i Politics", url: "https://inews.co.uk/category/news/politics/feed" },
+  { id: "itv-politics", name: "ITV Politics", url: "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en" },
+  { id: "independent-uk-politics", name: "Independent UK Politics", url: "https://www.independent.co.uk/news/uk/politics/rss" },
+  { id: "sam-freedman", name: "Sam Freedman — Comment is Freed", url: "https://samf.substack.com/feed" },
+  { id: "ian-dunt", name: "Ian Dunt — Striking 13", url: "https://www.striking13.co.uk/feed" },
+  { id: "politicshome", name: "PoliticsHome", url: "https://www.politicshome.com/feed" },
+  { id: "byline-times", name: "Byline Times", url: "https://bylinetimes.com/feed/" },
+  { id: "novara-media", name: "Novara Media", url: "https://novaramedia.com/feed/" },
 ];
 
 const POLYMARKET_QUERIES = [
   "Starmer 2026",
+  "Keir Starmer",
+  "Starmer resign",
+  "Starmer out",
   "Labour leader",
+  "Next Labour leader",
   "UK Prime Minister 2026",
   "UK Cabinet Minister resigns",
+  "Wes Streeting",
+  "Angela Rayner",
+  "Andy Burnham",
+  "UK general election 2026",
 ];
 
 const NEWS_KEYWORDS = [
@@ -68,11 +81,32 @@ const MARKET_KEYWORDS = [
 
 const DEFAULT_MANUAL = {
   contestThreshold: 81,
+  plpSize: 403,
   supportBloc: [],
   sourceNotes: [],
   factionOverrides: {},
+  factionMembership: {},
   headlineOverride: "",
 };
+
+const INDEX_WEIGHTS = {
+  exitShare: 35,
+  supportDeficit: 15,
+  ministerMomentum: 10,
+  marketExitProb: 25,
+  newsSentiment: 15,
+};
+
+const NEGATIVE_LEXICON = [
+  "resign", "quit", "ousted", "crisis", "blow", "humiliat", "mutiny", "rebellion",
+  "challenge", "no confidence", "step down", "ditch", "topple", "trigger", "calls grow",
+  "under pressure", "in turmoil", "embattled", "showdown", "ultimatum", "defies",
+  "splinter", "revolt", "leadership bid", "collapse",
+];
+const POSITIVE_LEXICON = [
+  "backs starmer", "support starmer", "defends", "rallies behind", "loyal",
+  "endorses", "stands by", "unites behind", "show of support", "secures",
+];
 
 async function main() {
   const manual = await readManualOverrides();
@@ -81,25 +115,32 @@ async function main() {
 
   const labour = await collectLabourList(sourceHealth);
   const rssNews = await collectRssNews(sourceHealth);
+  const bskyNews = await collectBluesky(sourceHealth, manual);
   const gdeltNews =
     process.env.ENABLE_GDELT === "1" ? await collectGdeltNews(sourceHealth) : noteGdeltDisabled(sourceHealth);
   const markets = await collectPolymarket(sourceHealth);
 
-  const news = mergeNews([...rssNews, ...gdeltNews]);
+  const news = mergeNews([...rssNews, ...gdeltNews, ...bskyNews]);
   const counts = buildCounts(labour, manual);
   const pressure = buildPressure(counts, labour);
   const resignations = buildResignations(labour, news);
   const factions = buildFactions({ counts, labour, news, markets, resignations, manual });
-  const headline = manual.headlineOverride || buildHeadline(counts, markets);
+  const proxyGroups = buildProxyGroups(manual, labour);
+  const pressureIndex = buildPressureIndex({ counts, markets, manual, news });
+  const history = await updateHistory({ generatedAt, counts, pressureIndex });
+  const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
 
   const output = {
     generatedAt,
     headline,
     counts,
     pressure,
+    pressureIndex,
+    history,
     resignationCalls: labour.resignationCalls,
     supportBloc: manual.supportBloc || [],
     factions,
+    proxyGroups,
     resignations,
     markets,
     news: news.map(({ description, ...item }) => item),
@@ -318,6 +359,60 @@ async function collectGdeltNews(sourceHealth) {
   }
 }
 
+async function collectBluesky(sourceHealth, manual) {
+  const handles = Array.isArray(manual.bskyHandles) ? manual.bskyHandles : [];
+  const source = {
+    id: "bluesky-lobby",
+    name: "Bluesky lobby journalists",
+    url: "https://public.api.bsky.app",
+    fetchedAt: new Date().toISOString(),
+    ok: false,
+    note: handles.length ? `Querying ${handles.length} handles` : "No bskyHandles configured",
+  };
+  if (!handles.length) {
+    sourceHealth.push(source);
+    return [];
+  }
+
+  const all = [];
+  let okHandles = 0;
+  for (const handle of handles) {
+    try {
+      const url = `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=20&filter=posts_no_replies`;
+      const json = await fetchJson(url);
+      const feed = Array.isArray(json.feed) ? json.feed : [];
+      okHandles += 1;
+      for (const entry of feed) {
+        const post = entry?.post;
+        const record = post?.record;
+        const text = String(record?.text || "").trim();
+        if (!text) continue;
+        if (!isRelevantNews(text)) continue;
+        const rkey = post?.uri?.split("/").pop();
+        const did = post?.author?.did;
+        const webUrl = rkey && did ? `https://bsky.app/profile/${handle}/post/${rkey}` : `https://bsky.app/profile/${handle}`;
+        all.push({
+          title: text.length > 220 ? `${text.slice(0, 217)}...` : text,
+          url: webUrl,
+          source: `Bluesky · @${handle}`,
+          publishedAt: parseDate(record?.createdAt),
+          description: "",
+          tags: tagText(text),
+        });
+      }
+    } catch (error) {
+      source.note = `${handle} failed: ${error.message}`;
+    }
+  }
+
+  source.ok = okHandles > 0;
+  source.note = okHandles > 0
+    ? `Pulled ${all.length} relevant posts from ${okHandles}/${handles.length} handles.`
+    : source.note;
+  sourceHealth.push(source);
+  return all;
+}
+
 function noteGdeltDisabled(sourceHealth) {
   sourceHealth.push({
     id: "gdelt-doc-api",
@@ -460,24 +555,165 @@ function buildPressure(counts, labour) {
   };
 }
 
-function buildHeadline(counts, markets) {
-  const pressure = counts.resignCalls.value;
-  const support = counts.supporters.value;
-  const threshold = counts.threshold.value;
-  const starmerMarket = markets
-    .filter((market) => /Starmer out by|resign|ceases/i.test(market.question))
+function topStarmerExitMarket(markets) {
+  return markets
+    .filter((market) => /Starmer.*(out|resign|cease|exit|depart)|resign.*Starmer|Starmer 2026/i.test(market.question))
     .sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0))[0];
-  const marketPhrase = starmerMarket
-    ? ` Polymarket's top Starmer-exit signal is ${priceLabel(starmerMarket.yesPrice)}.`
-    : "";
+}
 
-  if (pressure >= threshold && support > pressure) {
-    return `The public pressure bloc is above the modeled ${threshold} MP trigger, but the reported support bloc is still larger.${marketPhrase}`;
+function scoreNewsSentiment(news) {
+  const now = Date.now();
+  const recent = (news || []).filter((item) => {
+    const t = new Date(item.publishedAt || 0).getTime();
+    return Number.isFinite(t) && now - t <= 48 * 3600 * 1000;
+  });
+  if (!recent.length) return { normalised: null, raw: "no recent items", count: 0, avg: 0 };
+
+  let net = 0;
+  let scored = 0;
+  for (const item of recent) {
+    const text = String(item.title || "").toLowerCase();
+    const neg = NEGATIVE_LEXICON.reduce((sum, term) => sum + (text.includes(term) ? 1 : 0), 0);
+    const pos = POSITIVE_LEXICON.reduce((sum, term) => sum + (text.includes(term) ? 1 : 0), 0);
+    if (neg + pos === 0) continue;
+    net += (neg - pos) / (neg + pos);
+    scored += 1;
   }
+  const avg = scored ? net / scored : 0;
+  const intensity = Math.min(1, recent.length / 20);
+  const negativity = Math.max(0, Math.min(1, (avg + 1) / 2));
+  const normalised = intensity * negativity;
+  return {
+    normalised,
+    raw: `${recent.length} items (48h), ${scored} sentiment-scored, avg ${avg.toFixed(2)}`,
+    count: recent.length,
+    avg,
+  };
+}
+
+function buildPressureIndex({ counts, markets, manual, news }) {
+  const pressure = counts.resignCalls.value || 0;
+  const support = counts.supporters.value || 0;
+  const threshold = counts.threshold.value || 81;
+  const ministers = counts.ministersOut.value || 0;
+  const exitMarket = topStarmerExitMarket(markets);
+  const marketProb = Number(exitMarket?.yesPrice);
+  const marketProbNorm = Number.isFinite(marketProb) ? Math.max(0, Math.min(1, marketProb)) : null;
+
+  const exitShare = Math.max(0, Math.min(1, pressure / threshold));
+  const supportLead = support - pressure;
+  const supportDeficit = Math.max(0, Math.min(1, (40 - supportLead) / 40));
+  const ministerMomentum = Math.max(0, Math.min(1, ministers / 5));
+
+  const newsScore = scoreNewsSentiment(news);
+  const parts = [
+    { id: "exitShare", label: "PLP exit-call share vs trigger", weight: INDEX_WEIGHTS.exitShare, normalised: exitShare, raw: `${pressure} / ${threshold}` },
+    { id: "supportDeficit", label: "Support deficit", weight: INDEX_WEIGHTS.supportDeficit, normalised: supportDeficit, raw: `lead ${supportLead}` },
+    { id: "ministerMomentum", label: "Minister-exit momentum", weight: INDEX_WEIGHTS.ministerMomentum, normalised: ministerMomentum, raw: `${ministers} exits` },
+    {
+      id: "marketExitProb",
+      label: "Polymarket exit probability",
+      weight: INDEX_WEIGHTS.marketExitProb,
+      normalised: marketProbNorm,
+      raw: exitMarket ? `${priceLabel(marketProb)} · ${exitMarket.question}` : "no market",
+    },
+    {
+      id: "newsSentiment",
+      label: "News intensity × negativity",
+      weight: INDEX_WEIGHTS.newsSentiment,
+      normalised: newsScore.normalised,
+      raw: newsScore.raw,
+    },
+  ];
+
+  let totalWeight = 0;
+  let score = 0;
+  for (const part of parts) {
+    if (part.normalised == null) continue;
+    score += part.normalised * part.weight;
+    totalWeight += part.weight;
+    part.contribution = Math.round(part.normalised * part.weight * 10) / 10;
+  }
+  const value = totalWeight ? Math.round((score / totalWeight) * 100) : 0;
+
+  const band = value >= 75 ? "critical" : value >= 55 ? "elevated" : value >= 35 ? "building" : "contained";
+  return {
+    value,
+    band,
+    formula: "Weighted: 35% PLP exit-call share, 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity. Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
+    components: parts,
+    marketProb: marketProbNorm,
+  };
+}
+
+async function updateHistory({ generatedAt, counts, pressureIndex }) {
+  let history = [];
+  try {
+    const raw = await readFile(historyPath, "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) history = parsed;
+  } catch {}
+
+  const last = history[history.length - 1];
+  const entry = {
+    t: generatedAt,
+    pressure: counts.resignCalls.value || 0,
+    support: counts.supporters.value || 0,
+    ministers: counts.ministersOut.value || 0,
+    index: pressureIndex.value,
+    marketProb: pressureIndex.marketProb,
+  };
+
+  const sameMinute = last && new Date(last.t).getUTCMinutes() === new Date(entry.t).getUTCMinutes() &&
+    last.pressure === entry.pressure && last.support === entry.support && last.index === entry.index;
+  if (!sameMinute) history.push(entry);
+  if (history.length > HISTORY_LIMIT) history = history.slice(-HISTORY_LIMIT);
+
+  await writeFile(historyPath, `${JSON.stringify(history, null, 2)}\n`, "utf8");
+  return history;
+}
+
+function buildProxyGroups(manual, labour) {
+  const membership = manual.factionMembership || {};
+  const resignSet = new Set((labour.resignationCalls || []).map((mp) => mp.name));
+  const supportSet = new Set((manual.supportBloc || []).map((entry) => (typeof entry === "string" ? entry : entry.name)));
+
+  const groups = Object.entries(membership).map(([id, group]) => {
+    const mps = Array.isArray(group.mps) ? group.mps : [];
+    const calling = mps.filter((name) => resignSet.has(name));
+    const backing = mps.filter((name) => supportSet.has(name));
+    const undeclared = mps.length - calling.length - backing.length;
+    const lean = calling.length > backing.length ? "tilting against" : backing.length > calling.length ? "holding" : "split";
+    return {
+      id,
+      name: group.name || id,
+      note: group.note || "",
+      total: mps.length,
+      calling: calling.length,
+      backing: backing.length,
+      undeclared: Math.max(0, undeclared),
+      lean,
+      callingNames: calling,
+      backingNames: backing,
+    };
+  });
+
+  return groups;
+}
+
+function buildHeadline(counts, markets, pressureIndex) {
+  const pressure = counts.resignCalls.value;
+  const threshold = counts.threshold.value;
+  const exitMarket = topStarmerExitMarket(markets);
+  const marketPhrase = exitMarket
+    ? ` Polymarket's top Starmer-exit signal is ${priceLabel(exitMarket.yesPrice)}.`
+    : "";
+  const indexPhrase = pressureIndex ? ` Pressure Index ${pressureIndex.value}/100 (${pressureIndex.band}).` : "";
+
   if (pressure >= threshold) {
-    return `The public pressure bloc is above the modeled ${threshold} MP trigger and is the dominant visible Commons signal.${marketPhrase}`;
+    return `Public pressure bloc is above the modeled ${threshold} MP trigger.${indexPhrase}${marketPhrase}`;
   }
-  return `Pressure is building but remains below the modeled ${threshold} MP trigger in the parsed public count.${marketPhrase}`;
+  return `Pressure building but below the modeled ${threshold} MP trigger.${indexPhrase}${marketPhrase}`;
 }
 
 function priceLabel(value) {
