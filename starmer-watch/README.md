@@ -2,6 +2,8 @@
 
 Static dashboard for tracking Labour leadership pressure around Keir Starmer.
 
+Live site: <https://asim48-ctrl.github.io/starmer-watch/>
+
 ## What It Shows
 
 - MPs publicly calling for Starmer to resign or announce a departure timetable.
@@ -11,17 +13,6 @@ Static dashboard for tracking Labour leadership pressure around Keir Starmer.
 - Ministerial exits, PPS exits, and other proxy pressure signals.
 - Latest relevant RSS/news hits from LabourList, Sky, Guardian, BBC, and optional GDELT discovery.
 - Polymarket prices for Starmer exit, Labour leadership election timing, next UK PM, and cabinet resignation markets.
-
-## Local Preview
-
-From this directory:
-
-```bash
-node scripts/refresh-data.mjs
-python3 -m http.server 4173
-```
-
-Open `http://127.0.0.1:4173`.
 
 ## Data Pipeline
 
@@ -37,11 +28,10 @@ Manual corrections and rule constants live in `data/manual-overrides.json`. Use 
 
 ## Free Hosting
 
-Recommended: GitHub Pages with Actions.
+Hosted on GitHub Pages with Actions:
 
-1. Push this repository to GitHub.
-2. In repository settings, set Pages source to `GitHub Actions`.
-3. Keep `.github/workflows/starmer-watch-refresh.yml` enabled. It refreshes `data/latest.json`, commits changes, and deploys the `starmer-watch` folder every 30 minutes.
+1. Repository Pages source is `GitHub Actions`.
+2. `.github/workflows/starmer-watch-refresh.yml` refreshes `data/latest.json`, commits changes, and deploys the `starmer-watch` folder every 30 minutes.
 
 Alternative: Cloudflare Pages.
 
