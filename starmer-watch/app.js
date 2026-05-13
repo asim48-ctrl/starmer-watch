@@ -17,10 +17,13 @@ const fallbackData = {
   resignationCalls: [],
   supportBloc: [],
   factions: [],
+  proxyGroups: [],
   resignations: [],
   markets: [],
   news: [],
   sources: [],
+  history: [],
+  pressureIndex: { value: 0, band: "contained", formula: "", components: [] },
 };
 
 let state = fallbackData;
@@ -102,10 +105,25 @@ function renderMasthead() {
 function renderKpis() {
   const container = $("#kpi-grid");
   const template = $("#kpi-template");
+  const index = state.pressureIndex || { value: 0, band: "contained" };
+  const marketProb = index.marketProb;
   const kpis = [
+    {
+      value: index.value,
+      label: `Pressure Index (${index.band})`,
+      note: "Composite 0-100. Hover the breakdown under the gauge for inputs.",
+      tone: index.value >= 75 ? "red" : index.value >= 55 ? "red" : index.value >= 35 ? "dark" : "blue",
+      icon: "◈",
+    },
     { ...state.counts.resignCalls, label: "MPs calling for exit", tone: "red", icon: "♟" },
     { ...state.counts.supporters, label: "MPs backing Starmer", tone: "blue", icon: "⬟" },
-    { ...state.counts.threshold, label: "Contest threshold", tone: "dark", icon: "◎" },
+    {
+      value: Number.isFinite(marketProb) ? `${Math.round(marketProb * 100)}%` : "n/a",
+      label: "Polymarket exit prob.",
+      note: "Top Starmer-exit market YES price.",
+      tone: "dark",
+      icon: "⌁",
+    },
     { ...state.counts.ministersOut, label: "Ministers out", tone: "red", icon: "↪" },
   ];
 
@@ -115,7 +133,8 @@ function renderKpis() {
     const card = clone.querySelector(".kpi-card");
     card.classList.add(item.tone);
     clone.querySelector(".kpi-icon").textContent = item.icon;
-    clone.querySelector(".kpi-value").textContent = formatNumber.format(item.value || 0);
+    clone.querySelector(".kpi-value").textContent =
+      typeof item.value === "number" ? formatNumber.format(item.value) : String(item.value ?? "—");
     clone.querySelector(".kpi-label").textContent = item.label;
     clone.querySelector(".kpi-note").textContent = item.note || "";
     container.append(clone);
@@ -127,18 +146,90 @@ function renderPressure() {
   const pressure = counts.resignCalls?.value || 0;
   const support = counts.supporters?.value || 0;
   const threshold = counts.threshold?.value || 81;
-  const maxGauge = Math.max(153, pressure, support, threshold);
-  const angle = -90 + Math.min(1, pressure / maxGauge) * 180;
-  const pressureState = pressure >= threshold ? "PRESSURE RISING" : "BELOW TRIGGER";
+  const index = state.pressureIndex || { value: 0, band: "contained", components: [], formula: "" };
 
-  $("#pressure-title").textContent = `Pressure index (exit threshold: ${threshold})`;
+  $("#pressure-title").textContent = `Pressure Index ${index.value}/100 · ${index.band.toUpperCase()}`;
   const gauge = $("#pressure-gauge");
   gauge.replaceChildren();
   gauge.append(
-    buildGauge({ pressure, threshold, maxGauge, angle, pressureState }),
+    buildIndexGauge(index),
     buildPressureSummary({ pressure, support, threshold }),
+    buildIndexBreakdown(index),
   );
   renderTrendChart({ pressure, support, threshold });
+}
+
+function buildIndexGauge(index) {
+  const frame = create("div", "gauge-frame");
+  const svg = createSvg("svg", {
+    class: "gauge-svg",
+    viewBox: "0 0 360 240",
+    role: "img",
+    "aria-label": `Pressure Index ${index.value} out of 100`,
+  });
+  const cx = 180;
+  const cy = 178;
+  const radius = 130;
+  const value = Math.max(0, Math.min(100, Number(index.value) || 0));
+  const valueAngle = 180 - (value / 100) * 180;
+
+  svg.append(
+    arcPath(cx, cy, radius, 180, 117, "gauge-arc green"),
+    arcPath(cx, cy, radius, 117, 81, "gauge-arc amber"),
+    arcPath(cx, cy, radius, 81, 45, "gauge-arc red"),
+    arcPath(cx, cy, radius, 45, 0, "gauge-arc red"),
+    arcPath(cx, cy, radius - 38, 180, 0, "gauge-arc inner"),
+  );
+
+  [["0", 180], ["35", 117], ["55", 81], ["75", 45], ["100", 0]].forEach(([label, deg]) => {
+    const point = polarPoint(cx, cy, radius + 24, Number(deg));
+    const text = createSvg("text", {
+      x: point.x,
+      y: point.y + 5,
+      class: "gauge-tick",
+      "text-anchor": Number(deg) === 180 ? "start" : Number(deg) === 0 ? "end" : "middle",
+    });
+    text.textContent = label;
+    svg.append(text);
+  });
+
+  const needleEnd = polarPoint(cx, cy, 104, valueAngle);
+  svg.append(
+    createSvg("line", { x1: cx, y1: cy, x2: needleEnd.x, y2: needleEnd.y, class: "gauge-needle-line" }),
+    createSvg("circle", { cx, cy, r: 9, class: "gauge-hub-dot" }),
+  );
+
+  const valueText = createSvg("text", { x: cx, y: 149, class: "gauge-value", "text-anchor": "middle" });
+  valueText.textContent = String(value);
+  const label = createSvg("text", { x: cx, y: 173, class: "gauge-caption", "text-anchor": "middle" });
+  label.textContent = "PRESSURE INDEX / 100";
+  const pill = createSvg("text", { x: cx, y: 210, class: "gauge-pill", "text-anchor": "middle" });
+  pill.textContent = `▲ ${String(index.band || "contained").toUpperCase()}`;
+  svg.append(valueText, label, pill);
+  frame.append(svg);
+  return frame;
+}
+
+function buildIndexBreakdown(index) {
+  const wrap = create("div", "index-breakdown");
+  wrap.append(create("h4", "", "How the index is built"));
+  const list = create("div", "index-rows");
+  for (const part of index.components || []) {
+    const row = create("div", "index-row");
+    const norm = part.normalised == null ? "—" : `${Math.round(part.normalised * 100)}%`;
+    const contrib = part.normalised == null ? "skipped" : `+${part.contribution} pts`;
+    row.append(
+      create("span", "ix-label", part.label),
+      create("span", "ix-weight", `weight ${part.weight}`),
+      create("span", "ix-norm", norm),
+      create("span", "ix-contrib", contrib),
+      create("small", "ix-raw", part.raw || ""),
+    );
+    list.append(row);
+  }
+  wrap.append(list);
+  wrap.append(create("p", "index-formula", index.formula || ""));
+  return wrap;
 }
 
 function buildGauge({ pressure, threshold, maxGauge, angle, pressureState }) {
@@ -250,72 +341,66 @@ function renderTrendChart({ pressure, support, threshold }) {
 
   const width = 560;
   const height = 260;
-  const pad = { left: 46, right: 34, top: 24, bottom: 38 };
-  const values = {
-    pressure: makeSeries(pressure, [-28, -30, -24, -18, -12, -8, -3, 0]),
-    support: makeSeries(support, [-4, 1, -2, -5, -1, 2, -3, 0]),
-    threshold: Array(8).fill(threshold),
-  };
-  const max = Math.max(160, support + 16, pressure + 28, threshold + 28);
-  const min = 0;
+  const pad = { left: 46, right: 40, top: 24, bottom: 38 };
+  const history = Array.isArray(state.history) ? state.history.slice() : [];
+  if (history.length < 2) {
+    const note = createSvg("text", { x: width / 2, y: height / 2, class: "axis-label", "text-anchor": "middle" });
+    note.textContent = history.length === 1 ? "Trend builds up after the next refresh." : "Trend builds up after a few refreshes.";
+    svg.append(note);
+    return;
+  }
+
+  const points = history.map((entry, i) => ({
+    i,
+    t: entry.t,
+    pressure: Number(entry.pressure) || 0,
+    support: Number(entry.support) || 0,
+    threshold,
+  }));
+
+  const max = Math.max(
+    threshold + 20,
+    ...points.map((p) => Math.max(p.pressure, p.support)),
+  );
   const plotW = width - pad.left - pad.right;
   const plotH = height - pad.top - pad.bottom;
-  const x = (index) => pad.left + (index / 7) * plotW;
-  const y = (value) => pad.top + (1 - (value - min) / (max - min)) * plotH;
+  const x = (i) => pad.left + (i / Math.max(1, points.length - 1)) * plotW;
+  const y = (value) => pad.top + (1 - value / max) * plotH;
 
-  [0, 40, threshold, 120, 160].forEach((tick) => {
-    const line = createSvg("line", {
-      x1: pad.left,
-      x2: width - pad.right,
-      y1: y(tick),
-      y2: y(tick),
-      class: tick === threshold ? "grid-line threshold" : "grid-line",
-    });
-    const label = createSvg("text", {
-      x: 10,
-      y: y(tick) + 4,
-      class: "axis-label",
-    });
+  const ticks = [0, Math.round(max * 0.25), threshold, Math.round(max * 0.75), Math.round(max)];
+  for (const tick of ticks) {
+    svg.append(
+      createSvg("line", {
+        x1: pad.left, x2: width - pad.right, y1: y(tick), y2: y(tick),
+        class: tick === threshold ? "grid-line threshold" : "grid-line",
+      }),
+    );
+    const label = createSvg("text", { x: 10, y: y(tick) + 4, class: "axis-label" });
     label.textContent = String(tick);
-    svg.append(line, label);
-  });
+    svg.append(label);
+  }
 
   svg.append(
-    buildPolyline(values.support, x, y, "support-line"),
-    buildPolyline(values.threshold, x, y, "threshold-line"),
-    buildPolyline(values.pressure, x, y, "pressure-line"),
+    buildPolyline(points.map((p) => p.support), x, y, "support-line"),
+    buildPolyline(points.map(() => threshold), x, y, "threshold-line"),
+    buildPolyline(points.map((p) => p.pressure), x, y, "pressure-line"),
   );
 
-  ["12 May", "13 May", "14 May", "15 May", "16 May", "17 May", "18 May", "Now"].forEach(
-    (label, index) => {
-      if (index % 2 && index !== 7) return;
-      const text = createSvg("text", {
-        x: x(index),
-        y: height - 10,
-        class: "axis-label x",
-      });
-      text.textContent = label;
-      svg.append(text);
-    },
-  );
+  const dateLabels = [0, Math.floor(points.length / 2), points.length - 1];
+  for (const i of dateLabels) {
+    const date = new Date(points[i].t);
+    if (Number.isNaN(date.getTime())) continue;
+    const text = createSvg("text", { x: x(i), y: height - 10, class: "axis-label x" });
+    text.textContent = date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+    svg.append(text);
+  }
 
-  const supportLabel = createSvg("text", {
-    x: width - 28,
-    y: y(support) + 4,
-    class: "chart-end support",
-  });
-  supportLabel.textContent = String(support);
-  const pressureLabel = createSvg("text", {
-    x: width - 28,
-    y: y(pressure) + 4,
-    class: "chart-end pressure",
-  });
-  pressureLabel.textContent = String(pressure);
+  const last = points[points.length - 1];
+  const supportLabel = createSvg("text", { x: width - 30, y: y(last.support) + 4, class: "chart-end support" });
+  supportLabel.textContent = String(last.support);
+  const pressureLabel = createSvg("text", { x: width - 30, y: y(last.pressure) + 4, class: "chart-end pressure" });
+  pressureLabel.textContent = String(last.pressure);
   svg.append(supportLabel, pressureLabel);
-}
-
-function makeSeries(current, offsets) {
-  return offsets.map((offset) => Math.max(0, current + offset));
 }
 
 function buildPolyline(values, x, y, className) {
@@ -394,14 +479,21 @@ function renderFactions() {
     title.append(create("h3", "", faction.name), create("span", "", "ACTIVE"));
     card.append(title, create("p", "", faction.posture || "No posture summary available."));
 
+    const score = Number(faction.pressureScore) || 0;
     const matrix = create("div", "matrix");
     matrix.append(
-      matrixCell("Momentum", faction.pressureScore >= 6 ? "▲ Rising" : "Stable"),
-      matrixCell("Risk level", faction.pressureScore >= 7 ? "Medium" : "Low"),
-      matrixCell("Network", "■■■□□"),
-      matrixCell("Trajectory", faction.id === "burnham" ? "Long game →" : "Positioning →"),
+      matrixCell("Signal score", `${score}/9`),
+      matrixCell("Live signals", String((faction.signals || []).filter((s) => s && !/No high-confidence/i.test(s)).length)),
     );
     card.append(matrix);
+
+    if ((faction.signals || []).length) {
+      const signalList = create("ul", "signal-list");
+      for (const signal of faction.signals.slice(0, 3)) {
+        signalList.append(create("li", "", signal));
+      }
+      card.append(signalList);
+    }
 
     const move = create("div", "latest-move");
     move.textContent = faction.latestMove || "Watching";
@@ -417,24 +509,33 @@ function matrixCell(label, value) {
 }
 
 function renderProxyBoard() {
-  const resignCalls = state.counts.resignCalls?.value || 0;
-  const supporters = state.counts.supporters?.value || 0;
-  const groups = [
-    { name: "Soft Left Group", count: Math.max(18, Math.round(resignCalls * 0.2)), status: "▲ Growing" },
-    { name: "Progressives Alliance", count: Math.max(22, Math.round(resignCalls * 0.24)), status: "▲ Stable" },
-    { name: "New Labour Network", count: Math.max(16, Math.round(supporters * 0.14)), status: "▼ Shrinking" },
-    { name: "Northern Powerhouse", count: Math.max(11, Math.round(resignCalls * 0.12)), status: "▲ Stable" },
-    { name: "Red Wall Advocates", count: Math.max(9, Math.round(resignCalls * 0.1)), status: "▼ Shrinking" },
-  ];
+  const groups = Array.isArray(state.proxyGroups) ? state.proxyGroups : [];
   const grid = $("#proxy-grid");
   grid.replaceChildren();
-  for (const group of groups) {
+
+  const populated = groups.filter((g) => g.total > 0);
+  if (!populated.length) {
+    grid.append(
+      create(
+        "div",
+        "empty-state",
+        "No faction membership configured. Add MP names under factionMembership in data/manual-overrides.json to drive these tiles from real bloc data.",
+      ),
+    );
+    return;
+  }
+
+  for (const group of populated) {
     const card = create("article", "proxy-card");
+    const leanLabel = group.lean === "tilting against" ? "▼ Tilting against Starmer"
+      : group.lean === "holding" ? "▲ Holding for Starmer"
+      : "◌ Split";
     card.append(
       create("h4", "", group.name),
-      create("p", "", `Est. MPs: ${group.count}`),
-      create("span", group.status.includes("Growing") ? "up" : group.status.includes("Shrinking") ? "down" : "", group.status),
+      create("p", "", `${group.calling}/${group.total} calling exit · ${group.backing} backing · ${group.undeclared} undeclared`),
+      create("span", group.lean === "tilting against" ? "down" : group.lean === "holding" ? "up" : "", leanLabel),
     );
+    if (group.note) card.append(create("small", "", group.note));
     grid.append(card);
   }
 }

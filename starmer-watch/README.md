@@ -4,13 +4,16 @@ Static dashboard for tracking Labour leadership pressure around Keir Starmer.
 
 ## What It Shows
 
+- **Pressure Index (0-100)** — composite score with published weights: 40% PLP exit-call share vs threshold, 20% support deficit, 15% minister-exit momentum, 25% Polymarket exit probability. Inputs and contributions are shown in the UI under the gauge.
+- Real seven-plus-day **trend chart** driven by `data/history.json`, appended every refresh.
 - MPs publicly calling for Starmer to resign or announce a departure timetable.
 - MPs reported as backing him through a public support statement.
 - A modeled leadership contest threshold, kept in `data/manual-overrides.json`.
-- Wes Streeting and Andy Burnham maneuver summaries.
+- Wes Streeting, Burnham, Rayner manoeuvre summaries with the underlying signals.
+- Faction bloc tiles driven by `factionMembership` in `data/manual-overrides.json` (counts how many members of each bloc are calling for exit vs backing the PM).
 - Ministerial exits, PPS exits, and other proxy pressure signals.
-- Latest relevant RSS/news hits from LabourList, Sky, Guardian, BBC, and optional GDELT discovery.
-- Polymarket prices for Starmer exit, Labour leadership election timing, next UK PM, and cabinet resignation markets.
+- Latest relevant RSS/news hits from LabourList, BBC, Sky, FT, Guardian, Telegraph, Times, Politico UK, New Statesman, Spectator, ConservativeHome, Tortoise, Reuters UK, Bloomberg UK, Mirror, i, ITV, Independent — plus optional GDELT discovery.
+- Polymarket prices for Starmer exit, Labour leadership timing, next UK PM, next Labour leader, cabinet resignation, Streeting/Rayner/Burnham markets.
 
 ## Local Preview
 
