@@ -795,52 +795,6 @@ function renderWikiEdits() {
   }
 }
 
-function renderParliament() {
-  const summary = document.getElementById("parliament-summary");
-  const list = document.getElementById("parliament-list");
-  if (!summary || !list) return;
-  summary.replaceChildren();
-  list.replaceChildren();
-  const data = state.parliamentaryActivity;
-  if (!data) {
-    list.append(create("div", "empty-state", "Parliamentary activity unavailable this refresh."));
-    return;
-  }
-  const wq = data.writtenQuestionsStarmer || {};
-  const dv = data.commonsDivisions || {};
-  summary.append(
-    create("p", "", `${wq.last7d ?? "?"} written questions mentioning Starmer in the last 7 days · ${wq.last14d ?? "?"} in 14 days · ${dv.last30d ?? "?"} Commons divisions in 30 days.`),
-  );
-
-  if ((wq.recent || []).length) {
-    list.append(create("h4", "drill-h", "Recent written questions mentioning Starmer"));
-    for (const q of wq.recent) {
-      const row = create("article", "wiki-item");
-      const link = externalLink(q.url, q.heading || "(no heading)");
-      row.append(
-        create("time", "", formatCompactDate(q.dateTabled)),
-        link,
-        create("span", "wiki-user", q.askingMember ? `@${q.askingMember}` : ""),
-        create("p", "", `Answered by: ${q.answeringBody || "—"}`),
-      );
-      list.append(row);
-    }
-  }
-  if ((dv.recent || []).length) {
-    list.append(create("h4", "drill-h", "Recent Commons divisions"));
-    for (const d of dv.recent) {
-      const row = create("article", "wiki-item");
-      const link = externalLink(d.url, d.title || "(division)");
-      row.append(
-        create("time", "", formatCompactDate(d.date)),
-        link,
-        create("span", "wiki-user", `Aye ${d.ayes} · No ${d.noes} · margin ${d.margin}`),
-      );
-      list.append(row);
-    }
-  }
-}
-
 function renderPipeline() {
   const container = $("#pipeline-grid");
   container.replaceChildren();
@@ -871,7 +825,6 @@ function renderAll() {
   renderResignations();
   renderNews();
   renderWikiEdits();
-  renderParliament();
   renderPipeline();
 }
 
