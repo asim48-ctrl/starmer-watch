@@ -121,6 +121,7 @@ const WIKI_PAGES = [
 ];
 const HTTP_THROTTLE_MS = 350;
 const httpCachePath = "data/http-cache.json";
+const alertStatePath = "data/alert-state.json";
 let httpCache = {};
 let lastFetchAt = 0;
 
@@ -149,6 +150,7 @@ async function main() {
   const proxyGroups = buildProxyGroups(manual, labour);
   const pressureIndex = buildPressureIndex({ counts, markets, manual, news });
   const history = await updateHistory({ generatedAt, counts, pressureIndex });
+  await maybeFireAlerts({ pressureIndex, history, counts, manual });
   const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
 
   const output = {
@@ -909,6 +911,73 @@ function buildPressureIndex({ counts, markets, manual, news }) {
     components: parts,
     marketProb: marketProbNorm,
   };
+}
+
+async function readAlertState() {
+  try {
+    const raw = await readFile(path.join(rootDir, alertStatePath), "utf8");
+    return JSON.parse(raw) || {};
+  } catch {
+    return {};
+  }
+}
+
+async function writeAlertState(state) {
+  await writeFile(path.join(rootDir, alertStatePath), `${JSON.stringify(state, null, 2)}\n`, "utf8");
+}
+
+async function postWebhook(url, payload) {
+  if (!url) return false;
+  try {
+    const isSlack = url.includes("hooks.slack.com");
+    const body = isSlack ? { text: payload.text } : { content: payload.text };
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json", "user-agent": "StarmerWatch/1.0" },
+      body: JSON.stringify(body),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function maybeFireAlerts({ pressureIndex, history, counts, manual }) {
+  const cfg = manual.alerts || {};
+  const discord = process.env.DISCORD_WEBHOOK_URL || cfg.discordWebhookUrl || "";
+  const slack = process.env.SLACK_WEBHOOK_URL || cfg.slackWebhookUrl || "";
+  if (!discord && !slack) return;
+
+  const indexThreshold = Number(cfg.thresholds?.pressureIndex) || 75;
+  const jumpThreshold = Number(cfg.thresholds?.marketProbJumpPp) || 5;
+  const state = await readAlertState();
+  const messages = [];
+
+  const indexValue = pressureIndex.value;
+  if (indexValue >= indexThreshold && (state.lastIndex || 0) < indexThreshold) {
+    messages.push(`🚨 Pressure Index ${indexValue}/100 crossed ${indexThreshold} (band: ${pressureIndex.band}). ${counts.resignCalls.value} MPs calling exit vs ${counts.supporters.value} backing.`);
+  }
+
+  const currentProb = pressureIndex.marketProb;
+  const lastProb = state.lastMarketProb;
+  if (Number.isFinite(currentProb) && Number.isFinite(lastProb)) {
+    const deltaPp = (currentProb - lastProb) * 100;
+    if (Math.abs(deltaPp) >= jumpThreshold) {
+      const arrow = deltaPp > 0 ? "▲" : "▼";
+      messages.push(`${arrow} Polymarket Starmer-exit prob moved ${deltaPp.toFixed(1)}pp: ${(lastProb * 100).toFixed(1)}% → ${(currentProb * 100).toFixed(1)}%`);
+    }
+  }
+
+  for (const text of messages) {
+    if (discord) await postWebhook(discord, { text });
+    if (slack) await postWebhook(slack, { text });
+  }
+
+  await writeAlertState({
+    lastIndex: indexValue,
+    lastMarketProb: Number.isFinite(currentProb) ? currentProb : state.lastMarketProb || null,
+    lastAlertAt: messages.length ? new Date().toISOString() : state.lastAlertAt || null,
+  });
 }
 
 async function updateHistory({ generatedAt, counts, pressureIndex }) {
