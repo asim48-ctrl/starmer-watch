@@ -842,3 +842,4 @@ $("#news-filter").addEventListener("input", (event) => {
 });
 
 loadData();
+setInterval(loadData, 10 * 60 * 1000);
