@@ -135,7 +135,7 @@ async function main() {
   const rssNews = await collectRssNews(sourceHealth);
   const bskyNews = await collectBluesky(sourceHealth, manual);
   const guardianNews = await collectGuardianApi(sourceHealth);
-  const redditNews = await collectReddit(sourceHealth);
+  const redditNews = []; // Reddit JSON 403s persistently from GH Actions IP ranges; collector disabled.
   const wikiEdits = await collectWikipediaEdits(sourceHealth);
   const ccNewsMeta = await collectCcNewsMeta(sourceHealth);
   const gdeltNews =
