@@ -1252,3 +1252,20 @@ button {
   color: #334155;
 }
 .signal-list li { margin: 2px 0; }
+
+.wiki-panel .wiki-list { display: grid; gap: 10px; margin-top: 12px; }
+.wiki-item {
+  display: grid;
+  grid-template-columns: 80px 1.4fr 1fr;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: white;
+}
+.wiki-item p { grid-column: 1 / -1; margin: 4px 0 0; font-size: 0.82rem; color: #475569; }
+.wiki-item time { font-size: 0.75rem; color: #64748b; font-variant-numeric: tabular-nums; }
+.wiki-item a { font-weight: 600; color: #0f172a; text-decoration: none; }
+.wiki-item a:hover { text-decoration: underline; }
+.wiki-user { font-size: 0.75rem; color: #64748b; text-align: right; }
