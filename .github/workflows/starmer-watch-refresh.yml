@@ -2,6 +2,11 @@ name: Starmer Watch refresh and deploy
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "starmer-watch/**"
+      - ".github/workflows/starmer-watch-refresh.yml"
   schedule:
     - cron: "*/5 * * * *"
 
