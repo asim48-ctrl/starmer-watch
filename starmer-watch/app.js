@@ -24,6 +24,7 @@ const fallbackData = {
   sources: [],
   history: [],
   pressureIndex: { value: 0, band: "contained", formula: "", components: [] },
+  baselines: null,
 };
 
 let state = fallbackData;
@@ -171,6 +172,7 @@ function renderPressure() {
   gauge.append(
     buildIndexGauge(index),
     buildPressureSummary({ pressure, support, threshold }),
+    buildBaselineStrip(index),
     buildIndexBreakdown(index),
   );
   renderTrendChart({ pressure, support, threshold });
@@ -238,6 +240,34 @@ function buildIndexGauge(index) {
   svg.append(valueText, label, pill);
   frame.append(svg);
   return frame;
+}
+
+function buildBaselineStrip(index) {
+  const wrap = create("div", "baseline-strip");
+  const events = state.baselines?.events || [];
+  if (!events.length) return wrap;
+  wrap.append(create("h4", "", "Historical reference — peak index at prior PM crises"));
+  const rows = create("div", "baseline-rows");
+  for (const ev of events) {
+    const row = create("div", `baseline-row ${ev.outcome}`);
+    const bar = create("div", "baseline-bar");
+    const fill = create("div", "baseline-fill");
+    fill.style.width = `${Math.max(2, Math.min(100, ev.indexEquivalent))}%`;
+    bar.append(fill);
+    const me = create("div", "baseline-now");
+    me.style.left = `${Math.max(0, Math.min(100, index.value))}%`;
+    bar.append(me);
+    row.append(
+      create("span", "baseline-label", ev.label),
+      bar,
+      create("strong", "baseline-value", String(ev.indexEquivalent)),
+      create("small", "baseline-outcome", ev.outcome === "resigned" ? "→ resigned" : "→ survived"),
+    );
+    wrap.append(row);
+  }
+  wrap.append(rows);
+  wrap.append(create("p", "baseline-note", state.baselines?.notes || ""));
+  return wrap;
 }
 
 function buildIndexBreakdown(index) {
@@ -525,6 +555,28 @@ function renderFactions() {
     const move = create("div", "latest-move");
     move.textContent = faction.latestMove || "Watching";
     card.append(move);
+
+    const perEntity = state.pressureIndex?.perEntitySentiment || {};
+    const entity = perEntity[faction.id];
+    if (entity && entity.mentions) {
+      const details = document.createElement("details");
+      details.className = "drill";
+      const summary = document.createElement("summary");
+      summary.textContent = "Sentiment + all signals";
+      details.append(summary);
+      const body = create("div", "drill-body");
+      const tone = entity.avg > 0.2 ? "Negative" : entity.avg < -0.2 ? "Positive" : "Mixed";
+      body.append(create("strong", "drill-h", "48h headline sentiment"));
+      body.append(create("p", "", `${entity.mentions} mentions · avg score ${entity.avg.toFixed(2)} (${tone})`));
+      if ((faction.signals || []).length) {
+        body.append(create("strong", "drill-h", "All parsed signals"));
+        const ul = create("ul", "signal-list");
+        for (const signal of faction.signals) ul.append(create("li", "", signal));
+        body.append(ul);
+      }
+      details.append(body);
+      card.append(details);
+    }
     container.append(card);
   }
 }
@@ -563,6 +615,26 @@ function renderProxyBoard() {
       create("span", group.lean === "tilting against" ? "down" : group.lean === "holding" ? "up" : "", leanLabel),
     );
     if (group.note) card.append(create("small", "", group.note));
+
+    if ((group.callingNames || []).length || (group.backingNames || []).length) {
+      const details = document.createElement("details");
+      details.className = "drill";
+      const summary = document.createElement("summary");
+      summary.textContent = "Show MP breakdown";
+      details.append(summary);
+      const body = create("div", "drill-body");
+      if ((group.callingNames || []).length) {
+        body.append(create("strong", "drill-h", "Calling for exit"), create("p", "", group.callingNames.join(", ")));
+      }
+      if ((group.backingNames || []).length) {
+        body.append(create("strong", "drill-h", "Backing PM"), create("p", "", group.backingNames.join(", ")));
+      }
+      if (group.undeclared) {
+        body.append(create("strong", "drill-h", "Undeclared"), create("p", "", `${group.undeclared} member${group.undeclared > 1 ? "s" : ""} with no public position parsed.`));
+      }
+      details.append(body);
+      card.append(details);
+    }
     grid.append(card);
   }
 }

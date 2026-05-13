@@ -8,12 +8,11 @@
       "id": "manual-override",
       "name": "Manual override file",
       "url": "data/manual-overrides.json",
-      "fetchedAt": "2026-05-12T00:00:00.000Z",
+      "fetchedAt": "2026-05-13T00:00:00.000Z",
       "ok": true,
-      "note": "Use this file for rule changes, named support lists, faction membership, or corrections when source markup changes."
+      "note": "Edit this file to change rule constants, support lists, faction membership, or webhook URLs. Faction lists below are best-effort public-source seeds — verify before relying on them."
     }
   ],
-  "factionOverrides": {},
   "bskyHandles": [
     "pippacrerar.bsky.social",
     "bethrigby.bsky.social",
@@ -31,31 +30,58 @@
     "harrycole.bsky.social",
     "georgeeaton.bsky.social"
   ],
+  "factionOverrides": {},
   "factionMembership": {
-    "soft-left": {
-      "name": "Soft Left / Tribune",
-      "note": "Populate mps with names that match LabourList tracker spellings to get live counts.",
-      "mps": []
-    },
     "socialist-campaign": {
       "name": "Socialist Campaign Group",
-      "note": "Left caucus. Populate with current SCG members.",
-      "mps": []
+      "note": "Left caucus. Public membership list maintained on Wikipedia and SCG site; verify before publishing.",
+      "mps": [
+        "Diane Abbott", "Apsana Begum", "Richard Burgon", "Ian Byrne", "Imran Hussain",
+        "Kim Johnson", "Ian Lavery", "Clive Lewis", "Rebecca Long-Bailey", "John McDonnell",
+        "Grahame Morris", "Kate Osborne", "Bell Ribeiro-Addy", "Nadia Whittome", "Jon Trickett"
+      ]
     },
     "labour-to-win": {
       "name": "Labour to Win",
-      "note": "Centre-right organising bloc (Progressive Britain + Labour First).",
-      "mps": []
+      "note": "Centre-right organising bloc (Progressive Britain + Labour First). Verify with current LTW signatory lists.",
+      "mps": [
+        "Wes Streeting", "Pat McFadden", "Liz Kendall", "Darren Jones", "Peter Kyle",
+        "Bridget Phillipson", "Jonathan Reynolds", "Rachel Reeves", "Ellie Reeves",
+        "Yvette Cooper", "Heidi Alexander", "Hilary Benn", "Stephen Kinnock", "Dan Jarvis",
+        "Catherine McKinnell", "Steve Reed"
+      ]
+    },
+    "soft-left": {
+      "name": "Soft Left / Tribune",
+      "note": "Soft-left tendency. Tribune Group of MPs, Compass-aligned. Membership is informal — treat as illustrative.",
+      "mps": [
+        "Lisa Nandy", "Andy Burnham", "Anneliese Dodds", "Lucy Powell", "Louise Haigh",
+        "Thangam Debbonaire", "Florence Eshalomi", "Stella Creasy", "Olivia Blake",
+        "Clive Efford", "Kim Leadbeater", "Marie Tidball"
+      ]
     },
     "red-wall": {
       "name": "Red Wall Group",
       "note": "Post-2019 northern/midlands seats caucus.",
-      "mps": []
+      "mps": [
+        "Jonathan Brash", "Sarah Edwards", "Jo White", "Antonia Bance", "Adam Jogee",
+        "Catherine Atkinson", "Jen Craft", "Sarah Sackman", "Damien Egan"
+      ]
     },
     "blue-labour": {
       "name": "Blue Labour",
-      "note": "Communitarian tendency.",
-      "mps": []
+      "note": "Communitarian tendency around Maurice Glasman. Few formal MPs.",
+      "mps": [
+        "Jon Cruddas", "Dan Carden"
+      ]
+    }
+  },
+  "alerts": {
+    "discordWebhookUrl": "",
+    "slackWebhookUrl": "",
+    "thresholds": {
+      "pressureIndex": 75,
+      "marketProbJumpPp": 5
     }
   }
 }

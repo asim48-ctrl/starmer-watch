@@ -102,9 +102,17 @@ const NEGATIVE_LEXICON = [
   "splinter", "revolt", "leadership bid", "collapse",
 ];
 const POSITIVE_LEXICON = [
-  "backs starmer", "support starmer", "defends", "rallies behind", "loyal",
+  "backs", "support", "defends", "rallies behind", "loyal",
   "endorses", "stands by", "unites behind", "show of support", "secures",
 ];
+
+const NEGATIONS = new Set(["not", "no", "never", "without", "won't", "wont", "doesn't", "doesnt", "didn't", "didnt", "isn't", "isnt", "aren't", "arent", "denies", "rejects", "rules out", "stops"]);
+const ENTITIES = {
+  starmer: ["starmer", "keir starmer", "the pm", "prime minister"],
+  streeting: ["streeting", "wes streeting"],
+  burnham: ["burnham", "andy burnham"],
+  rayner: ["rayner", "angela rayner"],
+};
 
 const REDDIT_SUBS = ["ukpolitics", "LabourUK", "unitedkingdom"];
 const WIKI_PAGES = [
@@ -113,6 +121,7 @@ const WIKI_PAGES = [
 ];
 const HTTP_THROTTLE_MS = 350;
 const httpCachePath = "data/http-cache.json";
+const alertStatePath = "data/alert-state.json";
 let httpCache = {};
 let lastFetchAt = 0;
 
@@ -141,6 +150,7 @@ async function main() {
   const proxyGroups = buildProxyGroups(manual, labour);
   const pressureIndex = buildPressureIndex({ counts, markets, manual, news });
   const history = await updateHistory({ generatedAt, counts, pressureIndex });
+  await maybeFireAlerts({ pressureIndex, history, counts, manual });
   const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
 
   const output = {
@@ -159,6 +169,7 @@ async function main() {
     news: news.map(({ description, ...item }) => item),
     wikipediaEdits: wikiEdits,
     ccNewsCrawl: ccNewsMeta,
+    baselines: await readBaselines(),
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
 
@@ -734,33 +745,116 @@ function topStarmerExitMarket(markets) {
     .sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0))[0];
 }
 
+function tokenSentiment(text) {
+  // Returns net sentiment for a piece of text, with negation handling.
+  // Each lexicon hit is flipped if any negation appears in the preceding 3 tokens.
+  const lower = String(text || "").toLowerCase();
+  const tokens = lower.split(/[^a-z'\-]+/).filter(Boolean);
+  const tokenStr = ` ${tokens.join(" ")} `;
+  let neg = 0;
+  let pos = 0;
+
+  const tally = (term, polarity) => {
+    if (!tokenStr.includes(` ${term} `) && !lower.includes(term)) return;
+    const idx = tokens.findIndex((_, i) => tokens.slice(i, i + term.split(" ").length).join(" ") === term);
+    if (idx === -1) {
+      if (polarity > 0) pos += 1; else neg += 1;
+      return;
+    }
+    const window = tokens.slice(Math.max(0, idx - 3), idx);
+    const negated = window.some((tok) => NEGATIONS.has(tok));
+    const sign = negated ? -polarity : polarity;
+    if (sign > 0) pos += 1; else neg += 1;
+  };
+
+  for (const term of NEGATIVE_LEXICON) tally(term, -1);
+  for (const term of POSITIVE_LEXICON) tally(term, +1);
+  return { pos, neg };
+}
+
+const STOP_WORDS = new Set([
+  "the", "a", "an", "of", "to", "in", "on", "at", "for", "with", "as", "is",
+  "and", "or", "but", "by", "from", "that", "this", "his", "her", "he", "she",
+  "it", "be", "are", "was", "were", "has", "have", "had", "will", "would",
+  "after", "before", "over", "into", "new", "uk", "starmer", "labour",
+]);
+
+function storyKey(title) {
+  const words = String(title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w && !STOP_WORDS.has(w))
+    .slice(0, 5);
+  return words.join("-");
+}
+
+function dedupStories(items) {
+  // Cluster by storyKey; keep the earliest item per cluster, track count of duplicates.
+  const map = new Map();
+  for (const item of items) {
+    const key = storyKey(item.title) || normalizeUrl(item.url);
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, { ...item, _cluster: 1 });
+    } else {
+      existing._cluster += 1;
+      if (new Date(item.publishedAt || 0) < new Date(existing.publishedAt || 0)) {
+        const cluster = existing._cluster;
+        map.set(key, { ...item, _cluster: cluster });
+      }
+    }
+  }
+  return Array.from(map.values());
+}
+
 function scoreNewsSentiment(news) {
   const now = Date.now();
-  const recent = (news || []).filter((item) => {
+  const recent = dedupStories((news || []).filter((item) => {
     const t = new Date(item.publishedAt || 0).getTime();
     return Number.isFinite(t) && now - t <= 48 * 3600 * 1000;
-  });
-  if (!recent.length) return { normalised: null, raw: "no recent items", count: 0, avg: 0 };
+  }));
+  if (!recent.length) {
+    return { normalised: null, raw: "no recent items", count: 0, avg: 0, perEntity: {} };
+  }
 
   let net = 0;
   let scored = 0;
+  const perEntity = {};
+  for (const id of Object.keys(ENTITIES)) perEntity[id] = { net: 0, n: 0 };
+
   for (const item of recent) {
     const text = String(item.title || "").toLowerCase();
-    const neg = NEGATIVE_LEXICON.reduce((sum, term) => sum + (text.includes(term) ? 1 : 0), 0);
-    const pos = POSITIVE_LEXICON.reduce((sum, term) => sum + (text.includes(term) ? 1 : 0), 0);
-    if (neg + pos === 0) continue;
-    net += (neg - pos) / (neg + pos);
+    const { pos, neg } = tokenSentiment(text);
+    if (pos + neg === 0) continue;
+    const score = (neg - pos) / (pos + neg);
+    net += score;
     scored += 1;
+    for (const [id, aliases] of Object.entries(ENTITIES)) {
+      if (aliases.some((alias) => text.includes(alias))) {
+        perEntity[id].net += score;
+        perEntity[id].n += 1;
+      }
+    }
   }
   const avg = scored ? net / scored : 0;
   const intensity = Math.min(1, recent.length / 20);
   const negativity = Math.max(0, Math.min(1, (avg + 1) / 2));
   const normalised = intensity * negativity;
+
+  const perEntityOut = {};
+  for (const [id, v] of Object.entries(perEntity)) {
+    perEntityOut[id] = v.n
+      ? { mentions: v.n, avg: Math.round((v.net / v.n) * 100) / 100 }
+      : { mentions: 0, avg: 0 };
+  }
+
   return {
     normalised,
-    raw: `${recent.length} items (48h), ${scored} sentiment-scored, avg ${avg.toFixed(2)}`,
+    raw: `${recent.length} unique stories (48h, deduped across sources), ${scored} sentiment-scored, avg ${avg.toFixed(2)}`,
     count: recent.length,
     avg,
+    perEntity: perEntityOut,
   };
 }
 
@@ -813,10 +907,87 @@ function buildPressureIndex({ counts, markets, manual, news }) {
   return {
     value,
     band,
-    formula: "Weighted: 35% PLP exit-call share, 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity. Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
+    formula: "Weighted: 35% PLP exit-call share, 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity. Sentiment uses a negation-aware lexicon (terms preceded within 3 tokens by 'not'/'denies'/etc. are flipped). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
+    perEntitySentiment: newsScore.perEntity || {},
     components: parts,
     marketProb: marketProbNorm,
   };
+}
+
+async function readBaselines() {
+  try {
+    const raw = await readFile(path.join(rootDir, "data/baselines.json"), "utf8");
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function readAlertState() {
+  try {
+    const raw = await readFile(path.join(rootDir, alertStatePath), "utf8");
+    return JSON.parse(raw) || {};
+  } catch {
+    return {};
+  }
+}
+
+async function writeAlertState(state) {
+  await writeFile(path.join(rootDir, alertStatePath), `${JSON.stringify(state, null, 2)}\n`, "utf8");
+}
+
+async function postWebhook(url, payload) {
+  if (!url) return false;
+  try {
+    const isSlack = url.includes("hooks.slack.com");
+    const body = isSlack ? { text: payload.text } : { content: payload.text };
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json", "user-agent": "StarmerWatch/1.0" },
+      body: JSON.stringify(body),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function maybeFireAlerts({ pressureIndex, history, counts, manual }) {
+  const cfg = manual.alerts || {};
+  const discord = process.env.DISCORD_WEBHOOK_URL || cfg.discordWebhookUrl || "";
+  const slack = process.env.SLACK_WEBHOOK_URL || cfg.slackWebhookUrl || "";
+  if (!discord && !slack) return;
+
+  const indexThreshold = Number(cfg.thresholds?.pressureIndex) || 75;
+  const jumpThreshold = Number(cfg.thresholds?.marketProbJumpPp) || 5;
+  const state = await readAlertState();
+  const messages = [];
+
+  const indexValue = pressureIndex.value;
+  if (indexValue >= indexThreshold && (state.lastIndex || 0) < indexThreshold) {
+    messages.push(`🚨 Pressure Index ${indexValue}/100 crossed ${indexThreshold} (band: ${pressureIndex.band}). ${counts.resignCalls.value} MPs calling exit vs ${counts.supporters.value} backing.`);
+  }
+
+  const currentProb = pressureIndex.marketProb;
+  const lastProb = state.lastMarketProb;
+  if (Number.isFinite(currentProb) && Number.isFinite(lastProb)) {
+    const deltaPp = (currentProb - lastProb) * 100;
+    if (Math.abs(deltaPp) >= jumpThreshold) {
+      const arrow = deltaPp > 0 ? "▲" : "▼";
+      messages.push(`${arrow} Polymarket Starmer-exit prob moved ${deltaPp.toFixed(1)}pp: ${(lastProb * 100).toFixed(1)}% → ${(currentProb * 100).toFixed(1)}%`);
+    }
+  }
+
+  for (const text of messages) {
+    if (discord) await postWebhook(discord, { text });
+    if (slack) await postWebhook(slack, { text });
+  }
+
+  await writeAlertState({
+    lastIndex: indexValue,
+    lastMarketProb: Number.isFinite(currentProb) ? currentProb : state.lastMarketProb || null,
+    lastAlertAt: messages.length ? new Date().toISOString() : state.lastAlertAt || null,
+  });
 }
 
 async function updateHistory({ generatedAt, counts, pressureIndex }) {

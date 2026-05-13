@@ -33,13 +33,15 @@ jobs:
         env:
           ENABLE_GDELT: "1"
           GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: node starmer-watch/scripts/refresh-data.mjs
 
       - name: Commit updated feed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add starmer-watch/data/latest.json starmer-watch/data/history.json
+          git add starmer-watch/data/latest.json starmer-watch/data/history.json starmer-watch/data/alert-state.json
           if git diff --cached --quiet; then
             echo "No data changes to commit."
           else
