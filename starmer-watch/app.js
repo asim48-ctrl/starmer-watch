@@ -514,6 +514,13 @@ function horizonLabel(iso) {
   return `${d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })} · ${days}d horizon`;
 }
 
+function parseMarketHorizon(question) {
+  const m = String(question || "").match(/by ([A-Z][a-z]+ \d{1,2},? \d{4})/);
+  if (!m) return null;
+  const d = new Date(m[1]);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
 function renderMarkets() {
   const markets = state.markets || [];
   const featuredNode = $("#featured-market");
@@ -521,69 +528,45 @@ function renderMarkets() {
   featuredNode.replaceChildren();
   list.replaceChildren();
 
-  const pickerFeatured = state.pressureIndex?.featuredMarket;
-  // Match the live market by question text; fall back to the snapshot from refresh.
-  const featured = pickerFeatured
-    ? markets.find((m) => m.question === pickerFeatured.question) || pickerFeatured
-    : markets.filter((m) => /Starmer out|resign/i.test(m.question))[0];
-
-  if (!featured) {
+  if (!markets.length) {
     featuredNode.append(create("div", "empty-state", "No active relevant Polymarket market returned yet."));
     return;
   }
 
-  const yes = Number(featured.yesPrice || 0);
-  const featuredCard = create("article", "featured-market");
-  featuredCard.append(create("h3", "", featured.question));
-  featuredCard.append(create("small", "market-horizon", `Shortest-dated Starmer-exit market · ${horizonLabel(state.pressureIndex?.featuredMarket?.horizonDate || null)}`));
+  // Featured: the two shortest-dated Starmer-exit markets.
+  const dated = markets
+    .map((m) => ({ m, d: parseMarketHorizon(m.question) }))
+    .filter((x) => x.d && /Starmer|resign|exit|out/i.test(x.m.question))
+    .sort((a, b) => a.d - b.d)
+    .map((x) => x.m);
+  const featured = dated.slice(0, 2);
 
-  const oddsRow = create("div", "odds-row");
-  oddsRow.append(create("strong", "", priceLabel(yes)));
-
-  const deltas = state.pressureIndex?.marketDeltas || {};
-  const deltaWrap = create("span", "market-deltas");
-  for (const [label, key] of [["Δ", "sinceLast"], ["1h", "last1h"], ["24h", "last24h"]]) {
-    const v = deltas[key];
-    if (Number.isFinite(v)) {
-      const pp = ppLabel(v);
-      const node = create("span", `delta ${v > 0 ? "up" : v < 0 ? "down" : ""}`, `${label} ${pp}`);
-      deltaWrap.append(node);
-    }
-  }
-  oddsRow.append(deltaWrap);
-  featuredCard.append(oddsRow);
-
-  featuredCard.append(
-    renderMiniOddsChart(yes),
-    create("p", "", `Volume ${formatMoney(featured.volume)} · Updated ${formatCompactDate(featured.updatedAt)}`),
-  );
-
-  // Biggest mover this refresh (across all Starmer-exit markets).
-  const mover = state.pressureIndex?.biggestMover;
-  if (mover && Number.isFinite(mover.deltaPp) && mover.deltaPp >= 1) {
-    const ml = externalLink(mover.url, mover.question);
-    const wrap = create("div", "market-mover");
-    wrap.append(
-      create("strong", "", `Biggest mover this refresh: ${ppLabel(mover.direction === "up" ? mover.deltaPp : -mover.deltaPp)}`),
-      ml,
-    );
-    featuredCard.append(wrap);
+  for (const market of featured) {
+    const yes = Number(market.yesPrice || 0);
+    const card = create("article", "featured-market");
+    card.append(create("h3", "", market.question));
+    const horizon = parseMarketHorizon(market.question);
+    card.append(create("small", "market-horizon", horizon
+      ? `Resolves by ${horizon.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`
+      : "Horizon n/a"));
+    const oddsRow = create("div", "odds-row");
+    oddsRow.append(create("strong", "", priceLabel(yes)));
+    card.append(oddsRow);
+    card.append(create("p", "", `Volume ${formatMoney(market.volume)} · Updated ${formatCompactDate(market.updatedAt)}`));
+    const link = externalLink(market.url, "Open on Polymarket ↗");
+    link.classList.add("market-open-link");
+    card.append(link);
+    featuredNode.append(card);
   }
 
-  featuredNode.append(featuredCard);
-
-  // Sidebar list: every other Starmer-exit market sorted by shortest horizon,
-  // then other relevant markets. Clearer than the previous arbitrary order.
+  // Other candidates / markets ranked by YES probability descending.
+  const featuredSet = new Set(featured);
   const others = markets
-    .filter((item) => item !== featured)
-    .sort((a, b) => {
-      const da = new Date((a.question.match(/by ([A-Z][a-z]+ \d{1,2},? \d{4})/) || [])[1] || 0);
-      const db = new Date((b.question.match(/by ([A-Z][a-z]+ \d{1,2},? \d{4})/) || [])[1] || 0);
-      const va = Number.isNaN(da.getTime()) ? Infinity : da.getTime();
-      const vb = Number.isNaN(db.getTime()) ? Infinity : db.getTime();
-      return va - vb;
-    });
-  for (const market of others.slice(0, 5)) {
+    .filter((m) => !featuredSet.has(m))
+    .sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0));
+
+  list.append(create("h4", "drill-h", "Other candidates · ranked by YES probability"));
+  for (const market of others.slice(0, 8)) {
     const row = create("article", "market-row");
     const link = externalLink(market.url, market.question);
     row.append(link, create("strong", "", priceLabel(market.yesPrice)));
