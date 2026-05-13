@@ -225,17 +225,21 @@ function buildIndexGauge(index) {
     svg.append(text);
   });
 
-  const needleEnd = polarPoint(cx, cy, 104, valueAngle);
+  const markerPoint = polarPoint(cx, cy, radius, valueAngle);
   svg.append(
-    createSvg("line", { x1: cx, y1: cy, x2: needleEnd.x, y2: needleEnd.y, class: "gauge-needle-line" }),
-    createSvg("circle", { cx, cy, r: 9, class: "gauge-hub-dot" }),
+    createSvg("circle", {
+      cx: markerPoint.x,
+      cy: markerPoint.y,
+      r: 10,
+      class: "gauge-marker",
+    }),
   );
 
-  const valueText = createSvg("text", { x: cx, y: 149, class: "gauge-value", "text-anchor": "middle" });
+  const valueText = createSvg("text", { x: cx, y: 130, class: "gauge-value", "text-anchor": "middle" });
   valueText.textContent = String(value);
-  const label = createSvg("text", { x: cx, y: 173, class: "gauge-caption", "text-anchor": "middle" });
+  const label = createSvg("text", { x: cx, y: 156, class: "gauge-caption", "text-anchor": "middle" });
   label.textContent = "PRESSURE INDEX / 100";
-  const pill = createSvg("text", { x: cx, y: 210, class: "gauge-pill", "text-anchor": "middle" });
+  const pill = createSvg("text", { x: cx, y: 178, class: "gauge-pill", "text-anchor": "middle" });
   pill.textContent = `▲ ${String(index.band || "contained").toUpperCase()}`;
   svg.append(valueText, label, pill);
   frame.append(svg);
@@ -427,7 +431,13 @@ function renderTrendChart({ pressure, support, threshold }) {
   const x = (i) => pad.left + (i / Math.max(1, points.length - 1)) * plotW;
   const y = (value) => pad.top + (1 - value / max) * plotH;
 
-  const ticks = [0, Math.round(max * 0.25), threshold, Math.round(max * 0.75), Math.round(max)];
+  const rawTicks = [0, Math.round(max * 0.25), threshold, Math.round(max * 0.75), Math.round(max)];
+  const ticks = [];
+  rawTicks.sort((a, b) => a - b).forEach((tick) => {
+    if (!ticks.length || tick - ticks[ticks.length - 1] >= Math.max(6, max * 0.08)) {
+      ticks.push(tick);
+    }
+  });
   for (const tick of ticks) {
     svg.append(
       createSvg("line", {
@@ -446,19 +456,31 @@ function renderTrendChart({ pressure, support, threshold }) {
     buildPolyline(points.map((p) => p.pressure), x, y, "pressure-line"),
   );
 
-  const dateLabels = [0, Math.floor(points.length / 2), points.length - 1];
+  const firstDate = new Date(points[0].t);
+  const lastDate = new Date(points[points.length - 1].t);
+  const sameDay = !Number.isNaN(firstDate.getTime()) && !Number.isNaN(lastDate.getTime()) &&
+    firstDate.toDateString() === lastDate.toDateString();
+  const xFmt = sameDay
+    ? (d) => d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
+    : (d) => d.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+  const dateLabels = points.length <= 2 ? [0, points.length - 1] : [0, Math.floor(points.length / 2), points.length - 1];
   for (const i of dateLabels) {
     const date = new Date(points[i].t);
     if (Number.isNaN(date.getTime())) continue;
     const text = createSvg("text", { x: x(i), y: height - 10, class: "axis-label x" });
-    text.textContent = date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+    text.textContent = xFmt(date);
     svg.append(text);
   }
 
   const last = points[points.length - 1];
-  const supportLabel = createSvg("text", { x: width - 30, y: y(last.support) + 4, class: "chart-end support" });
+  let sY = y(last.support);
+  let pY = y(last.pressure);
+  if (Math.abs(sY - pY) < 14) {
+    if (sY < pY) { sY -= 6; pY += 8; } else { sY += 8; pY -= 6; }
+  }
+  const supportLabel = createSvg("text", { x: width - 30, y: sY + 4, class: "chart-end support" });
   supportLabel.textContent = String(last.support);
-  const pressureLabel = createSvg("text", { x: width - 30, y: y(last.pressure) + 4, class: "chart-end pressure" });
+  const pressureLabel = createSvg("text", { x: width - 30, y: pY + 4, class: "chart-end pressure" });
   pressureLabel.textContent = String(last.pressure);
   svg.append(supportLabel, pressureLabel);
 }
