@@ -216,7 +216,6 @@ function renderPressure() {
   gauge.append(
     buildIndexGauge(index),
     buildPressureSummary({ pressure, support, threshold }),
-    buildNextCatalysts(),
     buildBaselineStrip(index),
   );
   renderTrendChart({ pressure, support, threshold });
