@@ -8,7 +8,9 @@ on:
       - "starmer-watch/**"
       - ".github/workflows/starmer-watch-refresh.yml"
   schedule:
-    - cron: "3,13,23,33,43,53 * * * *"
+    # External cron-job.org hits workflow_dispatch every 10 min, so this is just
+    # a once-an-hour safety net if the external scheduler stops firing.
+    - cron: "23 * * * *"
 
 permissions:
   contents: write
