@@ -1,0 +1,50 @@
+name: Claude autofix on heartbeat issue
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue number to triage
+        required: true
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  triage:
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'heartbeat') || contains(github.event.issue.labels.*.name, 'auto') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install dashboard deps
+        working-directory: starmer-watch
+        run: npm ci
+
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          mode: agent
+          allowed_tools: "Bash,Read,Edit,Write,Grep,Glob"
+          direct_prompt: |
+            A heartbeat workflow opened issue #${{ github.event.issue.number || github.event.inputs.issue_number }}
+            in this repo about the Starmer Watch dashboard.
+
+            Read the issue title and body, then:
+
+            1. Run `node starmer-watch/scripts/refresh-data.mjs` and `node starmer-watch/scripts/heartbeat.mjs` from the repo root to reproduce the problem.
+            2. If the problem is a flaky upstream source: drop or reroute it via Google News RSS in `starmer-watch/scripts/refresh-data.mjs`. If it's a UA issue: add a per-source UA. If it's a schema change: update the parser.
+            3. If the problem is stale data with no upstream cause: skip — workflow_dispatch should already have been triggered by the heartbeat.
+            4. If the problem is escalation stage 5+: do NOT auto-fix. Comment on the issue explaining current state and exit.
+            5. Otherwise commit your fix to a fresh branch `claude/autofix-<issue-number>`, push, open a PR titled "Autofix: <one-line summary>", body referencing #${{ github.event.issue.number || github.event.inputs.issue_number }}, and merge it via squash. Close the originating issue with a comment linking the PR.
+            6. Be concise. Don't refactor adjacent code. Don't add features the issue didn't request.
