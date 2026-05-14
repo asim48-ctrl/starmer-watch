@@ -825,6 +825,28 @@ function renderNews() {
   }
 }
 
+function renderHighSignal() {
+  const list = document.getElementById("high-signal-list");
+  if (!list) return;
+  list.replaceChildren();
+  const items = state.highSignalNews || [];
+  if (!items.length) {
+    list.append(create("div", "empty-state", "No high-signal escalation language detected in current news window."));
+    return;
+  }
+  for (const item of items.slice(0, 8)) {
+    const row = create("article", "wiki-item");
+    const link = externalLink(item.url, item.title);
+    row.append(
+      create("time", "", formatCompactDate(item.publishedAt)),
+      link,
+      create("span", "wiki-user", item.signalTag || ""),
+      create("p", "", item.source || ""),
+    );
+    list.append(row);
+  }
+}
+
 function renderWikiEdits() {
   const list = document.getElementById("wiki-list");
   if (!list) return;
@@ -876,6 +898,7 @@ function renderAll() {
   renderProxyBoard();
   renderResignations();
   renderNews();
+  renderHighSignal();
   renderWikiEdits();
   renderPipeline();
 }
@@ -902,6 +925,16 @@ document.querySelectorAll(".segmented-control button").forEach((button) => {
       item.classList.toggle("active", item === button);
     });
     renderFactions();
+  });
+});
+
+document.querySelectorAll(".news-chip").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    newsFilter = btn.dataset.chip || "";
+    const input = $("#news-filter");
+    if (input) input.value = newsFilter;
+    document.querySelectorAll(".news-chip").forEach((b) => b.classList.toggle("active", b === btn));
+    renderNews();
   });
 });
 
