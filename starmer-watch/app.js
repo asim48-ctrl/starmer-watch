@@ -139,12 +139,15 @@ function renderKpis() {
       value: Number.isFinite(marketProb) ? `${Math.round(marketProb * 100)}%` : "n/a",
       label: "Polymarket exit prob.",
       note: (() => {
+        const fm = state.pressureIndex?.featuredMarket;
         const d24 = state.pressureIndex?.marketDeltas?.last24h;
         const d1 = state.pressureIndex?.marketDeltas?.last1h;
-        const parts = ["Shortest-dated Starmer-exit market YES."];
+        const parts = [];
+        if (fm?.question) parts.push(`From: ${fm.question}`);
+        else parts.push("Near-term Starmer-exit market YES.");
         if (Number.isFinite(d24)) parts.push(`24h: ${ppLabel(d24)}`);
         if (Number.isFinite(d1)) parts.push(`1h: ${ppLabel(d1)}`);
-        return parts.join(" ");
+        return parts.join(" · ");
       })(),
       tone: "dark",
       icon: "⌁",
@@ -593,22 +596,37 @@ function renderMarkets() {
     return;
   }
 
-  // Featured: the two shortest-dated Starmer-exit markets.
-  const dated = markets
+  // Featured pair:
+  //   1) The market that feeds the Pressure Index KPI (shortest-dated Starmer
+  //      exit with horizon >= 14 days). Tagged "Index input" so it's obvious.
+  //   2) The next shortest-dated Starmer-exit market for context.
+  // Earlier behaviour picked the two shortest-dated regardless, which
+  // disagreed with the KPI's note about which market it was using.
+  const indexFeatured = state.pressureIndex?.featuredMarket;
+  const allDated = markets
     .map((m) => ({ m, d: parseMarketHorizon(m.question) }))
     .filter((x) => x.d && /Starmer|resign|exit|out/i.test(x.m.question))
-    .sort((a, b) => a.d - b.d)
-    .map((x) => x.m);
-  const featured = dated.slice(0, 2);
+    .sort((a, b) => a.d - b.d);
+  const indexMatch = indexFeatured
+    ? allDated.find((x) => x.m.question === indexFeatured.question)?.m
+    : null;
+  const featured = [];
+  if (indexMatch) featured.push({ m: indexMatch, tag: "Index input" });
+  for (const x of allDated) {
+    if (featured.find((f) => f.m === x.m)) continue;
+    featured.push({ m: x.m, tag: featured.length === 0 ? "Index input" : null });
+    if (featured.length >= 2) break;
+  }
 
-  for (const market of featured) {
+  for (const { m: market, tag } of featured) {
     const yes = Number(market.yesPrice || 0);
     const card = create("article", "featured-market");
     card.append(create("h3", "", market.question));
     const horizon = parseMarketHorizon(market.question);
-    card.append(create("small", "market-horizon", horizon
+    const horizonLabel = horizon
       ? `Resolves by ${horizon.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`
-      : "Horizon n/a"));
+      : "Horizon n/a";
+    card.append(create("small", "market-horizon", tag ? `${tag} · ${horizonLabel}` : horizonLabel));
     const oddsRow = create("div", "odds-row");
     oddsRow.append(create("strong", "", priceLabel(yes)));
     card.append(oddsRow);
@@ -620,7 +638,7 @@ function renderMarkets() {
   }
 
   // Other candidates / markets ranked by YES probability descending.
-  const featuredSet = new Set(featured);
+  const featuredSet = new Set(featured.map((f) => f.m));
   const others = markets
     .filter((m) => !featuredSet.has(m))
     .sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0));
