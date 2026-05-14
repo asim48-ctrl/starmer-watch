@@ -1,0 +1,24 @@
+name: Starmer Watch hourly heartbeat
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 * * * *"
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Run heartbeat
+        env:
+          GH_TOKEN: ${{ secrets.HEARTBEAT_DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: node starmer-watch/scripts/heartbeat.mjs
