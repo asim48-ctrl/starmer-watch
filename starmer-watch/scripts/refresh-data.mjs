@@ -843,16 +843,21 @@ function starmerExitMarkets(markets) {
 }
 
 function topStarmerExitMarket(markets) {
-  // Shortest-dated still-future market. Longer horizons trivially carry higher
-  // YES probabilities (cumulative hazard), so they're the wrong signal for
-  // 'is pressure building right now'. Fall back to highest-YES if no horizon
-  // parseable.
+  // Pick the shortest-dated market that is at least 14 days out. Markets within
+  // a few days carry trivially near-zero YES even during a real crisis, which
+  // understates pressure. Markets too far out price cumulative hazard rather
+  // than current pressure. The 14-90 day band is the meaningful zone. Fall
+  // back to the highest-YES market if no horizon parseable.
   const now = Date.now();
+  const minMs = 14 * 86400 * 1000;
+  const maxMs = 120 * 86400 * 1000;
   const filtered = starmerExitMarkets(markets);
   const dated = filtered
     .map((m) => ({ m, d: parseHorizonDate(m.question) }))
-    .filter((x) => x.d && x.d.getTime() > now)
-    .sort((a, b) => a.d - b.d);
+    .filter((x) => x.d)
+    .map((x) => ({ ...x, age: x.d.getTime() - now }))
+    .filter((x) => x.age >= minMs && x.age <= maxMs)
+    .sort((a, b) => a.age - b.age);
   if (dated.length) return dated[0].m;
   return filtered.sort((a, b) => Number(b.yesPrice || 0) - Number(a.yesPrice || 0))[0];
 }
@@ -1683,8 +1688,9 @@ function buildFactions({ counts, labour, news, markets, resignations, manual }) 
         Boolean(healthExit),
         Boolean(pmMarket && /Wes Streeting/i.test(pmMarket.question)),
       ]),
-      posture:
-        "Operating as the live cabinet contender: visible enough to matter, cautious enough to avoid owning the first move.",
+      posture: streetingExited
+        ? "Out of cabinet. Resignation reframes him as the live succession candidate — every public move now reads as positioning. Watch for an explicit leadership bid, a campaign team, and any allied MPs declaring."
+        : "Operating as the live cabinet contender: visible enough to matter, cautious enough to avoid owning the first move.",
       latestMove: streetingHit?.title || "Watch for cabinet meeting and health-department proxy signals",
       signals: compactSignals([
         streetingHit && `${streetingHit.source}: ${streetingHit.title}`,
