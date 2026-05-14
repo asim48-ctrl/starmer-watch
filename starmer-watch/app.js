@@ -213,6 +213,7 @@ function renderPressure() {
   gauge.append(
     buildIndexGauge(index),
     buildPressureSummary({ pressure, support, threshold }),
+    buildNextCatalysts(),
     buildBaselineStrip(index),
     buildIndexBreakdown(index),
   );
@@ -315,6 +316,39 @@ function buildBaselineStrip(index) {
   return wrap;
 }
 
+function buildNextCatalysts() {
+  const wrap = create("div", "next-catalysts");
+  const items = state.nextCatalysts || [];
+  if (!items.length) return wrap;
+  wrap.append(create("h4", "", "Next catalysts to watch"));
+  const list = create("ul", "catalyst-list");
+  for (const w of items) {
+    const li = create("li", `catalyst ${w.level || "info"}`);
+    li.append(create("strong", "", w.label));
+    li.append(create("p", "", w.detail || ""));
+    if ((w.examples || []).length) {
+      const ul = create("ul", "catalyst-examples");
+      for (const ex of w.examples) {
+        const exLi = document.createElement("li");
+        exLi.append(externalLink(ex.url, ex.title));
+        ul.append(exLi);
+      }
+      li.append(ul);
+    }
+    list.append(li);
+  }
+  wrap.append(list);
+  return wrap;
+}
+
+function formatFreshness(minutes) {
+  if (minutes == null) return "";
+  if (minutes < 1) return "live this refresh";
+  if (minutes < 60) return `unchanged ${minutes}m`;
+  const h = Math.round(minutes / 60);
+  return `unchanged ${h}h`;
+}
+
 function buildIndexBreakdown(index) {
   const wrap = create("div", "index-breakdown");
   wrap.append(create("h4", "", "How the index is built"));
@@ -323,12 +357,13 @@ function buildIndexBreakdown(index) {
     const row = create("div", "index-row");
     const norm = part.normalised == null ? "—" : `${Math.round(part.normalised * 100)}%`;
     const contrib = part.normalised == null ? "skipped" : `+${part.contribution} pts`;
+    const freshness = formatFreshness(part.lastChangedMinutes);
     row.append(
       create("span", "ix-label", part.label),
       create("span", "ix-weight", `weight ${part.weight}`),
       create("span", "ix-norm", norm),
       create("span", "ix-contrib", contrib),
-      create("small", "ix-raw", part.raw || ""),
+      create("small", "ix-raw", `${part.raw || ""}${freshness ? ` · ${freshness}` : ""}`),
     );
     list.append(row);
   }

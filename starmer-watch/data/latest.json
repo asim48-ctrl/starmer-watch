@@ -1,6 +1,11 @@
 {
+<<<<<<< Updated upstream
   "generatedAt": "2026-05-14T12:00:52.008Z",
   "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 61/100 (elevated). Polymarket's top Starmer-exit signal is 5.4%.",
+=======
+  "generatedAt": "2026-05-14T12:00:56.158Z",
+  "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 53/100 (building). Polymarket's top Starmer-exit signal is 5.4%.",
+>>>>>>> Stashed changes
   "counts": {
     "resignCalls": {
       "value": 94,
@@ -34,25 +39,38 @@
     "note": "94 MPs are recorded as calling for an exit or timetable, 13 above the modeled contest threshold; the public support bloc is 17 larger than the pressure bloc. A public count is not the same as a formal leadership challenge."
   },
   "pressureIndex": {
-    "value": 61,
-    "band": "elevated",
-    "formula": "Weighted: 35% PLP exit-call share, 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity. Sentiment uses a negation-aware lexicon (terms preceded within 3 tokens by 'not'/'denies'/etc. are flipped). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
+    "value": 53,
+    "band": "building",
+    "formula": "Weighted: 35% PLP exit-call share (saturates at 1.5× the contest trigger so MPs above 81 still register), 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity over a 12h window (negation-aware lexicon ensembled with winkNLP). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
     "perEntitySentiment": {
       "starmer": {
         "mentions": 17,
+<<<<<<< Updated upstream
         "avg": 0.26
       },
       "streeting": {
         "mentions": 13,
         "avg": 0.14
+=======
+        "avg": 0.24
+      },
+      "streeting": {
+        "mentions": 14,
+        "avg": 0.11
+>>>>>>> Stashed changes
       },
       "burnham": {
         "mentions": 1,
         "avg": -0.2
       },
       "rayner": {
+<<<<<<< Updated upstream
         "mentions": 7,
         "avg": 0.08
+=======
+        "mentions": 8,
+        "avg": 0.07
+>>>>>>> Stashed changes
       }
     },
     "components": [
@@ -60,9 +78,10 @@
         "id": "exitShare",
         "label": "PLP exit-call share vs trigger",
         "weight": 35,
-        "normalised": 1,
-        "raw": "94 / 81",
-        "contribution": 35
+        "normalised": 0.7736625514403292,
+        "raw": "94 MPs / saturates at 122 (1.5× trigger of 81)",
+        "lastChangedMinutes": 131,
+        "contribution": 27.1
       },
       {
         "id": "supportDeficit",
@@ -70,6 +89,7 @@
         "weight": 15,
         "normalised": 0.575,
         "raw": "lead 17",
+        "lastChangedMinutes": null,
         "contribution": 8.6
       },
       {
@@ -78,6 +98,7 @@
         "weight": 10,
         "normalised": 0.8,
         "raw": "4 exits",
+        "lastChangedMinutes": null,
         "contribution": 8
       },
       {
@@ -86,14 +107,24 @@
         "weight": 25,
         "normalised": 0.0535,
         "raw": "5.4% · Starmer out by May 15, 2026?",
+<<<<<<< Updated upstream
+=======
+        "lastChangedMinutes": 51,
+>>>>>>> Stashed changes
         "contribution": 1.3
       },
       {
         "id": "newsSentiment",
         "label": "News intensity × negativity",
         "weight": 15,
+<<<<<<< Updated upstream
         "normalised": 0.5531323198198198,
         "raw": "37 clusters (48h, 3-shingle Jaccard ≥0.5), 37 scored via ensemble (winkNLP + lexicon), avg 0.11",
+=======
+        "normalised": 0.5511005208333334,
+        "raw": "40 clusters (12h, 3-shingle Jaccard ≥0.5), 40 scored via ensemble (winkNLP + lexicon), avg 0.10",
+        "lastChangedMinutes": 0,
+>>>>>>> Stashed changes
         "contribution": 8.3
       }
     ],
@@ -107,7 +138,11 @@
       "horizonDate": "2026-05-15T00:00:00.000Z"
     },
     "marketDeltas": {
+<<<<<<< Updated upstream
       "sinceLast": 0.1,
+=======
+      "sinceLast": -0.2,
+>>>>>>> Stashed changes
       "last1h": 0.1,
       "last24h": -1.6
     },
@@ -115,7 +150,11 @@
       "question": "Starmer out by December 31, 2026?",
       "yesPrice": 0.745,
       "url": "https://polymarket.com/event/starmer-out-in-2025",
+<<<<<<< Updated upstream
       "deltaPp": 69.3,
+=======
+      "deltaPp": 69,
+>>>>>>> Stashed changes
       "direction": "up"
     }
   },
@@ -1577,6 +1616,7 @@
       "marketProb": 0.0555
     },
     {
+<<<<<<< Updated upstream
       "t": "2026-05-14T11:13:15.118Z",
       "pressure": 94,
       "support": 111,
@@ -1622,6 +1662,13 @@
       "support": 111,
       "ministers": 4,
       "index": 61,
+=======
+      "t": "2026-05-14T12:00:56.158Z",
+      "pressure": 94,
+      "support": 111,
+      "ministers": 4,
+      "index": 53,
+>>>>>>> Stashed changes
       "marketProb": 0.0535
     }
   ],
@@ -1995,9 +2042,15 @@
       "role": "Health Secretary and possible succession contender",
       "pressureScore": 6,
       "posture": "Operating as the live cabinet contender: visible enough to matter, cautious enough to avoid owning the first move.",
+<<<<<<< Updated upstream
       "latestMove": "Streeting allies claim more MPs asking Starmer to resign, as No 10 says health secretary has PM’s full confidence - UK politics live",
       "signals": [
         "Guardian (Open Platform): Streeting allies claim more MPs asking Starmer to resign, as No 10 says health secretary has PM’s full confidence - UK politics live",
+=======
+      "latestMove": "Why Rayner being cleared over her tax affairs is a problem for Streeting’s bid for No 10",
+      "signals": [
+        "Independent UK Politics: Why Rayner being cleared over her tax affairs is a problem for Streeting’s bid for No 10",
+>>>>>>> Stashed changes
         "Zubir Ahmed left a health role; treat this as a Streeting-orbit pressure signal, not proof of direction."
       ]
     },
@@ -2007,9 +2060,9 @@
       "role": "Greater Manchester mayor and external Labour alternative",
       "pressureScore": 6,
       "posture": "External route pressure: his leverage is membership and PLP appetite, but any path still depends on parliamentary access or a mediated role.",
-      "latestMove": "Leadership rules should ‘not be tweaked’ to let Burnham run for PM, Labour NEC member says",
+      "latestMove": "Leadership rules should ‘not be tweaked’ to let Burnham run for PM, Labour NEC member says - The Guardian",
       "signals": [
-        "Guardian (Open Platform): Leadership rules should ‘not be tweaked’ to let Burnham run for PM, Labour NEC member says",
+        "The Guardian: Leadership rules should ‘not be tweaked’ to let Burnham run for PM, Labour NEC member says - The Guardian",
         "Parsed source text says any transition should include giving Burnham a path into the conversation."
       ]
     },
@@ -2160,6 +2213,7 @@
     {
       "name": "News resignation signal",
       "role": "Source headline",
+<<<<<<< Updated upstream
       "move": "Streeting allies claim more MPs asking Starmer to resign, as No 10 says health secretary has PM’s full confidence - UK politics live",
       "alignment": "source corroboration",
       "source": "Guardian (Open Platform)"
@@ -2174,9 +2228,25 @@
     {
       "name": "News resignation signal",
       "role": "Source headline",
+=======
+>>>>>>> Stashed changes
       "move": "The Latest: Prime Minister Keir Starmer's future remains uncertain",
       "alignment": "source corroboration",
       "source": "Independent UK Politics"
+    },
+    {
+      "name": "News resignation signal",
+      "role": "Source headline",
+      "move": "At a glance: Starmer fights to stay on as prime minister",
+      "alignment": "source corroboration",
+      "source": "BBC Politics"
+    },
+    {
+      "name": "News resignation signal",
+      "role": "Source headline",
+      "move": "Angela Rayner settles tax bill with HMRC",
+      "alignment": "source corroboration",
+      "source": "BBC Politics"
     }
   ],
   "markets": [
@@ -2303,6 +2373,7 @@
   ],
   "news": [
     {
+<<<<<<< Updated upstream
       "title": "Streeting allies claim more MPs asking Starmer to resign, as No 10 says health secretary has PM’s full confidence - UK politics live",
       "url": "https://www.theguardian.com/politics/live/2026/may/14/angela-rayner-says-starmer-should-reflect-on-stepping-aside-after-hmrc-clears-her-over-tax-affairs-uk-politics-live",
       "source": "Guardian (Open Platform)",
@@ -2314,6 +2385,8 @@
       ]
     },
     {
+=======
+>>>>>>> Stashed changes
       "title": "It’s Rayner or no-one facing Starmer in Labour leadership contest, Corbyn says",
       "url": "https://www.independent.co.uk/tv/news/starmer-labour-angela-rayner-corbyn-video-b2976548.html",
       "source": "Independent UK Politics",
@@ -2390,16 +2463,6 @@
       ]
     },
     {
-      "title": "Streeting in standoff with No 10 as allies claim ‘things are shifting’",
-      "url": "https://www.theguardian.com/politics/2026/may/14/streeting-in-standoff-with-no-10-as-allies-claim-things-are-shifting",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-05-14T11:01:30.000Z",
-      "tags": [
-        "Streeting",
-        "Resignation"
-      ]
-    },
-    {
       "title": "The surprise names who could run in a Labour leadership race",
       "url": "https://inews.co.uk/news/politics/surprise-names-run-labour-leadership-race-4417246",
       "source": "i Politics",
@@ -2439,12 +2502,11 @@
       ]
     },
     {
-      "title": "Leadership rules should ‘not be tweaked’ to let Burnham run for PM, Labour NEC member says",
-      "url": "https://www.theguardian.com/politics/2026/may/14/labour-leadership-rules-not-tweaked-andy-burnham-run-pm-nec-member",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-05-14T10:34:26.000Z",
+      "title": "Leadership rules should ‘not be tweaked’ to let Burnham run for PM, Labour NEC member says - The Guardian",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQUjd1RnFRZjhCSEZmOUlPd2hVUVdzUDNVSGlkeUtQQ0haRk9LZ0JNeUxyU1kydE4tNjZVNFk4NlBnaGd1LU5RMUpEYWJoUm5MUEtiYTh5QmVwTnFhLUJ3YnE5Q3hrV1V5dzJUdlBNMFQ1d2hzSXZVS056ZHh5cnB0ZlE3T0FxdEFxU3g2d1lSb29MZ1lsSXV4UUpaR1lqN3VlRTRlVkpTQVlBdUEtcGRxbUZVY1c2UQ?oc=5",
+      "source": "The Guardian",
+      "publishedAt": "2026-05-14T10:32:00.000Z",
       "tags": [
-        "Streeting",
         "Burnham",
         "Leadership"
       ]
@@ -2675,16 +2737,6 @@
       ]
     },
     {
-      "title": "What was HMRC’s investigation into Angela Rayner’s tax affairs all about?",
-      "url": "https://www.theguardian.com/politics/2026/may/14/hmrc-investigation-into-angela-rayner-tax-affairs-stamp-duty-explainer",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-05-14T08:11:01.000Z",
-      "tags": [
-        "Rayner",
-        "Leadership"
-      ]
-    },
-    {
       "title": "From primary school prison visits to the cusp of No 10: The unorthodox rise of Wes Streeting",
       "url": "https://www.independent.co.uk/news/uk/politics/wes-streeting-prime-minister-keir-starmer-b2976338.html",
       "source": "Independent UK Politics",
@@ -2692,6 +2744,46 @@
       "tags": [
         "Streeting"
       ]
+<<<<<<< Updated upstream
+=======
+    },
+    {
+      "title": "Rayner says she has been cleared over tax affairs",
+      "url": "https://www.ft.com/content/674745b6-b0e2-434e-93a3-3afab34010b6",
+      "source": "FT UK Politics",
+      "publishedAt": "2026-05-14T07:56:03.000Z",
+      "tags": [
+        "Rayner"
+      ]
+    },
+    {
+      "title": "Streeting expected to launch leadership bid as Starmer clings on as PM - ITVX",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOS2NhMm5LZGdZZ2QyV1JWXzN3bklfQjZmY0lzQjRQeE9jelVlM1BFNndiUXhBOHFxREtPaE5WbmJVc24zMWota1dZNm4yaVpXQkF0ZWVEOXZUVFZndGZFZjh3Ym8tc0Z3cTMtdG9uZ3NwYklLemtsYi1YclRfS3FsRkhsTXFQR0pZVGktaVJtWGFlWlBqdFBpVA?oc=5",
+      "source": "ITVX",
+      "publishedAt": "2026-05-14T07:43:42.000Z",
+      "tags": [
+        "Streeting",
+        "Leadership"
+      ]
+    },
+    {
+      "title": "What a Wes Streeting premiership would look like - The Telegraph",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQMXlrYVdoWWx6Q1BzVm1GTEloTUktSHlPYmNYUmV3aUQxSkc2ZVVObUFIMGFiZVJDTVRQd1ZqRjVZYld5N0pHT0VwMVY2RV9hRG5nR1BxNjVwOUZsYmNSV2xfOVZOLVdLSXVqUzB4VE51ZU5NZ1NhWDNWYlg1MHpGQ1lNVkRoUmxva19VS1Bhd1FJSE1RZWhwbA?oc=5",
+      "source": "The Telegraph",
+      "publishedAt": "2026-05-14T07:38:00.000Z",
+      "tags": [
+        "Streeting"
+      ]
+    },
+    {
+      "title": "Chris Mason: Potential leadership challengers jostle for position",
+      "url": "https://www.bbc.com/news/articles/c232pz403dko?at_medium=RSS&at_campaign=rss",
+      "source": "BBC Politics",
+      "publishedAt": "2026-05-14T07:37:46.000Z",
+      "tags": [
+        "Leadership"
+      ]
+>>>>>>> Stashed changes
     }
   ],
   "wikipediaEdits": [],
@@ -2820,12 +2912,56 @@
       }
     ]
   },
+  "nextCatalysts": [
+    {
+      "level": "high",
+      "label": "Trigger threshold passed (94/81 MPs).",
+      "detail": "20% PLP rule has been met. Pressure now depends on cabinet stability and any formal challenger."
+    },
+    {
+      "level": "high",
+      "label": "4 ministerial exits recorded.",
+      "detail": "Cabinet stability breaking. Watch for cascade — three or more exits historically precedes leader resignations."
+    },
+    {
+      "level": "red",
+      "label": "Possible challenge signal in headlines (5 hits in 72h).",
+      "detail": "Keyword matches: leadership challenge, leadership bid.",
+      "examples": [
+        {
+          "keyword": "leadership challenge",
+          "title": "Starmer latest: PM insists he will still fight on as Streeting holds off on launching leadership challenge",
+          "url": "https://www.independent.co.uk/news/uk/politics/streeting-rayner-starmer-labour-leadership-resign-live-updates-b2976383.html",
+          "source": "Independent UK Politics",
+          "publishedAt": "2026-05-14T11:03:37.000Z"
+        },
+        {
+          "keyword": "leadership challenge",
+          "title": "Streeting holds off on leadership challenge to Starmer",
+          "url": "https://www.ft.com/content/e8383d83-abb0-4879-b421-92ed7c4a70e7",
+          "source": "FT UK Politics",
+          "publishedAt": "2026-05-14T10:27:14.000Z"
+        },
+        {
+          "keyword": "leadership challenge",
+          "title": "The five stages of a Labour leadership challenge - and why it favours Keir Starmer",
+          "url": "https://inews.co.uk/news/politics/five-stages-labour-leadership-challenge-favours-keir-starmer-4416982",
+          "source": "i Politics",
+          "publishedAt": "2026-05-14T08:42:14.000Z"
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "id": "labourlist-tracker",
       "name": "LabourList tracker",
       "url": "https://labourlist.org/2026/05/labourlist-labour-mp-starmer-resignation-tracker/",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:52.009Z",
+=======
+      "fetchedAt": "2026-05-14T12:00:56.174Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed headline counts and 90 named public-call rows."
     },
@@ -2833,7 +2969,11 @@
       "id": "sky-politics",
       "name": "Sky News Politics",
       "url": "https://feeds.skynews.com/feeds/rss/politics.xml",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:52.405Z",
+=======
+      "fetchedAt": "2026-05-14T12:00:56.960Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 4 relevant items."
     },
@@ -2841,7 +2981,11 @@
       "id": "guardian-politics",
       "name": "Guardian Politics",
       "url": "https://news.google.com/rss/search?q=site:theguardian.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:52.812Z",
+=======
+      "fetchedAt": "2026-05-14T12:00:57.739Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 65 relevant items."
     },
@@ -2849,7 +2993,11 @@
       "id": "bbc-politics",
       "name": "BBC Politics",
       "url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:53.347Z",
+=======
+      "fetchedAt": "2026-05-14T12:00:58.241Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 32 relevant items."
     },
@@ -2857,7 +3005,11 @@
       "id": "labourlist-feed",
       "name": "LabourList",
       "url": "https://labourlist.org/feed/",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:53.554Z",
+=======
+      "fetchedAt": "2026-05-14T12:00:58.578Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 4 relevant items."
     },
@@ -2865,7 +3017,11 @@
       "id": "ft-uk-politics",
       "name": "FT UK Politics",
       "url": "https://www.ft.com/uk-politics?format=rss",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:54.846Z",
+=======
+      "fetchedAt": "2026-05-14T12:00:59.679Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 20 relevant items."
     },
@@ -2873,7 +3029,11 @@
       "id": "telegraph-politics",
       "name": "Telegraph Politics",
       "url": "https://news.google.com/rss/search?q=site:telegraph.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:55.101Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:00.180Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 44 relevant items."
     },
@@ -2881,7 +3041,11 @@
       "id": "times-redbox",
       "name": "The Times Politics",
       "url": "https://news.google.com/rss/search?q=site:thetimes.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:55.672Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:00.665Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 36 relevant items."
     },
@@ -2889,7 +3053,11 @@
       "id": "politico-uk",
       "name": "Politico UK",
       "url": "https://www.politico.eu/section/uk/feed/",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:56.264Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:01.148Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -2897,7 +3065,11 @@
       "id": "new-statesman-politics",
       "name": "New Statesman Politics",
       "url": "https://www.newstatesman.com/politics/feed",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:56.419Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:02.085Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -2905,7 +3077,11 @@
       "id": "spectator",
       "name": "Spectator",
       "url": "https://news.google.com/rss/search?q=site:spectator.co.uk+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:57.694Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:03.421Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 1 relevant items."
     },
@@ -2913,7 +3089,11 @@
       "id": "conservativehome",
       "name": "ConservativeHome",
       "url": "https://conservativehome.com/feed/",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:58.002Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:03.682Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 2 relevant items."
     },
@@ -2921,7 +3101,11 @@
       "id": "tortoise",
       "name": "Tortoise",
       "url": "https://news.google.com/rss/search?q=site:tortoisemedia.com+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:58.148Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:05.461Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 19 relevant items."
     },
@@ -2929,7 +3113,11 @@
       "id": "reuters-uk",
       "name": "Reuters UK",
       "url": "https://news.google.com/rss/search?q=site:reuters.com+UK+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:58.810Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:05.802Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 27 relevant items."
     },
@@ -2937,7 +3125,11 @@
       "id": "bloomberg-uk",
       "name": "Bloomberg UK",
       "url": "https://news.google.com/rss/search?q=site:bloomberg.com+UK+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:59.287Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:06.236Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 51 relevant items."
     },
@@ -2945,15 +3137,25 @@
       "id": "mirror-politics",
       "name": "Mirror Politics",
       "url": "https://news.google.com/rss/search?q=site:mirror.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:00:59.816Z",
       "ok": true,
       "note": "Parsed 42 relevant items."
+=======
+      "fetchedAt": "2026-05-14T12:01:06.682Z",
+      "ok": true,
+      "note": "Parsed 45 relevant items."
+>>>>>>> Stashed changes
     },
     {
       "id": "inews-politics",
       "name": "i Politics",
       "url": "https://inews.co.uk/category/news/politics/feed",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:00.283Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:07.141Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 7 relevant items."
     },
@@ -2961,7 +3163,11 @@
       "id": "itv-politics",
       "name": "ITV Politics",
       "url": "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:02.138Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:07.891Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 40 relevant items."
     },
@@ -2969,7 +3175,11 @@
       "id": "independent-uk-politics",
       "name": "Independent UK Politics",
       "url": "https://www.independent.co.uk/news/uk/politics/rss",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:02.603Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:08.410Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 18 relevant items."
     },
@@ -2977,7 +3187,11 @@
       "id": "sam-freedman",
       "name": "Sam Freedman — Comment is Freed",
       "url": "https://news.google.com/rss/search?q=site:samf.substack.com+OR+%22Sam+Freedman%22+Starmer&hl=en-GB&gl=GB&ceid=GB:en",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:02.843Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:09.378Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 8 relevant items."
     },
@@ -2985,7 +3199,11 @@
       "id": "byline-times",
       "name": "Byline Times",
       "url": "https://bylinetimes.com/feed/",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:03.290Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:09.696Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 6 relevant items."
     },
@@ -2993,7 +3211,11 @@
       "id": "novara-media",
       "name": "Novara Media",
       "url": "https://novaramedia.com/feed/",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:03.521Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:10.258Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 3 relevant items."
     },
@@ -3001,7 +3223,11 @@
       "id": "bluesky-lobby",
       "name": "Bluesky lobby journalists",
       "url": "https://public.api.bsky.app",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:03.812Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:10.943Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Pulled 65 relevant posts from 11/15 handles."
     },
@@ -3009,23 +3235,39 @@
       "id": "guardian-open-platform",
       "name": "Guardian Open Platform",
       "url": "https://content.guardianapis.com/search",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:08.993Z",
       "ok": true,
       "note": "Pulled 30 Guardian politics items via Open Platform."
+=======
+      "fetchedAt": "2026-05-14T12:01:19.846Z",
+      "ok": false,
+      "note": "Set GUARDIAN_API_KEY (free signup at open-platform.theguardian.com) to enable."
+>>>>>>> Stashed changes
     },
     {
       "id": "wikipedia-edits",
       "name": "Wikipedia edits (Starmer-orbit)",
       "url": "https://en.wikipedia.org/w/api.php",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:09.726Z",
       "ok": true,
       "note": "Collected 0 recent revisions across 0 pages."
+=======
+      "fetchedAt": "2026-05-14T12:01:19.846Z",
+      "ok": false,
+      "note": "Wikipedia API failed: HTTP 403"
+>>>>>>> Stashed changes
     },
     {
       "id": "cc-news-meta",
       "name": "Common Crawl CC-NEWS (metadata)",
       "url": "https://data.commoncrawl.org",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:09.813Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:20.214Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Latest CC-NEWS warc.paths.gz available · 1270 bytes · Thu, 14 May 2026 11:05:13 GMT"
     },
@@ -3033,7 +3275,11 @@
       "id": "parliament-members-api",
       "name": "UK Parliament Members API",
       "url": "https://members-api.parliament.uk/api/Parties/StateOfTheParties",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:10.082Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:21.242Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "PLP size 403; 20% trigger = 81."
     },
@@ -3041,15 +3287,25 @@
       "id": "gdelt-doc-api",
       "name": "GDELT document API",
       "url": "https://api.gdeltproject.org/api/v2/doc/doc",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:18.289Z",
       "ok": false,
       "note": "Discovery skipped: HTTP 429."
+=======
+      "fetchedAt": "2026-05-14T12:01:22.256Z",
+      "ok": true,
+      "note": "Optional discovery is disabled by default. Set ENABLE_GDELT=1 to include it."
+>>>>>>> Stashed changes
     },
     {
       "id": "polymarket-public-search",
       "name": "Polymarket public search",
       "url": "https://gamma-api.polymarket.com/public-search",
+<<<<<<< Updated upstream
       "fetchedAt": "2026-05-14T12:01:18.289Z",
+=======
+      "fetchedAt": "2026-05-14T12:01:22.256Z",
+>>>>>>> Stashed changes
       "ok": true,
       "note": "Parsed 62 active relevant markets."
     },

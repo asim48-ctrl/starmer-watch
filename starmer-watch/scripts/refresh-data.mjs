@@ -187,6 +187,7 @@ async function main() {
     ccNewsCrawl: ccNewsMeta,
     baselines: await readBaselines(),
     parliament,
+    nextCatalysts: buildNextCatalysts({ counts, news, pressureIndex }),
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
 
@@ -982,7 +983,7 @@ async function scoreNewsSentiment(news) {
   const now = Date.now();
   const recent = dedupStories((news || []).filter((item) => {
     const t = new Date(item.publishedAt || 0).getTime();
-    return Number.isFinite(t) && now - t <= 48 * 3600 * 1000;
+    return Number.isFinite(t) && now - t <= 12 * 3600 * 1000;
   }));
   if (!recent.length) {
     return { normalised: null, raw: "no recent items", count: 0, avg: 0, perEntity: {}, scorer: "none" };
@@ -1048,12 +1049,83 @@ async function scoreNewsSentiment(news) {
 
   return {
     normalised,
-    raw: `${recent.length} clusters (48h, 3-shingle Jaccard ≥0.5), ${scored} scored via ${scorer}, avg ${avg.toFixed(2)}`,
+    raw: `${recent.length} clusters (12h, 3-shingle Jaccard ≥0.5), ${scored} scored via ${scorer}, avg ${avg.toFixed(2)}`,
     count: recent.length,
     avg,
     perEntity: perEntityOut,
     scorer,
   };
+}
+
+const CHALLENGE_KEYWORDS = [
+  "leadership bid", "leadership challenge", "announces challenge",
+  "challenges starmer", "running for leader", "candidacy", "throws hat",
+  "stand against starmer", "launches challenge", "formal challenge",
+];
+
+function detectChallengeSignals(news) {
+  const matches = [];
+  const cutoff = Date.now() - 72 * 3600 * 1000;
+  for (const item of news || []) {
+    const t = new Date(item.publishedAt || 0).getTime();
+    if (!Number.isFinite(t) || t < cutoff) continue;
+    const text = String(item.title || "").toLowerCase();
+    const hit = CHALLENGE_KEYWORDS.find((k) => text.includes(k));
+    if (hit) matches.push({ keyword: hit, title: item.title, url: item.url, source: item.source, publishedAt: item.publishedAt });
+  }
+  return matches;
+}
+
+function buildNextCatalysts({ counts, news, pressureIndex }) {
+  const pressure = counts.resignCalls.value || 0;
+  const threshold = counts.threshold.value || 81;
+  const ministers = counts.ministersOut.value || 0;
+  const challengeHits = detectChallengeSignals(news);
+  const marketProb = pressureIndex.marketProb;
+
+  const watchpoints = [];
+  if (pressure >= threshold) {
+    watchpoints.push({
+      level: "high",
+      label: `Trigger threshold passed (${pressure}/${threshold} MPs).`,
+      detail: "20% PLP rule has been met. Pressure now depends on cabinet stability and any formal challenger.",
+    });
+  } else {
+    watchpoints.push({
+      level: "info",
+      label: `Below trigger (${pressure}/${threshold}).`,
+      detail: `${threshold - pressure} more MPs needed to clear the 20% PLP rule.`,
+    });
+  }
+  watchpoints.push({
+    level: ministers >= 3 ? "high" : "info",
+    label: `${ministers} ministerial exit${ministers === 1 ? "" : "s"} recorded.`,
+    detail: ministers >= 3
+      ? "Cabinet stability breaking. Watch for cascade — three or more exits historically precedes leader resignations."
+      : "Watch for a named cabinet/minister-level resignation; that's the next material escalation.",
+  });
+  if (challengeHits.length) {
+    watchpoints.push({
+      level: "red",
+      label: `Possible challenge signal in headlines (${challengeHits.length} hit${challengeHits.length === 1 ? "" : "s"} in 72h).`,
+      detail: `Keyword matches: ${[...new Set(challengeHits.map((h) => h.keyword))].join(", ")}.`,
+      examples: challengeHits.slice(0, 3),
+    });
+  } else {
+    watchpoints.push({
+      level: "info",
+      label: "No formal leadership-challenge language detected in headlines (72h).",
+      detail: "Keyword sweep for 'leadership bid', 'announces challenge', 'candidacy', etc.",
+    });
+  }
+  if (Number.isFinite(marketProb) && marketProb >= 0.5) {
+    watchpoints.push({
+      level: "high",
+      label: `Market consensus tilted toward exit (${Math.round(marketProb * 100)}%).`,
+      detail: "Polymarket exit-prob crossing 50% historically tracks with material leadership erosion.",
+    });
+  }
+  return watchpoints;
 }
 
 async function buildPressureIndex({ counts, markets, manual, news, priorHistory }) {
@@ -1067,22 +1139,24 @@ async function buildPressureIndex({ counts, markets, manual, news, priorHistory 
   const marketDeltas = marketDeltasFromHistory(marketProbNorm, priorHistory);
   const mover = biggestMarketMover(markets, priorHistory);
 
-  const exitShare = Math.max(0, Math.min(1, pressure / threshold));
+  const exitShare = Math.max(0, Math.min(1, pressure / (threshold * 1.5)));
   const supportLead = support - pressure;
   const supportDeficit = Math.max(0, Math.min(1, (40 - supportLead) / 40));
   const ministerMomentum = Math.max(0, Math.min(1, ministers / 5));
 
   const newsScore = await scoreNewsSentiment(news);
+  const freshness = computeFreshness(priorHistory, { pressure, support, ministers, marketProb: marketProbNorm });
   const parts = [
-    { id: "exitShare", label: "PLP exit-call share vs trigger", weight: INDEX_WEIGHTS.exitShare, normalised: exitShare, raw: `${pressure} / ${threshold}` },
-    { id: "supportDeficit", label: "Support deficit", weight: INDEX_WEIGHTS.supportDeficit, normalised: supportDeficit, raw: `lead ${supportLead}` },
-    { id: "ministerMomentum", label: "Minister-exit momentum", weight: INDEX_WEIGHTS.ministerMomentum, normalised: ministerMomentum, raw: `${ministers} exits` },
+    { id: "exitShare", label: "PLP exit-call share vs trigger", weight: INDEX_WEIGHTS.exitShare, normalised: exitShare, raw: `${pressure} MPs / saturates at ${Math.ceil(threshold * 1.5)} (1.5× trigger of ${threshold})`, lastChangedMinutes: freshness.pressure },
+    { id: "supportDeficit", label: "Support deficit", weight: INDEX_WEIGHTS.supportDeficit, normalised: supportDeficit, raw: `lead ${supportLead}`, lastChangedMinutes: freshness.support },
+    { id: "ministerMomentum", label: "Minister-exit momentum", weight: INDEX_WEIGHTS.ministerMomentum, normalised: ministerMomentum, raw: `${ministers} exits`, lastChangedMinutes: freshness.ministers },
     {
       id: "marketExitProb",
       label: "Polymarket exit probability",
       weight: INDEX_WEIGHTS.marketExitProb,
       normalised: marketProbNorm,
       raw: exitMarket ? `${priceLabel(marketProb)} · ${exitMarket.question}` : "no market",
+      lastChangedMinutes: freshness.marketProb,
     },
     {
       id: "newsSentiment",
@@ -1090,6 +1164,7 @@ async function buildPressureIndex({ counts, markets, manual, news, priorHistory 
       weight: INDEX_WEIGHTS.newsSentiment,
       normalised: newsScore.normalised,
       raw: newsScore.raw,
+      lastChangedMinutes: 0,
     },
   ];
 
@@ -1107,7 +1182,7 @@ async function buildPressureIndex({ counts, markets, manual, news, priorHistory 
   return {
     value,
     band,
-    formula: "Weighted: 35% PLP exit-call share, 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity. Sentiment uses a negation-aware lexicon (terms preceded within 3 tokens by 'not'/'denies'/etc. are flipped). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
+    formula: "Weighted: 35% PLP exit-call share (saturates at 1.5× the contest trigger so MPs above 81 still register), 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity over a 12h window (negation-aware lexicon ensembled with winkNLP). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
     perEntitySentiment: newsScore.perEntity || {},
     components: parts,
     marketProb: marketProbNorm,
@@ -1278,6 +1353,33 @@ async function maybeFireAlerts({ pressureIndex, history, counts, manual }) {
     lastMarketProb: Number.isFinite(currentProb) ? currentProb : state.lastMarketProb || null,
     lastAlertAt: messages.length ? new Date().toISOString() : state.lastAlertAt || null,
   });
+}
+
+function computeFreshness(history, current) {
+  const fields = Object.keys(current);
+  const out = {};
+  for (const f of fields) out[f] = null;
+  if (!Array.isArray(history) || history.length < 2) return out;
+  const now = Date.now();
+  for (const f of fields) {
+    let lastChanged = null;
+    for (let i = history.length - 1; i >= 0; i -= 1) {
+      const v = history[i][f];
+      const eq = (a, b) => {
+        if (a == null || b == null) return a == b;
+        if (typeof a === "number" && typeof b === "number") return Math.abs(a - b) < 1e-6;
+        return a === b;
+      };
+      if (!eq(v, current[f])) {
+        lastChanged = new Date(history[i].t).getTime();
+        break;
+      }
+    }
+    if (lastChanged != null) {
+      out[f] = Math.round((now - lastChanged) / 60000);
+    }
+  }
+  return out;
 }
 
 async function readPriorHistory() {
