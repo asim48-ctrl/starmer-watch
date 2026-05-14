@@ -29,6 +29,7 @@
           <a href="#resignations"><span>▯</span>Resignations</a>
           <a href="#news"><span>☷</span>News</a>
           <a href="#odds"><span>⌁</span>Odds</a>
+          <a href="#high-signal"><span>★</span>Signal</a>
           <a href="#wiki"><span>✎</span>Wiki edits</a>
           <a href="#sources"><span>◌</span>Sources</a>
         </nav>
@@ -110,7 +111,15 @@
                 <h2>Live news</h2>
                 <label class="source-select">
                   <span>Filter</span>
-                  <input id="news-filter" type="search" placeholder="Streeting, Burnham..." />
+                  <input id="news-filter" type="search" placeholder="Streeting, Burnham, Mandelson..." />
+                </label>
+                <div class="news-chips" role="group" aria-label="Quick filters">
+                  <button type="button" class="news-chip" data-chip="">All</button>
+                  <button type="button" class="news-chip" data-chip="mandelson">Mandelson</button>
+                  <button type="button" class="news-chip" data-chip="streeting">Streeting</button>
+                  <button type="button" class="news-chip" data-chip="burnham">Burnham</button>
+                  <button type="button" class="news-chip" data-chip="resign">Resign</button>
+                </div>
                 </label>
               </div>
               <div class="news-list" id="news-list"></div>
@@ -142,6 +151,14 @@
                 <div class="resignation-list" id="resignation-list"></div>
               </div>
             </section>
+          </section>
+
+          <section class="panel wiki-panel" id="high-signal" aria-labelledby="high-signal-title">
+            <div class="panel-title-row">
+              <h2 id="high-signal-title">High-signal news</h2>
+              <small>Senior-resign / delegation / challenge-language headlines (72h)</small>
+            </div>
+            <div class="wiki-list" id="high-signal-list"></div>
           </section>
 
           <section class="panel wiki-panel" id="wiki" aria-labelledby="wiki-title">

@@ -77,6 +77,10 @@ const NEWS_KEYWORDS = [
   "leadership election",
   "minister",
   "cabinet",
+  "mandelson",
+  "epstein",
+  "mandelson files",
+  "epstein files",
 ];
 
 const MARKET_KEYWORDS = [
@@ -164,7 +168,9 @@ async function main() {
   const factions = buildFactions({ counts, labour, news, markets, resignations, manual });
   const proxyGroups = buildProxyGroups(manual, labour);
   const priorHistory = await readPriorHistory();
-  const pressureIndex = await buildPressureIndex({ counts, markets, manual, news, priorHistory });
+  const escalation = buildEscalationSignals({ labour, news, counts });
+  const pressureIndex = await buildPressureIndex({ counts, markets, manual, news, priorHistory, escalation });
+  const highSignalNews = buildHighSignalNews(news, escalation);
   const history = await updateHistory({ generatedAt, counts, pressureIndex });
   await maybeFireAlerts({ pressureIndex, history, counts, manual });
   const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
@@ -187,7 +193,9 @@ async function main() {
     ccNewsCrawl: ccNewsMeta,
     baselines: await readBaselines(),
     parliament,
-    nextCatalysts: buildNextCatalysts({ counts, news, pressureIndex }),
+    escalation,
+    highSignalNews,
+    nextCatalysts: buildNextCatalysts({ counts, news, pressureIndex, escalation }),
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
 
@@ -1063,6 +1071,105 @@ const CHALLENGE_KEYWORDS = [
   "stand against starmer", "launches challenge", "formal challenge",
 ];
 
+const DELEGATION_KEYWORDS = [
+  "1922 committee", "1922 chair", "plp officers", "plp chair",
+  "letter to chairman", "letters reach", "no-confidence letters",
+  "no confidence letters", "confidence threshold", "delegation to no 10",
+  "delegation to downing street", "men in grey suits", "men in dark suits",
+  "told to go", "told to quit", "asked to resign",
+];
+
+const SENIOR_RESIGNATION_KEYWORDS = [
+  "cabinet minister resigns", "cabinet resignation", "secretary of state resigns",
+  "secretary of state quits", "resigns from cabinet", "quits cabinet",
+  "deputy prime minister resigns", "chancellor resigns", "home secretary resigns",
+  "foreign secretary resigns", "health secretary resigns",
+];
+
+function matchesAny(text, list) {
+  const lower = text.toLowerCase();
+  return list.filter((k) => lower.includes(k));
+}
+
+function buildEscalationSignals({ labour, news, counts }) {
+  const exits = (labour.exits || []).slice();
+  const cutoff48 = Date.now() - 48 * 3600 * 1000;
+  const cutoff72 = Date.now() - 72 * 3600 * 1000;
+
+  const delegationHits = [];
+  const seniorResignHits = [];
+  for (const item of news || []) {
+    const t = new Date(item.publishedAt || 0).getTime();
+    if (!Number.isFinite(t)) continue;
+    const title = String(item.title || "");
+    if (t >= cutoff72) {
+      const dh = matchesAny(title, DELEGATION_KEYWORDS);
+      if (dh.length) delegationHits.push({ ...item, keywords: dh });
+    }
+    if (t >= cutoff48) {
+      const sh = matchesAny(title, SENIOR_RESIGNATION_KEYWORDS);
+      if (sh.length) seniorResignHits.push({ ...item, keywords: sh });
+    }
+  }
+
+  // Paired senior resignations: ≥2 senior-keyword headlines or LabourList
+  // exits with role mentioning Secretary/Minister within 48h of each other.
+  const seniorExits = exits.filter((e) => /minister|secretary|chancellor/i.test(e.role || ""));
+  const pairedSeniorInExits = seniorExits.length >= 2;
+  const pairedSeniorInNews = seniorResignHits.length >= 2;
+  const pairedSenior = pairedSeniorInExits || pairedSeniorInNews;
+
+  // Estimate stage 1-6 along Truss/Johnson timeline.
+  const pressure = counts.resignCalls.value || 0;
+  const threshold = counts.threshold.value || 81;
+  const ministers = counts.ministersOut.value || 0;
+  let stage = 1;
+  if (pressure >= threshold) stage = 2;
+  if (ministers >= 1) stage = 3;
+  if (pairedSenior) stage = 4;
+  if (delegationHits.length) stage = 5;
+  if (CHALLENGE_KEYWORDS.some((k) => (news || []).some((i) => String(i.title || "").toLowerCase().includes(k)))) stage = Math.max(stage, 5);
+  // Stage 6 reserved for explicit "resigns/announces resignation" in headlines tagged to Starmer himself.
+  if ((news || []).some((i) => /Starmer (?:resigns|to resign|announces resignation|announces he will step down)/i.test(String(i.title || "")))) stage = 6;
+
+  return {
+    stage,
+    stageLabel: ["", "Below trigger", "Trigger crossed", "Cabinet exit", "Paired senior exits", "Delegation / formal challenge", "Resignation imminent"][stage] || "",
+    pairedSenior,
+    pairedSeniorInExits,
+    pairedSeniorInNews,
+    seniorExitCount: seniorExits.length,
+    seniorResignHeadlineCount: seniorResignHits.length,
+    delegationHits: delegationHits.slice(0, 5),
+    seniorResignHits: seniorResignHits.slice(0, 5),
+  };
+}
+
+function buildHighSignalNews(news, escalation) {
+  // Items that match any of: challenge keywords, delegation keywords,
+  // senior-resignation keywords, or explicit Starmer-exit headlines.
+  // De-duped by URL, freshest first, capped at 12.
+  const seen = new Set();
+  const tag = (item, label) => ({ ...item, signalTag: label });
+  const out = [];
+  for (const item of (news || []).slice().sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))) {
+    const url = item.url;
+    if (!url || seen.has(url)) continue;
+    const title = String(item.title || "");
+    if (CHALLENGE_KEYWORDS.some((k) => title.toLowerCase().includes(k))) {
+      seen.add(url); out.push(tag(item, "Leadership-challenge language"));
+    } else if (DELEGATION_KEYWORDS.some((k) => title.toLowerCase().includes(k))) {
+      seen.add(url); out.push(tag(item, "Delegation / 1922-style"));
+    } else if (SENIOR_RESIGNATION_KEYWORDS.some((k) => title.toLowerCase().includes(k))) {
+      seen.add(url); out.push(tag(item, "Senior resignation"));
+    } else if (/Starmer (?:resigns|to resign|announces resignation|step down)/i.test(title)) {
+      seen.add(url); out.push(tag(item, "Starmer-exit headline"));
+    }
+    if (out.length >= 12) break;
+  }
+  return out;
+}
+
 function detectChallengeSignals(news) {
   const matches = [];
   const cutoff = Date.now() - 72 * 3600 * 1000;
@@ -1076,7 +1183,7 @@ function detectChallengeSignals(news) {
   return matches;
 }
 
-function buildNextCatalysts({ counts, news, pressureIndex }) {
+function buildNextCatalysts({ counts, news, pressureIndex, escalation }) {
   const pressure = counts.resignCalls.value || 0;
   const threshold = counts.threshold.value || 81;
   const ministers = counts.ministersOut.value || 0;
@@ -1084,6 +1191,28 @@ function buildNextCatalysts({ counts, news, pressureIndex }) {
   const marketProb = pressureIndex.marketProb;
 
   const watchpoints = [];
+  if (escalation) {
+    watchpoints.push({
+      level: escalation.stage >= 4 ? "red" : escalation.stage >= 3 ? "high" : "info",
+      label: `Escalation stage ${escalation.stage}/6 — ${escalation.stageLabel}`,
+      detail: "Truss/Johnson timeline mapping. Stage 4+ corresponds to paired senior resignations; stage 5 is delegation/1922-style language; stage 6 is resignation imminent.",
+    });
+  }
+  if (escalation?.pairedSenior) {
+    watchpoints.push({
+      level: "red",
+      label: `Paired senior resignations detected (${escalation.seniorExitCount} cabinet/sec-of-state exits, ${escalation.seniorResignHeadlineCount} senior-resign headlines).`,
+      detail: "Two senior departures within 48h is the Truss/Johnson cascade signal — within 24-48h of this pattern, both PMs were out.",
+    });
+  }
+  if (escalation?.delegationHits?.length) {
+    watchpoints.push({
+      level: "red",
+      label: `1922-style / delegation language in headlines (${escalation.delegationHits.length} hits 72h).`,
+      detail: "Reports of letters to chairman, no-confidence letters, or party officers delegating to No 10 historically precede resignation by hours to days.",
+      examples: escalation.delegationHits.slice(0, 3),
+    });
+  }
   if (pressure >= threshold) {
     watchpoints.push({
       level: "high",
@@ -1128,7 +1257,7 @@ function buildNextCatalysts({ counts, news, pressureIndex }) {
   return watchpoints;
 }
 
-async function buildPressureIndex({ counts, markets, manual, news, priorHistory }) {
+async function buildPressureIndex({ counts, markets, manual, news, priorHistory, escalation }) {
   const pressure = counts.resignCalls.value || 0;
   const support = counts.supporters.value || 0;
   const threshold = counts.threshold.value || 81;
@@ -1142,14 +1271,19 @@ async function buildPressureIndex({ counts, markets, manual, news, priorHistory 
   const exitShare = Math.max(0, Math.min(1, pressure / (threshold * 1.5)));
   const supportLead = support - pressure;
   const supportDeficit = Math.max(0, Math.min(1, (40 - supportLead) / 40));
-  const ministerMomentum = Math.max(0, Math.min(1, ministers / 5));
+  let ministerMomentum = Math.max(0, Math.min(1, ministers / 5));
+  let ministerBoost = 1;
+  let ministerBoostReason = "";
+  if (escalation?.pairedSenior) { ministerBoost = 1.5; ministerBoostReason = "×1.5 paired senior resignations"; }
+  if (escalation?.delegationHits?.length) { ministerBoost = 2; ministerBoostReason = "×2 delegation / 1922-style language detected"; }
+  ministerMomentum = Math.min(1, ministerMomentum * ministerBoost);
 
   const newsScore = await scoreNewsSentiment(news);
   const freshness = computeFreshness(priorHistory, { pressure, support, ministers, marketProb: marketProbNorm });
   const parts = [
     { id: "exitShare", label: "PLP exit-call share vs trigger", weight: INDEX_WEIGHTS.exitShare, normalised: exitShare, raw: `${pressure} MPs / saturates at ${Math.ceil(threshold * 1.5)} (1.5× trigger of ${threshold})`, lastChangedMinutes: freshness.pressure },
     { id: "supportDeficit", label: "Support deficit", weight: INDEX_WEIGHTS.supportDeficit, normalised: supportDeficit, raw: `lead ${supportLead}`, lastChangedMinutes: freshness.support },
-    { id: "ministerMomentum", label: "Minister-exit momentum", weight: INDEX_WEIGHTS.ministerMomentum, normalised: ministerMomentum, raw: `${ministers} exits`, lastChangedMinutes: freshness.ministers },
+    { id: "ministerMomentum", label: "Minister-exit momentum", weight: INDEX_WEIGHTS.ministerMomentum, normalised: ministerMomentum, raw: `${ministers} exits${ministerBoostReason ? ` · escalation boost ${ministerBoostReason}` : ""}`, lastChangedMinutes: freshness.ministers },
     {
       id: "marketExitProb",
       label: "Polymarket exit probability",
@@ -1643,6 +1777,7 @@ function tagText(text) {
   if (lower.includes("resign")) tags.push("Resignation");
   if (lower.includes("minister") || lower.includes("cabinet")) tags.push("Cabinet");
   if (lower.includes("leadership")) tags.push("Leadership");
+  if (lower.includes("mandelson") || lower.includes("epstein")) tags.push("Mandelson");
   if (!tags.length && lower.includes("starmer")) tags.push("Starmer");
   return tags;
 }
