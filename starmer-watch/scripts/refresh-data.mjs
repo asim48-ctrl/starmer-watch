@@ -162,6 +162,7 @@ async function main() {
   const markets = await collectPolymarket(sourceHealth);
 
   const news = mergeNews([...rssNews, ...gdeltNews, ...bskyNews, ...guardianNews, ...redditNews]);
+  augmentExitsFromNews(labour, news);
   const counts = buildCounts(labour, manual, parliament);
   const pressure = buildPressure(counts, labour);
   const resignations = buildResignations(labour, news);
@@ -1065,6 +1066,45 @@ async function scoreNewsSentiment(news) {
   };
 }
 
+function augmentExitsFromNews(labour, news) {
+  // The LabourList scrape only catches "X has resigned as Y minister" style
+  // tracker entries. Cabinet-level resignations break first via news headlines.
+  // This adds any news-derived senior exits into labour.exits so ministersOut
+  // and downstream features reflect them within one refresh.
+  if (!labour) return;
+  const existing = new Set((labour.exits || []).map((e) => (e.name || "").toLowerCase()));
+  const NAME = "([A-Z][A-Za-z'.-]+(?:\\s+[A-Z][A-Za-z'.-]+){1,2})";
+  const cutoff = Date.now() - 72 * 3600 * 1000;
+  const patterns = [
+    new RegExp(`${NAME}\\s+resigns\\s+(?:from\\s+(?:the\\s+)?cabinet|as\\s+(?:[A-Z][a-z]+\\s+)*Secretary)`, "i"),
+    new RegExp(`${NAME}\\s+quits\\s+(?:as\\s+)?(?:cabinet|[A-Z][a-z]+\\s+Secretary)`, "i"),
+    new RegExp(`${NAME}\\s+resigns\\s+as\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*\\s+Secretary)`, "i"),
+  ];
+  for (const item of news || []) {
+    const t = new Date(item.publishedAt || 0).getTime();
+    if (!Number.isFinite(t) || t < cutoff) continue;
+    const title = String(item.title || "");
+    for (const re of patterns) {
+      const m = title.match(re);
+      if (!m) continue;
+      const name = m[1];
+      if (!name) continue;
+      const key = name.toLowerCase();
+      if (existing.has(key)) break;
+      const role = m[2] || "Cabinet minister";
+      existing.add(key);
+      labour.exits.push({
+        name,
+        role: /minister|secretary/i.test(role) ? role : `${role} minister`,
+        move: `${name} resigned as ${role}.`,
+        alignment: "cabinet exit",
+        source: "News (auto-detected)",
+      });
+      break;
+    }
+  }
+}
+
 const CHALLENGE_KEYWORDS = [
   "leadership bid", "leadership challenge", "announces challenge",
   "challenges starmer", "running for leader", "candidacy", "throws hat",
@@ -1626,12 +1666,17 @@ function buildFactions({ counts, labour, news, markets, resignations, manual }) 
   const leadershipMarket = markets.find((market) => /Labour leadership election scheduled/i.test(market.question));
   const pmMarket = markets.find((market) => /Wes Streeting|Angela Rayner|Prime Minister/i.test(market.question));
   const healthExit = resignations.find((item) => /health minister/i.test(item.role));
+  const streetingExited = (labour.exits || []).some((e) => /Streeting/i.test(e.name || ""))
+    || /Streeting\s+(?:resigns|quits|has\s+resigned|stood\s+down)/i.test(textCorpus);
+  const streetingRole = streetingExited
+    ? "Former Health Secretary — out of cabinet"
+    : "Health Secretary and possible succession contender";
 
   const factions = [
     {
       id: "streeting",
       name: "Wes Streeting",
-      role: "Health Secretary and possible succession contender",
+      role: streetingRole,
       pressureScore: scoreFromSignals([
         /Streeting/i.test(textCorpus),
         /meet Starmer|meeting Starmer/i.test(textCorpus),

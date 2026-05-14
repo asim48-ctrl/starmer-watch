@@ -129,7 +129,7 @@ function renderKpis() {
     {
       value: index.value,
       label: `Pressure Index (${index.band})`,
-      note: "Composite 0-100. Hover the breakdown under the gauge for inputs.",
+      note: "Composite 0-100.",
       tone: index.value >= 75 ? "red" : index.value >= 55 ? "red" : index.value >= 35 ? "dark" : "blue",
       icon: "◈",
     },
@@ -215,22 +215,13 @@ function renderPressure() {
     buildPressureSummary({ pressure, support, threshold }),
     buildNextCatalysts(),
     buildBaselineStrip(index),
-    buildIndexBreakdown(index),
   );
   renderTrendChart({ pressure, support, threshold });
 
+  // Info dot was used to toggle the "How the index is built" panel; that
+  // panel was removed for clutter so the dot is purely decorative now.
   const infoDot = document.querySelector(".pressure-index .info-dot");
-  const breakdown = gauge.querySelector(".index-breakdown");
-  if (infoDot && breakdown) {
-    breakdown.hidden = true;
-    infoDot.style.cursor = "pointer";
-    infoDot.setAttribute("role", "button");
-    infoDot.setAttribute("aria-label", "Show index methodology");
-    infoDot.onclick = () => {
-      breakdown.hidden = !breakdown.hidden;
-      infoDot.classList.toggle("active", !breakdown.hidden);
-    };
-  }
+  if (infoDot) infoDot.remove();
 }
 
 function buildIndexGauge(index) {
