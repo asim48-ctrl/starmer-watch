@@ -166,6 +166,37 @@ function renderKpis() {
   }
 }
 
+function indexDelta(hours) {
+  const hist = Array.isArray(state.history) ? state.history : [];
+  if (hist.length < 2) return null;
+  const now = new Date(hist[hist.length - 1].t).getTime();
+  if (!Number.isFinite(now)) return null;
+  const target = now - hours * 3600 * 1000;
+  let pick = null;
+  for (const entry of hist) {
+    const t = new Date(entry.t).getTime();
+    if (Number.isFinite(t) && t <= target) pick = entry;
+  }
+  if (!pick) pick = hist[0];
+  const before = Number(pick.index);
+  const after = Number(hist[hist.length - 1].index);
+  if (!Number.isFinite(before) || !Number.isFinite(after)) return null;
+  return Math.round((after - before) * 10) / 10;
+}
+
+function formatIndexDelta(delta6h, delta24h) {
+  const parts = [];
+  const fmt = (label, v) => {
+    if (v == null) return;
+    const arrow = v > 0 ? "▲" : v < 0 ? "▼" : "▬";
+    const sign = v > 0 ? "+" : "";
+    parts.push(`${arrow} ${sign}${v} (${label})`);
+  };
+  fmt("6h", delta6h);
+  fmt("24h", delta24h);
+  return parts.length ? ` · ${parts.join(" · ")}` : "";
+}
+
 function renderPressure() {
   const counts = state.counts;
   const pressure = counts.resignCalls?.value || 0;
@@ -173,7 +204,10 @@ function renderPressure() {
   const threshold = counts.threshold?.value || 81;
   const index = state.pressureIndex || { value: 0, band: "contained", components: [], formula: "" };
 
-  $("#pressure-title").textContent = `Pressure Index ${index.value}/100 · ${index.band.toUpperCase()}`;
+  const delta6h = indexDelta(6);
+  const delta24h = indexDelta(24);
+  const movement = formatIndexDelta(delta6h, delta24h);
+  $("#pressure-title").textContent = `Pressure Index ${index.value}/100 · ${index.band.toUpperCase()}${movement}`;
   const gauge = $("#pressure-gauge");
   gauge.replaceChildren();
   gauge.append(
