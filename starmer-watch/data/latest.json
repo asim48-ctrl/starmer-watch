@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-15T10:50:23.041Z",
-  "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 58/100 (elevated). Polymarket's top Starmer-exit signal is 11.5%.",
+  "generatedAt": "2026-05-15T10:53:17.734Z",
+  "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 59/100 (elevated). Polymarket's top Starmer-exit signal is 11.5%.",
   "counts": {
     "resignCalls": {
       "value": 97,
@@ -21,7 +21,7 @@
       "source": "UK Parliament Members API"
     },
     "ministersOut": {
-      "value": 4,
+      "value": 5,
       "label": "Ministers out",
       "note": "Ministerial resignations found in tracker/news copy.",
       "source": "News"
@@ -34,21 +34,21 @@
     "note": "97 MPs are recorded as calling for an exit or timetable, 16 above the modeled contest threshold; the public support bloc is 14 larger than the pressure bloc. A public count is not the same as a formal leadership challenge."
   },
   "pressureIndex": {
-    "value": 58,
+    "value": 59,
     "band": "elevated",
     "formula": "Weighted: 35% PLP exit-call share (saturates at 1.5× the contest trigger so MPs above 81 still register), 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity over a 12h window (negation-aware lexicon ensembled with winkNLP). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
     "perEntitySentiment": {
       "starmer": {
-        "mentions": 21,
-        "avg": 0.18
+        "mentions": 20,
+        "avg": 0.24
       },
       "streeting": {
-        "mentions": 7,
-        "avg": -0.24
+        "mentions": 6,
+        "avg": -0.15
       },
       "burnham": {
-        "mentions": 19,
-        "avg": 0
+        "mentions": 17,
+        "avg": 0.02
       },
       "rayner": {
         "mentions": 1,
@@ -62,7 +62,7 @@
         "weight": 35,
         "normalised": 0.7983539094650206,
         "raw": "97 MPs / saturates at 122 (1.5× trigger of 81)",
-        "lastChangedMinutes": 61,
+        "lastChangedMinutes": null,
         "contribution": 27.9
       },
       {
@@ -79,8 +79,8 @@
         "label": "Minister-exit momentum",
         "weight": 10,
         "normalised": 1,
-        "raw": "4 exits · escalation boost ×1.5 paired senior resignations",
-        "lastChangedMinutes": 781,
+        "raw": "5 exits · escalation boost ×1.5 paired senior resignations",
+        "lastChangedMinutes": null,
         "contribution": 10
       },
       {
@@ -89,17 +89,17 @@
         "weight": 25,
         "normalised": 0.115,
         "raw": "11.5% · Starmer out by May 31, 2026?",
-        "lastChangedMinutes": 11,
+        "lastChangedMinutes": null,
         "contribution": 2.9
       },
       {
         "id": "newsSentiment",
         "label": "News intensity × negativity",
         "weight": 15,
-        "normalised": 0.5134442708333333,
-        "raw": "40 clusters (12h, 3-shingle Jaccard ≥0.5), 40 scored via ensemble (winkNLP + lexicon), avg 0.03",
+        "normalised": 0.5312370495495495,
+        "raw": "37 clusters (12h, 3-shingle Jaccard ≥0.5), 37 scored via ensemble (winkNLP + lexicon), avg 0.06",
         "lastChangedMinutes": 0,
-        "contribution": 7.7
+        "contribution": 8
       }
     ],
     "marketProb": 0.115,
@@ -111,930 +111,16 @@
       "volume": 865241.6428729949,
       "horizonDate": "2026-05-31T00:00:00.000Z"
     },
-    "marketDeltas": {
-      "sinceLast": -2,
-      "last1h": -2,
-      "last24h": -14
-    },
-    "biggestMover": {
-      "question": "Starmer out by December 31, 2026?",
-      "yesPrice": 0.715,
-      "url": "https://polymarket.com/event/starmer-out-in-2025",
-      "deltaPp": 58,
-      "direction": "up"
-    }
+    "marketDeltas": null,
+    "biggestMover": null
   },
   "history": [
     {
-      "t": "2026-05-14T15:48:23.328Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 63,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T15:49:44.426Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T16:00:47.077Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T16:10:39.968Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T16:20:29.908Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T16:30:43.410Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:01:03.036Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:10:31.643Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:17:18.678Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:20:27.522Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:25:11.149Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:31:54.234Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 62,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:40:32.649Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T17:50:30.249Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.255
-    },
-    {
-      "t": "2026-05-14T18:00:42.422Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.245
-    },
-    {
-      "t": "2026-05-14T18:10:35.444Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.245
-    },
-    {
-      "t": "2026-05-14T18:20:30.266Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.225
-    },
-    {
-      "t": "2026-05-14T18:30:34.502Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.225
-    },
-    {
-      "t": "2026-05-14T19:00:44.602Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T19:10:25.839Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T19:20:31.519Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T19:22:05.872Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T19:30:34.225Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T19:40:27.907Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T19:55:12.908Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T20:00:44.813Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T20:10:27.058Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T20:20:27.042Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 61,
-      "marketProb": 0.215
-    },
-    {
-      "t": "2026-05-14T20:30:33.280Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.205
-    },
-    {
-      "t": "2026-05-14T21:00:41.231Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.205
-    },
-    {
-      "t": "2026-05-14T21:10:26.430Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.195
-    },
-    {
-      "t": "2026-05-14T21:20:22.594Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.195
-    },
-    {
-      "t": "2026-05-14T21:30:34.588Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.185
-    },
-    {
-      "t": "2026-05-14T21:39:28.098Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.175
-    },
-    {
-      "t": "2026-05-14T21:50:27.663Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.175
-    },
-    {
-      "t": "2026-05-14T22:00:42.965Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.165
-    },
-    {
-      "t": "2026-05-14T22:10:22.930Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T22:20:24.453Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T22:30:39.965Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T22:40:22.492Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T22:50:25.968Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T23:00:47.675Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T23:10:23.632Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T23:14:07.430Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.155
-    },
-    {
-      "t": "2026-05-14T23:20:25.942Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-14T23:30:41.604Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-14T23:40:25.057Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-14T23:50:28.174Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T00:00:42.105Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T00:10:24.816Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T00:13:43.393Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T00:20:25.826Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T00:30:36.358Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T00:40:24.310Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T00:50:24.371Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T01:00:39.237Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T01:10:23.597Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T01:20:24.859Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T01:30:30.961Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T01:40:30.322Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T01:50:22.815Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T02:00:47.828Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T02:10:30.292Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T02:20:29.052Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T02:30:34.878Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T02:40:26.849Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T02:50:41.254Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T03:00:55.452Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T03:10:32.073Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T03:20:22.032Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T03:30:31.211Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T03:40:36.036Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T03:50:29.422Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T04:00:37.893Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T04:10:22.871Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T04:20:25.968Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T04:30:35.260Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T04:31:34.774Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T04:40:25.761Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T04:50:23.542Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T05:00:46.817Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T05:10:22.330Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T05:20:24.195Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T05:30:29.961Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T05:40:24.939Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T05:50:33.697Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T06:00:42.206Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T06:10:27.757Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T06:20:23.728Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.145
-    },
-    {
-      "t": "2026-05-15T06:30:30.126Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T06:40:28.370Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T06:50:33.731Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T07:00:44.896Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T07:10:23.443Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T07:20:24.009Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T07:30:31.423Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T07:40:26.801Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T08:16:23.643Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T08:21:44.986Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T08:30:36.182Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T08:40:27.431Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T08:50:33.390Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 60,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T09:00:40.393Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 60,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T09:10:24.708Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T09:20:23.408Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T09:30:35.950Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T09:40:29.211Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T09:50:22.498Z",
-      "pressure": 96,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T10:00:45.344Z",
+      "t": "2026-05-15T10:53:17.734Z",
       "pressure": 97,
       "support": 111,
-      "ministers": 4,
-      "index": 60,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T10:10:23.414Z",
-      "pressure": 97,
-      "support": 111,
-      "ministers": 4,
-      "index": 60,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T10:20:25.953Z",
-      "pressure": 97,
-      "support": 111,
-      "ministers": 4,
+      "ministers": 5,
       "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T10:30:32.077Z",
-      "pressure": 97,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T10:40:22.218Z",
-      "pressure": 97,
-      "support": 111,
-      "ministers": 4,
-      "index": 59,
-      "marketProb": 0.135
-    },
-    {
-      "t": "2026-05-15T10:50:23.041Z",
-      "pressure": 97,
-      "support": 111,
-      "ministers": 4,
-      "index": 58,
       "marketProb": 0.115
     }
   ],
@@ -1417,12 +503,12 @@
     {
       "id": "streeting",
       "name": "Wes Streeting",
-      "role": "Health Secretary and possible succession contender",
+      "role": "Former Health Secretary — out of cabinet",
       "pressureScore": 6,
-      "posture": "Operating as the live cabinet contender: visible enough to matter, cautious enough to avoid owning the first move.",
-      "latestMove": "Streeting backs Burnham for return to Westminster, saying he is ‘best chance of winning’ byelection – UK politics live",
+      "posture": "Out of cabinet. Resignation reframes him as the live succession candidate — every public move now reads as positioning. Watch for an explicit leadership bid, a campaign team, and any allied MPs declaring.",
+      "latestMove": "Starmer latest: Streeting says Burnham has ‘best chance of winning’ Makerfield by-election battle with Reform",
       "signals": [
-        "Guardian (Open Platform): Streeting backs Burnham for return to Westminster, saying he is ‘best chance of winning’ byelection – UK politics live",
+        "Independent UK Politics: Starmer latest: Streeting says Burnham has ‘best chance of winning’ Makerfield by-election battle with Reform",
         "Zubir Ahmed left a health role; treat this as a Streeting-orbit pressure signal, not proof of direction."
       ]
     },
@@ -1432,9 +518,9 @@
       "role": "Greater Manchester mayor and external Labour alternative",
       "pressureScore": 6,
       "posture": "External route pressure: his leverage is membership and PLP appetite, but any path still depends on parliamentary access or a mediated role.",
-      "latestMove": "Streeting backs Burnham for return to Westminster, saying he is ‘best chance of winning’ byelection – UK politics live",
+      "latestMove": "Burnham makes move to take on Starmer after MP stands down so he can challenge PM",
       "signals": [
-        "Guardian (Open Platform): Streeting backs Burnham for return to Westminster, saying he is ‘best chance of winning’ byelection – UK politics live",
+        "Independent UK Politics: Burnham makes move to take on Starmer after MP stands down so he can challenge PM",
         "Parsed source text says any transition should include giving Burnham a path into the conversation."
       ]
     },
@@ -1584,6 +670,13 @@
       "source": "LabourList"
     },
     {
+      "name": "Wes Streeting",
+      "role": "Health Secretary",
+      "move": "Wes Streeting resigned as Health Secretary and called on Starmer to resign.",
+      "alignment": "cabinet exit",
+      "source": "News (auto-detected, persisted)"
+    },
+    {
       "name": "News resignation signal",
       "role": "Source headline",
       "move": "Two theories on our high prime ministerial turnover...",
@@ -1729,12 +822,11 @@
   ],
   "news": [
     {
-      "title": "Streeting backs Burnham for return to Westminster, saying he is ‘best chance of winning’ byelection – UK politics live",
-      "url": "https://www.theguardian.com/politics/live/2026/may/15/prime-minister-keir-starmer-leadership-contest-wes-streeting-andy-burnham-angela-rayner-latest-news-updates",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-05-15T10:49:06.000Z",
+      "title": "Burnham makes move to take on Starmer after MP stands down so he can challenge PM",
+      "url": "https://www.independent.co.uk/news/uk/politics/burnham-starmer-streeting-labour-leadership-b2976745.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-15T10:50:50.000Z",
       "tags": [
-        "Streeting",
         "Burnham"
       ]
     },
@@ -1796,15 +888,6 @@
       ]
     },
     {
-      "title": "Digested week: Starmer’s day of reckoning was foreseen – just not the level of drama | John Crace",
-      "url": "https://www.theguardian.com/politics/2026/may/15/digested-week-starmer-reckoning-foreseen-not-level-of-drama",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-05-15T10:27:27.000Z",
-      "tags": [
-        "Starmer"
-      ]
-    },
-    {
       "title": "UK borrowing costs reach new high and pound falls as leadership drama continues",
       "url": "https://www.bbc.com/news/articles/czr2pl5lj84o?at_medium=RSS&at_campaign=rss",
       "source": "BBC Politics",
@@ -1812,15 +895,6 @@
       "tags": [
         "Burnham",
         "Leadership"
-      ]
-    },
-    {
-      "title": "Greens suggest they will properly contest byelection in blow for Burnham",
-      "url": "https://www.theguardian.com/politics/2026/may/15/greens-properly-contest-byelection-makerfield-burnham",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-05-15T10:20:32.000Z",
-      "tags": [
-        "Burnham"
       ]
     },
     {
@@ -1982,24 +1056,6 @@
       ]
     },
     {
-      "title": "Burnham makes move to take on Starmer after MP stands down so he can challenge PM",
-      "url": "https://www.independent.co.uk/news/uk/politics/burnham-starmer-streeting-labour-leadership-b2976745.html",
-      "source": "Independent UK Politics",
-      "publishedAt": "2026-05-15T07:45:50.000Z",
-      "tags": [
-        "Burnham"
-      ]
-    },
-    {
-      "title": "Starmer loyalist admits PM is unpopular but warns against ‘copying Tories’",
-      "url": "https://www.theguardian.com/politics/2026/may/15/keir-starmer-ally-steve-reed-admits-pm-is-unpopular",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-05-15T07:34:15.000Z",
-      "tags": [
-        "Cabinet"
-      ]
-    },
-    {
       "title": "Gilts Slump as Investors Brace for Burnham Challenge to Starmer - Bloomberg.com",
       "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQMnNlTnRFTmNFOXp6LWdhQTB1RkpwVjgxMllxTDFRUnpJZ3F5bzVSN2dXOVJpRi0ycHAwcWgtUjZxVmpSRGN5bjdrOVUyVTVYMG9Lc2IwcFo1NE5NQ2NpY0dZWkY2UzFzWi1iTXBBeU1td3B5Sm9qMHJRT3M2YzFZY25zSTQ0bEF0WVI5d3p3ZXpGb0tzT1BuMXZJZDRFWFpyNkNuR3kzdlROdzlTbW51dV9hRTA?oc=5",
       "source": "Bloomberg.com",
@@ -2112,6 +1168,45 @@
       "tags": [
         "Streeting",
         "Burnham",
+        "Rayner"
+      ]
+    },
+    {
+      "title": "Watch Starmer Crisis: Labour Power Struggle Highlights UK Fiscal Dilemma - Bloomberg - Bloomberg.com",
+      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPTE8yOUZOTmlpb0c0N0lrclBad0oydWNWX2syWUNTZXJBQTMzRWNaUXhVYkNaNDhZdE5KYVhTazlVVnZ5YTg3UmVvTTQ5WldmVmd1ckd1U01uejloWnJHdC1SSjcxQnJTa3BIT3RKNUMzY1dtOTBma0VDUm04WkhWM0VOQzhoTGpvelVSQjFvbHVNMWhDREhTNnBLbGo3RUdMdklPUmNxWU9ZWGpvWldzMVIwU2drblFhSU9EY0loLTdwdEhFWEE?oc=5",
+      "source": "Bloomberg.com",
+      "publishedAt": "2026-05-15T00:00:00.000Z",
+      "tags": [
+        "Starmer"
+      ]
+    },
+    {
+      "title": "UK joins Europe pledge to make it easier to deport migrants in bid to curb illegal crossings",
+      "url": "https://www.independent.co.uk/news/uk/politics/migration-uk-eu-torture-human-rights-cooper-b2976839.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-14T22:51:36.000Z",
+      "tags": [
+        "Cabinet"
+      ]
+    },
+    {
+      "title": "Burnham to make bid to return as MP as pressure mounts on Starmer",
+      "url": "https://www.bbc.com/news/articles/c1l2e325zvgo?at_medium=RSS&at_campaign=rss",
+      "source": "BBC Politics",
+      "publishedAt": "2026-05-14T22:20:31.000Z",
+      "tags": [
+        "Streeting",
+        "Burnham",
+        "Resignation",
+        "Leadership"
+      ]
+    },
+    {
+      "title": "Experts question HMRC decision on Angela Rayner’s tax affairs - The Times",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOYzhVc25xRGVjblphaEpfelJyOWVCUVA3M09IcE85NE5ZaGJnVlBwSk9pZDVqLWJyeUM5VG1FcjFLaG1IbjRYM1NyUE1ibUJIVDlTd3A2WW9ud1ltdWF4MnNqQ2g1U0VORjJRU1didmMxdmpTb1M4UkVwWEhuZmpsVVdqZTQzSktlRWQ3RVB1czhMckJCNTNQZw?oc=5",
+      "source": "The Times",
+      "publishedAt": "2026-05-14T22:03:07.000Z",
+      "tags": [
         "Rayner"
       ]
     }
@@ -2252,7 +1347,7 @@
     "pairedSenior": true,
     "pairedSeniorInExits": true,
     "pairedSeniorInNews": false,
-    "seniorExitCount": 4,
+    "seniorExitCount": 5,
     "seniorResignHeadlineCount": 0,
     "delegationHits": [],
     "seniorResignHits": []
@@ -2279,7 +1374,7 @@
     },
     {
       "level": "red",
-      "label": "Paired senior resignations detected (4 cabinet/sec-of-state exits, 0 senior-resign headlines).",
+      "label": "Paired senior resignations detected (5 cabinet/sec-of-state exits, 0 senior-resign headlines).",
       "detail": "Two senior departures within 48h is the Truss/Johnson cascade signal — within 24-48h of this pattern, both PMs were out."
     },
     {
@@ -2289,7 +1384,7 @@
     },
     {
       "level": "high",
-      "label": "4 ministerial exits recorded.",
+      "label": "5 ministerial exits recorded.",
       "detail": "Cabinet stability breaking. Watch for cascade — three or more exits historically precedes leader resignations."
     },
     {
@@ -2312,7 +1407,7 @@
       "id": "labourlist-tracker",
       "name": "LabourList tracker",
       "url": "https://labourlist.org/2026/05/labourlist-labour-mp-starmer-resignation-tracker/",
-      "fetchedAt": "2026-05-15T10:50:23.041Z",
+      "fetchedAt": "2026-05-15T10:53:17.734Z",
       "ok": true,
       "note": "Parsed headline counts and 93 named public-call rows."
     },
@@ -2320,7 +1415,7 @@
       "id": "sky-politics",
       "name": "Sky News Politics",
       "url": "https://feeds.skynews.com/feeds/rss/politics.xml",
-      "fetchedAt": "2026-05-15T10:50:23.816Z",
+      "fetchedAt": "2026-05-15T10:53:21.560Z",
       "ok": true,
       "note": "Parsed 6 relevant items."
     },
@@ -2328,7 +1423,7 @@
       "id": "guardian-politics",
       "name": "Guardian Politics",
       "url": "https://news.google.com/rss/search?q=site:theguardian.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:24.145Z",
+      "fetchedAt": "2026-05-15T10:53:22.768Z",
       "ok": true,
       "note": "Parsed 79 relevant items."
     },
@@ -2336,7 +1431,7 @@
       "id": "bbc-politics",
       "name": "BBC Politics",
       "url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
-      "fetchedAt": "2026-05-15T10:50:24.650Z",
+      "fetchedAt": "2026-05-15T10:53:23.266Z",
       "ok": true,
       "note": "Parsed 38 relevant items."
     },
@@ -2344,7 +1439,7 @@
       "id": "labourlist-feed",
       "name": "LabourList",
       "url": "https://labourlist.org/feed/",
-      "fetchedAt": "2026-05-15T10:50:24.794Z",
+      "fetchedAt": "2026-05-15T10:53:23.889Z",
       "ok": true,
       "note": "Parsed 5 relevant items."
     },
@@ -2352,7 +1447,7 @@
       "id": "ft-uk-politics",
       "name": "FT UK Politics",
       "url": "https://www.ft.com/uk-politics?format=rss",
-      "fetchedAt": "2026-05-15T10:50:25.773Z",
+      "fetchedAt": "2026-05-15T10:53:24.787Z",
       "ok": true,
       "note": "Parsed 16 relevant items."
     },
@@ -2360,15 +1455,15 @@
       "id": "telegraph-politics",
       "name": "Telegraph Politics",
       "url": "https://news.google.com/rss/search?q=site:telegraph.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:26.069Z",
+      "fetchedAt": "2026-05-15T10:53:25.133Z",
       "ok": true,
-      "note": "Parsed 51 relevant items."
+      "note": "Parsed 52 relevant items."
     },
     {
       "id": "times-redbox",
       "name": "The Times Politics",
       "url": "https://news.google.com/rss/search?q=site:thetimes.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:26.584Z",
+      "fetchedAt": "2026-05-15T10:53:25.590Z",
       "ok": true,
       "note": "Parsed 38 relevant items."
     },
@@ -2376,7 +1471,7 @@
       "id": "politico-uk",
       "name": "Politico UK",
       "url": "https://www.politico.eu/section/uk/feed/",
-      "fetchedAt": "2026-05-15T10:50:27.024Z",
+      "fetchedAt": "2026-05-15T10:53:26.016Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -2384,7 +1479,7 @@
       "id": "new-statesman-politics",
       "name": "New Statesman Politics",
       "url": "https://www.newstatesman.com/politics/feed",
-      "fetchedAt": "2026-05-15T10:50:27.696Z",
+      "fetchedAt": "2026-05-15T10:53:27.073Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -2392,7 +1487,7 @@
       "id": "spectator",
       "name": "Spectator",
       "url": "https://news.google.com/rss/search?q=site:spectator.co.uk+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:30.205Z",
+      "fetchedAt": "2026-05-15T10:53:28.647Z",
       "ok": true,
       "note": "Parsed 1 relevant items."
     },
@@ -2400,7 +1495,7 @@
       "id": "conservativehome",
       "name": "ConservativeHome",
       "url": "https://conservativehome.com/feed/",
-      "fetchedAt": "2026-05-15T10:50:30.475Z",
+      "fetchedAt": "2026-05-15T10:53:28.968Z",
       "ok": true,
       "note": "Parsed 2 relevant items."
     },
@@ -2408,7 +1503,7 @@
       "id": "tortoise",
       "name": "Tortoise",
       "url": "https://news.google.com/rss/search?q=site:tortoisemedia.com+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:30.611Z",
+      "fetchedAt": "2026-05-15T10:53:29.789Z",
       "ok": true,
       "note": "Parsed 19 relevant items."
     },
@@ -2416,7 +1511,7 @@
       "id": "reuters-uk",
       "name": "Reuters UK",
       "url": "https://news.google.com/rss/search?q=site:reuters.com+UK+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:31.307Z",
+      "fetchedAt": "2026-05-15T10:53:30.163Z",
       "ok": true,
       "note": "Parsed 28 relevant items."
     },
@@ -2424,7 +1519,7 @@
       "id": "bloomberg-uk",
       "name": "Bloomberg UK",
       "url": "https://news.google.com/rss/search?q=site:bloomberg.com+UK+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:31.832Z",
+      "fetchedAt": "2026-05-15T10:53:30.551Z",
       "ok": true,
       "note": "Parsed 47 relevant items."
     },
@@ -2432,15 +1527,15 @@
       "id": "mirror-politics",
       "name": "Mirror Politics",
       "url": "https://news.google.com/rss/search?q=site:mirror.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:32.327Z",
+      "fetchedAt": "2026-05-15T10:53:31.136Z",
       "ok": true,
-      "note": "Parsed 43 relevant items."
+      "note": "Parsed 36 relevant items."
     },
     {
       "id": "inews-politics",
       "name": "i Politics",
       "url": "https://inews.co.uk/category/news/politics/feed",
-      "fetchedAt": "2026-05-15T10:50:32.778Z",
+      "fetchedAt": "2026-05-15T10:53:31.563Z",
       "ok": true,
       "note": "Parsed 8 relevant items."
     },
@@ -2448,7 +1543,7 @@
       "id": "itv-politics",
       "name": "ITV Politics",
       "url": "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:35.168Z",
+      "fetchedAt": "2026-05-15T10:53:32.465Z",
       "ok": true,
       "note": "Parsed 47 relevant items."
     },
@@ -2456,7 +1551,7 @@
       "id": "independent-uk-politics",
       "name": "Independent UK Politics",
       "url": "https://www.independent.co.uk/news/uk/politics/rss",
-      "fetchedAt": "2026-05-15T10:50:35.634Z",
+      "fetchedAt": "2026-05-15T10:53:32.977Z",
       "ok": true,
       "note": "Parsed 20 relevant items."
     },
@@ -2464,7 +1559,7 @@
       "id": "sam-freedman",
       "name": "Sam Freedman — Comment is Freed",
       "url": "https://news.google.com/rss/search?q=site:samf.substack.com+OR+%22Sam+Freedman%22+Starmer&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-15T10:50:35.877Z",
+      "fetchedAt": "2026-05-15T10:53:33.746Z",
       "ok": true,
       "note": "Parsed 7 relevant items."
     },
@@ -2472,7 +1567,7 @@
       "id": "byline-times",
       "name": "Byline Times",
       "url": "https://bylinetimes.com/feed/",
-      "fetchedAt": "2026-05-15T10:50:36.303Z",
+      "fetchedAt": "2026-05-15T10:53:34.105Z",
       "ok": true,
       "note": "Parsed 7 relevant items."
     },
@@ -2480,7 +1575,7 @@
       "id": "novara-media",
       "name": "Novara Media",
       "url": "https://novaramedia.com/feed/",
-      "fetchedAt": "2026-05-15T10:50:36.707Z",
+      "fetchedAt": "2026-05-15T10:53:34.830Z",
       "ok": true,
       "note": "Parsed 7 relevant items."
     },
@@ -2488,7 +1583,7 @@
       "id": "bluesky-lobby",
       "name": "Bluesky lobby journalists",
       "url": "https://public.api.bsky.app",
-      "fetchedAt": "2026-05-15T10:50:36.807Z",
+      "fetchedAt": "2026-05-15T10:53:35.603Z",
       "ok": true,
       "note": "Pulled 68 relevant posts from 11/15 handles."
     },
@@ -2496,23 +1591,23 @@
       "id": "guardian-open-platform",
       "name": "Guardian Open Platform",
       "url": "https://content.guardianapis.com/search",
-      "fetchedAt": "2026-05-15T10:50:42.618Z",
-      "ok": true,
-      "note": "Pulled 30 Guardian politics items via Open Platform."
+      "fetchedAt": "2026-05-15T10:53:40.647Z",
+      "ok": false,
+      "note": "Set GUARDIAN_API_KEY (free signup at open-platform.theguardian.com) to enable."
     },
     {
       "id": "wikipedia-edits",
       "name": "Wikipedia edits (Starmer-orbit)",
       "url": "https://en.wikipedia.org/w/api.php",
-      "fetchedAt": "2026-05-15T10:50:43.420Z",
-      "ok": true,
-      "note": "Collected 0 recent revisions across 0 pages."
+      "fetchedAt": "2026-05-15T10:53:40.648Z",
+      "ok": false,
+      "note": "Wikipedia API failed: HTTP 403"
     },
     {
       "id": "cc-news-meta",
       "name": "Common Crawl CC-NEWS (metadata)",
       "url": "https://data.commoncrawl.org",
-      "fetchedAt": "2026-05-15T10:50:43.523Z",
+      "fetchedAt": "2026-05-15T10:53:40.993Z",
       "ok": true,
       "note": "Latest CC-NEWS warc.paths.gz available · 1364 bytes · Fri, 15 May 2026 09:05:12 GMT"
     },
@@ -2520,7 +1615,7 @@
       "id": "parliament-members-api",
       "name": "UK Parliament Members API",
       "url": "https://members-api.parliament.uk/api/Parties/StateOfTheParties",
-      "fetchedAt": "2026-05-15T10:50:44.004Z",
+      "fetchedAt": "2026-05-15T10:53:42.527Z",
       "ok": true,
       "note": "PLP size 403; 20% trigger = 81."
     },
@@ -2528,15 +1623,15 @@
       "id": "gdelt-doc-api",
       "name": "GDELT document API",
       "url": "https://api.gdeltproject.org/api/v2/doc/doc",
-      "fetchedAt": "2026-05-15T10:50:44.831Z",
+      "fetchedAt": "2026-05-15T10:53:43.692Z",
       "ok": true,
-      "note": "Transient unavailable (GDELT upstream often flaky): fetch failed. Will retry next run."
+      "note": "Optional discovery is disabled by default. Set ENABLE_GDELT=1 to include it."
     },
     {
       "id": "polymarket-public-search",
       "name": "Polymarket public search",
       "url": "https://gamma-api.polymarket.com/public-search",
-      "fetchedAt": "2026-05-15T10:51:07.321Z",
+      "fetchedAt": "2026-05-15T10:53:43.692Z",
       "ok": true,
       "note": "Parsed 60 active relevant markets."
     },
