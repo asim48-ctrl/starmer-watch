@@ -163,6 +163,7 @@ async function main() {
 
   const news = mergeNews([...rssNews, ...gdeltNews, ...bskyNews, ...guardianNews, ...redditNews]);
   augmentExitsFromNews(labour, news);
+  await mergePersistedCabinetExits(labour);
   const counts = buildCounts(labour, manual, parliament);
   const pressure = buildPressure(counts, labour);
   const resignations = buildResignations(labour, news);
@@ -772,7 +773,7 @@ function buildCounts(labour, manual, parliament) {
   const livePlpSize = parliament?.plpSize;
   const liveThreshold = livePlpSize ? Math.ceil(livePlpSize * 0.2) : null;
   const threshold = liveThreshold ?? manual.contestThreshold ?? DEFAULT_MANUAL.contestThreshold;
-  const ministerExits = labour.exits.filter((exit) => /minister/i.test(exit.role)).length;
+  const ministerExits = labour.exits.filter((exit) => /minister|secretary|chancellor/i.test(exit.role)).length;
 
   return {
     resignCalls: {
@@ -1069,6 +1070,59 @@ async function scoreNewsSentiment(news) {
     perEntity: perEntityOut,
     scorer,
   };
+}
+
+const cabinetExitsPath = "data/cabinet-exits.json";
+
+async function mergePersistedCabinetExits(labour) {
+  // Cabinet resignations are durable facts — once detected they should stay
+  // counted even after the trigger headline rolls off the news window. The
+  // persisted list at data/cabinet-exits.json is append-only; this function
+  // (a) merges any previously-detected entries into labour.exits, and
+  // (b) writes any *new* news-derived exits back to the file so future
+  // refreshes still see them.
+  let persisted = [];
+  try {
+    const raw = await readFile(path.join(rootDir, cabinetExitsPath), "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) persisted = parsed;
+  } catch {}
+
+  const existingNames = new Set((labour.exits || []).map((e) => (e.name || "").toLowerCase()));
+  const persistedNames = new Set(persisted.map((e) => (e.name || "").toLowerCase()));
+
+  // Append any new news-derived exits (alignment "cabinet exit") to the file.
+  for (const exit of labour.exits || []) {
+    if (exit.alignment !== "cabinet exit") continue;
+    const key = (exit.name || "").toLowerCase();
+    if (persistedNames.has(key)) continue;
+    persisted.push({
+      name: exit.name,
+      role: exit.role,
+      detectedAt: new Date().toISOString(),
+      source: exit.source || "News (auto-detected)",
+      move: exit.move,
+    });
+    persistedNames.add(key);
+  }
+
+  // Merge back any persisted entries that aren't already in labour.exits.
+  for (const entry of persisted) {
+    const key = (entry.name || "").toLowerCase();
+    if (existingNames.has(key)) continue;
+    labour.exits.push({
+      name: entry.name,
+      role: entry.role,
+      move: entry.move || `${entry.name} resigned as ${entry.role}.`,
+      alignment: "cabinet exit",
+      source: entry.source || "Persisted",
+    });
+    existingNames.add(key);
+  }
+
+  try {
+    await writeFile(path.join(rootDir, cabinetExitsPath), `${JSON.stringify(persisted, null, 2)}\n`, "utf8");
+  } catch {}
 }
 
 function augmentExitsFromNews(labour, news) {
