@@ -173,6 +173,7 @@ async function main() {
   const escalation = buildEscalationSignals({ labour, news, counts });
   const pressureIndex = await buildPressureIndex({ counts, markets, manual, news, priorHistory, escalation });
   const highSignalNews = buildHighSignalNews(news, escalation);
+  const hourlyPulse = buildHourlyPulse({ news, markets, escalation, pressureIndex, highSignalNews });
   const history = await updateHistory({ generatedAt, counts, pressureIndex });
   await maybeFireAlerts({ pressureIndex, history, counts, manual });
   const headline = manual.headlineOverride || buildHeadline(counts, markets, pressureIndex);
@@ -197,6 +198,7 @@ async function main() {
     parliament,
     escalation,
     highSignalNews,
+    hourlyPulse,
     nextCatalysts: buildNextCatalysts({ counts, news, pressureIndex, escalation }),
     sources: sourceHealth.concat(manual.sourceNotes || []),
   };
@@ -1241,6 +1243,63 @@ function buildEscalationSignals({ labour, news, counts }) {
     seniorResignHeadlineCount: seniorResignHits.length,
     delegationHits: delegationHits.slice(0, 5),
     seniorResignHits: seniorResignHits.slice(0, 5),
+  };
+}
+
+function buildHourlyPulse({ news, markets, escalation, pressureIndex, highSignalNews }) {
+  // A 4-6 line digest: top story cluster, top social signal, biggest market
+  // mover, any escalation flag, all from the last 60 minutes where possible.
+  const now = Date.now();
+  const lastHour = (item) => {
+    const t = new Date(item.publishedAt || 0).getTime();
+    return Number.isFinite(t) && now - t <= 60 * 60 * 1000;
+  };
+  const last6h = (item) => {
+    const t = new Date(item.publishedAt || 0).getTime();
+    return Number.isFinite(t) && now - t <= 6 * 60 * 60 * 1000;
+  };
+
+  const recentNews = (news || []).filter(lastHour);
+  const recent6 = (news || []).filter(last6h);
+  const clusters = dedupStories(recentNews.length ? recentNews : recent6);
+  const topCluster = clusters.sort((a, b) => (b._cluster || 1) - (a._cluster || 1))[0];
+
+  const social = (news || []).filter((item) => /^Bluesky/i.test(item.source || "") && lastHour(item));
+  const topSocial = social.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))[0]
+    || (news || []).filter((item) => /^Bluesky/i.test(item.source || "")).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))[0];
+
+  const deltas = pressureIndex.marketDeltas || {};
+  const mover = pressureIndex.biggestMover;
+  const marketLine = mover && Number.isFinite(mover.deltaPp) && Math.abs(mover.deltaPp) >= 1
+    ? `Biggest Polymarket move (1h): ${mover.direction === "up" ? "▲" : "▼"} ${Math.abs(mover.deltaPp).toFixed(1)}pp — ${mover.question}`
+    : Number.isFinite(deltas.last1h)
+      ? `Top Starmer-exit market 1h: ${deltas.last1h > 0 ? "▲" : "▼"} ${Math.abs(deltas.last1h).toFixed(1)}pp`
+      : null;
+
+  const escalationLine = escalation && escalation.stage >= 4
+    ? `Escalation stage ${escalation.stage}/6 — ${escalation.stageLabel}${escalation.pairedSenior ? "; paired senior resignations" : ""}.`
+    : null;
+
+  const highSignalRecent = (highSignalNews || []).filter(lastHour).slice(0, 2);
+
+  const lines = [];
+  if (topCluster) {
+    const count = topCluster._cluster || 1;
+    lines.push({ kind: "story", text: `Top story (${count} source${count === 1 ? "" : "s"}): ${topCluster.title}`, url: topCluster.url, source: topCluster.source });
+  }
+  if (escalationLine) lines.push({ kind: "escalation", text: escalationLine });
+  if (marketLine) lines.push({ kind: "market", text: marketLine, url: mover?.url });
+  if (topSocial) {
+    lines.push({ kind: "social", text: `Lobby voice: ${topSocial.title.slice(0, 180)}`, url: topSocial.url, source: topSocial.source });
+  }
+  for (const h of highSignalRecent) {
+    lines.push({ kind: "highsignal", text: `[${h.signalTag}] ${h.title}`, url: h.url, source: h.source });
+  }
+
+  return {
+    generatedAt: new Date().toISOString(),
+    windowMinutes: recentNews.length ? 60 : 360,
+    lines: lines.slice(0, 6),
   };
 }
 

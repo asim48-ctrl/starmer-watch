@@ -1408,3 +1408,27 @@ button {
   cursor: pointer;
 }
 .news-chip.active { background: var(--red); color: white; border-color: var(--red); }
+
+.hourly-pulse {
+  grid-column: 1 / -1;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(31, 103, 189, 0.05);
+  border: 1px solid rgba(31, 103, 189, 0.18);
+  border-radius: 10px;
+}
+.hourly-pulse h4 {
+  margin: 0 0 8px;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.pulse-list { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+.pulse-list li { padding: 6px 8px; border-radius: 6px; background: white; font-size: 0.82rem; line-height: 1.35; }
+.pulse-list li.pulse-escalation { border-left: 3px solid var(--red); }
+.pulse-list li.pulse-market { border-left: 3px solid var(--amber); }
+.pulse-list li.pulse-story { border-left: 3px solid var(--blue); }
+.pulse-list li.pulse-social { border-left: 3px solid #94a3b8; }
+.pulse-list li.pulse-highsignal { border-left: 3px solid var(--red); }
+.pulse-source { color: var(--muted); }

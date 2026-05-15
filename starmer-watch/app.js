@@ -216,6 +216,7 @@ function renderPressure() {
   gauge.append(
     buildIndexGauge(index),
     buildPressureSummary({ pressure, support, threshold }),
+    buildHourlyPulse(),
     buildBaselineStrip(index),
   );
   renderTrendChart({ pressure, support, threshold });
@@ -279,6 +280,28 @@ function buildIndexGauge(index) {
   svg.append(valueText, label, pill);
   frame.append(svg);
   return frame;
+}
+
+function buildHourlyPulse() {
+  const wrap = create("div", "hourly-pulse");
+  const pulse = state.hourlyPulse;
+  if (!pulse || !pulse.lines?.length) return wrap;
+  const win = pulse.windowMinutes;
+  wrap.append(create("h4", "", `Hourly pulse · last ${win >= 60 ? Math.round(win / 60) + "h" : win + "m"}`));
+  const list = create("ul", "pulse-list");
+  for (const line of pulse.lines) {
+    const li = create("li", `pulse-${line.kind}`);
+    if (line.url) {
+      const a = externalLink(line.url, line.text);
+      li.append(a);
+    } else {
+      li.append(create("span", "", line.text));
+    }
+    if (line.source) li.append(create("small", "pulse-source", ` · ${line.source}`));
+    list.append(li);
+  }
+  wrap.append(list);
+  return wrap;
 }
 
 function buildBaselineStrip(index) {
