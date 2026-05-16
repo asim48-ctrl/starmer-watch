@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-16T10:46:27.187Z",
-  "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 52/100 (building). Polymarket's top Starmer-exit signal is 6.5%.",
+  "generatedAt": "2026-05-16T10:48:15.713Z",
+  "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 57/100 (elevated). Polymarket's top Starmer-exit signal is 6.5%.",
   "counts": {
     "resignCalls": {
       "value": 97,
@@ -34,21 +34,21 @@
     "note": "97 MPs are recorded as calling for an exit or timetable, 16 above the modeled contest threshold; the public support bloc is 14 larger than the pressure bloc. A public count is not the same as a formal leadership challenge."
   },
   "pressureIndex": {
-    "value": 52,
-    "band": "building",
+    "value": 57,
+    "band": "elevated",
     "formula": "Weighted: 35% PLP exit-call share (saturates at 1.5× the contest trigger so MPs above 81 still register), 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity over a 12h window (negation-aware lexicon ensembled with winkNLP). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
     "perEntitySentiment": {
       "starmer": {
-        "mentions": 4,
-        "avg": -0.05
+        "mentions": 9,
+        "avg": 0.03
       },
       "streeting": {
         "mentions": 0,
         "avg": 0
       },
       "burnham": {
-        "mentions": 4,
-        "avg": 0.02
+        "mentions": 9,
+        "avg": 0.04
       },
       "rayner": {
         "mentions": 0,
@@ -89,17 +89,17 @@
         "weight": 25,
         "normalised": 0.065,
         "raw": "6.5% · Starmer out by May 31, 2026?",
-        "lastChangedMinutes": 176,
+        "lastChangedMinutes": 178,
         "contribution": 1.6
       },
       {
         "id": "newsSentiment",
         "label": "News intensity × negativity",
         "weight": 15,
-        "normalised": 0.19722083333333335,
-        "raw": "8 clusters (12h, 3-shingle Jaccard ≥0.5), 8 scored via ensemble (winkNLP + lexicon), avg -0.01",
+        "normalised": 0.4791479166666667,
+        "raw": "18 clusters (12h, 3-shingle Jaccard ≥0.5), 18 scored via ensemble (winkNLP + lexicon), avg 0.06",
         "lastChangedMinutes": 0,
-        "contribution": 3
+        "contribution": 7.2
       }
     ],
     "marketProb": 0.065,
@@ -1340,6 +1340,14 @@
       "ministers": 5,
       "index": 52,
       "marketProb": 0.065
+    },
+    {
+      "t": "2026-05-16T10:48:15.713Z",
+      "pressure": 97,
+      "support": 111,
+      "ministers": 5,
+      "index": 57,
+      "marketProb": 0.065
     }
   ],
   "resignationCalls": [
@@ -1740,9 +1748,9 @@
       "role": "Greater Manchester mayor and external Labour alternative",
       "pressureScore": 6,
       "posture": "External route pressure: his leverage is membership and PLP appetite, but any path still depends on parliamentary access or a mediated role.",
-      "latestMove": "What an Andy Burnham premiership would look like - The Telegraph",
+      "latestMove": "Politics latest: Burnham handed two major boosts in bid to return as MP and challenge Starmer",
       "signals": [
-        "The Telegraph: What an Andy Burnham premiership would look like - The Telegraph",
+        "Independent UK Politics: Politics latest: Burnham handed two major boosts in bid to return as MP and challenge Starmer",
         "Parsed source text says any transition should include giving Burnham a path into the conversation."
       ]
     },
@@ -1901,6 +1909,13 @@
     {
       "name": "News resignation signal",
       "role": "Source headline",
+      "move": "Another Reform candidate resigns after vetting failure – and councils are forced to pick up the bill",
+      "alignment": "source corroboration",
+      "source": "Independent UK Politics"
+    },
+    {
+      "name": "News resignation signal",
+      "role": "Source headline",
       "move": "My post on why prime ministers keep failing.\n\nAnd three big things that the next PM can change that will make their job easier.\n\nsamf.substack.com/p/why-do-pri...",
       "alignment": "source corroboration",
       "source": "Bluesky · @samfr.bsky.social"
@@ -1911,13 +1926,6 @@
       "move": "I will never understand how Keir reconciles his self-conception as a good man doing a good job as prime minister with “my premiership had to be brought to the brink of death for me to say this”.",
       "alignment": "source corroboration",
       "source": "Bluesky · @stephenkb.bsky.social"
-    },
-    {
-      "name": "News resignation signal",
-      "role": "Source headline",
-      "move": "Will Makerfield decide the next PM?",
-      "alignment": "source corroboration",
-      "source": "BBC Politics"
     }
   ],
   "markets": [
@@ -2044,6 +2052,33 @@
   ],
   "news": [
     {
+      "title": "‘An hour of abuse’: Jeremy Corbyn on Labour coups, and whether he feels sorry for Starmer",
+      "url": "https://www.theguardian.com/politics/2026/may/16/jeremy-corbyn-target-labour-coup-keir-starmer-andy-burnham-wes-streeting-angela-rayner-leadership",
+      "source": "Guardian (Open Platform)",
+      "publishedAt": "2026-05-16T09:49:39.000Z",
+      "tags": [
+        "Starmer"
+      ]
+    },
+    {
+      "title": "Another Reform candidate resigns after vetting failure – and councils are forced to pick up the bill",
+      "url": "https://www.independent.co.uk/news/uk/politics/reform-uk-vetting-local-election-councillors-resign-b2974935.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-16T09:25:59.000Z",
+      "tags": [
+        "Resignation"
+      ]
+    },
+    {
+      "title": "Politics latest: Burnham handed two major boosts in bid to return as MP and challenge Starmer",
+      "url": "https://www.independent.co.uk/news/uk/politics/burnham-starmer-labour-latest-news-politics-updates-b2977804.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-16T09:16:59.000Z",
+      "tags": [
+        "Burnham"
+      ]
+    },
+    {
       "title": "What an Andy Burnham premiership would look like - The Telegraph",
       "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNSEkwSkMyOHZOamlMRkFwSDhGMjJSTXIyVGdTcVlEdVNUYnQ0LXdlbkJyZ1ZsdDVfZkF0MkVDZ0R6LWpWYXdFRkpmTDFVS19SMWd0UVVxSDYzVENwMG91bFhtV1Aya2xlVzRqZ2FkNWl2MGhMclhwMzJQc1JPNWpGYUwtcGxfd1hvOENtVGJGekxJSGZlbWc?oc=5",
       "source": "The Telegraph",
@@ -2071,6 +2106,15 @@
       ]
     },
     {
+      "title": "‘Starmer is doing nothing, but Burnham is for the people’: Makerfield voters pin their hopes on the ‘King of the North’",
+      "url": "https://www.independent.co.uk/news/uk/politics/burnham-starmer-makerfield-reform-labour-leadership-b2977407.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-16T08:24:47.000Z",
+      "tags": [
+        "Burnham"
+      ]
+    },
+    {
       "title": "Rivals told to skip leadership contest if Andy Burnham wins by-election - The Times",
       "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPcGVJVkp1VFNoMmc3Y0FrUjdQWEpLNkhydlJRNmdBN1c1VFN3RWZXS3FnRFFrSDlpYWs2WHRPcmt2VFZXWUxvWVZKc3lZaDY4MlI0c2hpVGVhb3UzZ3NmeVBqbnZPcWZ5R0RNZjVtT21rbHM1Zy1SYkw2RmwtRDZZdXlabzhVakhIVmJWWFBkY1dYd1FwRjF3NHBYT3dSNnBJVW9QMFFKNlFSQW95aC1aanBQWExBempZOE1qeXpVMk1qVVk?oc=5",
       "source": "The Times",
@@ -2078,6 +2122,33 @@
       "tags": [
         "Burnham",
         "Leadership"
+      ]
+    },
+    {
+      "title": "Can Andy Burnham actually beat Reform in Makerfield to take on Starmer? Here’s what the data shows",
+      "url": "https://www.independent.co.uk/news/uk/politics/burnham-starmer-makerfield-odds-reform-by-election-labour-b2977126.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-16T07:42:27.000Z",
+      "tags": [
+        "Burnham"
+      ]
+    },
+    {
+      "title": "‘Why are we even doing this?’ The week that left Britain’s PM looking like an interim leader",
+      "url": "https://www.theguardian.com/politics/2026/may/16/keir-starmer-labour-leadership-talk-burnham-streeting",
+      "source": "Guardian (Open Platform)",
+      "publishedAt": "2026-05-16T07:00:02.000Z",
+      "tags": [
+        "Leadership"
+      ]
+    },
+    {
+      "title": "Farage vs Burnham: The tactics Reform will use in crunch by-election",
+      "url": "https://inews.co.uk/news/politics/farage-burnham-tactics-reform-crunch-by-election-4419656",
+      "source": "i Politics",
+      "publishedAt": "2026-05-16T07:00:00.000Z",
+      "tags": [
+        "Burnham"
       ]
     },
     {
@@ -2099,6 +2170,43 @@
       ]
     },
     {
+      "title": "Burnham to U-turn on demand to reverse Brexit during by-election, allies say",
+      "url": "https://inews.co.uk/news/politics/burnham-u-turn-demand-reverse-brexit-during-by-election-4419630",
+      "source": "i Politics",
+      "publishedAt": "2026-05-16T05:00:00.000Z",
+      "tags": [
+        "Burnham"
+      ]
+    },
+    {
+      "title": "The panicked phone calls Cabinet received 'begging them not to humiliate' Starmer",
+      "url": "https://inews.co.uk/news/politics/panicked-phone-calls-cabinet-received-begging-humiliate-starmer-4417978",
+      "source": "i Politics",
+      "publishedAt": "2026-05-16T05:00:00.000Z",
+      "tags": [
+        "Cabinet"
+      ]
+    },
+    {
+      "title": "Some see 'King of the North' as UK government's savior. First he needs a seat in Parliament",
+      "url": "https://www.independent.co.uk/news/uk/politics/andy-burnham-labour-party-keir-starmer-parliament-north-b2977771.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-16T04:15:57.000Z",
+      "tags": [
+        "Burnham"
+      ]
+    },
+    {
+      "title": "Is being prime minister now an impossible job?",
+      "url": "https://www.ft.com/content/528aa1de-bdc7-45df-a784-96f8a2c193ed",
+      "source": "FT UK Politics",
+      "publishedAt": "2026-05-16T04:00:32.000Z",
+      "tags": [
+        "Cabinet",
+        "Leadership"
+      ]
+    },
+    {
       "title": "Burnham cleared to run for selection in pivotal by-election",
       "url": "https://www.bbc.com/news/articles/ckgp2e0rrj4o?at_medium=RSS&at_campaign=rss",
       "source": "BBC Politics",
@@ -2115,6 +2223,15 @@
       "publishedAt": "2026-05-15T23:06:10.000Z",
       "tags": [
         "Starmer"
+      ]
+    },
+    {
+      "title": "Starmer ‘to unveil £18bn defence boost’ ahead of leadership contest - The Telegraph",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNR3JWOS04ZHBVU0JBcUNDQ2tfc29jR2VYUC1uMkxnMnhCMmt5UTRJaGFlMmU3cHQ1WEQtRUpTejdqT1pmSlFDaDItOXMweTd0SGFjWVRMMy1NdEZNNVpyaTU2TDMzUF9uUkV1eXJ3Q25rbzJtYUVLNkRUbXVjamZhaVdVODF5cW5ZSFM5eEJqRXkxem10dFRJclR6dEEwX3dsZVln?oc=5",
+      "source": "The Telegraph",
+      "publishedAt": "2026-05-15T22:44:00.000Z",
+      "tags": [
+        "Leadership"
       ]
     },
     {
@@ -2176,6 +2293,17 @@
       ]
     },
     {
+      "title": "Trump warns it will be ‘tough’ for Starmer to survive as prime minister",
+      "url": "https://www.independent.co.uk/news/uk/politics/donald-trump-keir-starmer-survive-leadership-b2977277.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-15T20:02:48.000Z",
+      "tags": [
+        "Burnham",
+        "Cabinet",
+        "Leadership"
+      ]
+    },
+    {
       "title": "Starmer readies for leadership battle with £18bn boost for defence - The Times",
       "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPaFFneUJTekNOWERkUDI1WlBTRnBYamdNMHNwOWc3STNIUk82ZExMZW9iVXVRVGhPMFY2QkxrY0pLaTFYT3hnVV9FYXVjX2I4allYcUlMRUUwM3VFem9OcFBHZnNiZ1hET1VnSTRkM3hkXzUtc1pTM2hqR2NDbmFDdEpoZTNwV3dHRWxmekFwZnhGaFRsd19ib3plNkluSnU5QU1FYVF3T3JVQQ?oc=5",
       "source": "The Times",
@@ -2222,12 +2350,31 @@
       ]
     },
     {
+      "title": "First Cabinet minister backs Andy Burnham's return",
+      "url": "https://inews.co.uk/news/politics/first-cabinet-minister-backs-andy-burnhams-return-4420715",
+      "source": "i Politics",
+      "publishedAt": "2026-05-15T19:00:00.000Z",
+      "tags": [
+        "Burnham",
+        "Cabinet"
+      ]
+    },
+    {
       "title": "Will Makerfield decide the next PM?",
       "url": "https://www.bbc.com/news/videos/cx210d45z2eo?at_medium=RSS&at_campaign=rss",
       "source": "BBC Politics",
       "publishedAt": "2026-05-15T18:48:08.000Z",
       "tags": [
         "Cabinet"
+      ]
+    },
+    {
+      "title": "How team Burnham finally cleared the first of many hurdles on route to Westminster",
+      "url": "https://www.theguardian.com/politics/2026/may/15/how-team-burnham-finally-cleared-the-first-of-many-hurdles-on-route-to-westminster",
+      "source": "Guardian (Open Platform)",
+      "publishedAt": "2026-05-15T18:46:45.000Z",
+      "tags": [
+        "Burnham"
       ]
     },
     {
@@ -2249,168 +2396,31 @@
       ]
     },
     {
-      "title": "Andy Burnham will push to become PM before Labour conference, allies say - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOY09YSVBrX1FHNThhekJNUnlKRnE2bkRLeW1aNEV6QWZYSnFLQkNPQVc2czNCTGZjX1E4MWV4bm02cUI5NHg3QnRiSTRvT1lHRHZSUGxWeDduVHFYenFOaEg2dy0zWVV4dzZQbXNMeHRJNmlPc3lUNENJR0ltd01aZFZqZ3pnb3ZwUjIyTTdndm52Vkk?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-05-15T17:56:00.000Z",
-      "tags": [
-        "Burnham"
-      ]
-    },
-    {
-      "title": "What could happen next in Labour leadership challenge? | Labour party leadership - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNcEJSSm5GT1VqenFOb09CaVFUMDZNLWZWUFhUOEtVQkViU2Z6ekpuVmlVTTRSQXpTZUNYd2xTaUNoRjNIMy03aDJ2QVNoLXo0aEdoM1B2cmZqSTdMWWFPY1pxR3F0b19ISEt1Wl9WcjFIWVl2cl8wYW81MnYzN0tpOWhIZkRKZUxRUEpRamhpaXA2TEZjRDA4aGFwT3NTZ2w5d0dpcklfMWc0cjFuQ3NESnFQQlhPT2VuS2xiWnl3LWNtUQ?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-05-15T17:43:00.000Z",
-      "tags": [
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Burnham byelection: the small town that could decide next PM – The Latest - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQOW5kci12THkzdHlMOUg0YThEZjl4RXBrakVJZGs4di10UE04V2w2TDdFVVpSRmFoVGpSNVdWdU5RaWdLb0Y3ejVoYkppRUNUR0ZpSVZqbDhWdGo4VzZLQzJ0alB1YTVvTXoyQ1VaUGFPTkdxNm9oaEdEWldjamNZREFyY3dCaE5IVVJMM1NFTklWa1hpM1c2UUZYQlJSWkRKbTVWeWwyeFVwY2cxRVo1c3hqZGJTOFR5SE1PUHBB?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-05-15T17:40:00.000Z",
-      "tags": [
-        "Burnham"
-      ]
-    },
-    {
-      "title": "Andy Burnham is destined to be a disappointment - The Telegraph",
-      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOMUFEeTFNWEptSlRMZDkyR0xya0hkM2RySm1qOGVmLS02NnNXNFg5MWJLdFo3elZlb2I1VzVONVRvNl9iWnVKckxqRGsyLXdidUg1LWJRZ29KVHhBVWg5eGJHZDB0eHVrNW1FT1BDa2xTdWVSdXdReXNKTkhITTBSbUdfaW9DTFMxazJUXzRFSEk1UmItRUFFM2UwX2I?oc=5",
-      "source": "The Telegraph",
-      "publishedAt": "2026-05-15T17:36:00.000Z",
-      "tags": [
-        "Burnham"
-      ]
-    },
-    {
-      "title": "Left-leaning Andy Burnham’s leadership tilt spooks bond market - The Times",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQd0ZLZmc4a1RtR1RlWGoxMlFRMHZ4aUpIMno3UVNxbkhJSWc4QWRWZng0X0tlazQ3ai1Idmgya09ldXlvUl9TelBVcTMyOWN6SUVBNGVnSkJYdnQ2ZWt2MDIzTXk5WkYyZWZZZEc0cXZyV28xWHlLRHVVNGlFQi1CRTVDUEoxeHdyNG54ZURkcFFab2FhV3BjQkFKWWprbERUOUt0RFF3RG9hemwyRjRPWUZsci0?oc=5",
-      "source": "The Times",
-      "publishedAt": "2026-05-15T17:33:00.000Z",
+      "title": "Andy Burnham approved to stand in by-election – opening path to challenge Starmer for leadership",
+      "url": "https://www.independent.co.uk/news/uk/politics/wes-streeting-andy-burnham-labour-leadership-race-b2977439.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-05-15T18:11:33.000Z",
       "tags": [
         "Burnham",
         "Leadership"
       ]
     },
     {
-      "title": "Burnham would be the Labour Liz Truss, say Manchester mayor’s opponents - The Telegraph",
-      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNeVNsU0VMeFl3VHBOZXd4SHB2MFNOSmRhcVp1ZzlKTjFkNGJKNy1OckdwR1puZFNLLUJQd2N0aThCQVNZYXdibDBDTnlST3JWRU02SjhTS1dRbG05LU5GZ0FWZzkwUEgzTTY3RUo2Z0xMTW9IZW1iRnNlTElqcHNUY2s0cm85TTlTNHpFMHhXMElEQXpFM3dmbQ?oc=5",
-      "source": "The Telegraph",
-      "publishedAt": "2026-05-15T17:32:00.000Z",
+      "title": "Brand Burnham strong in Makerfield as voters prepare for ‘hinge moment’",
+      "url": "https://www.ft.com/content/bd5e1b4f-ced7-4ff1-b420-c8ac7915638a",
+      "source": "FT UK Politics",
+      "publishedAt": "2026-05-15T18:08:58.000Z",
       "tags": [
         "Burnham"
       ]
     },
     {
-      "title": "The £800m skyscraper deal casting a shadow over Burnham’s leadership bid - The Telegraph",
-      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPc2FXS0ExRktwQnBaLWpZVU1NU1otYWZ1Rnc0RzlGMFRlc2dhclotNXgzazk5TU9fTlNaeXJhUUJ3cDM4Qkhkb2RLVGRKRmJYdDlIeWQ0OTQwOWY2dTdoNVpqX3ZzM1hWSWdWQXBtMjM3bVJLcVVVMnRxVzFqUVM3Q05hMUJDOUk1UUZXQUdVVzNObXFhODVQelRGYXpGWmhpRlUwZkFPVEhHdHM?oc=5",
-      "source": "The Telegraph",
-      "publishedAt": "2026-05-15T17:30:00.000Z",
-      "tags": [
-        "Burnham",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Who is James Murray, the new health secretary replacing Wes Streeting? - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOYnJwS1UtaFdJLTB3RGRueFo0RHI0X3FVdDdHS1g2M3k5eWFTdmV3SzhjbE9GWEFfN3k3cllKM2xaa0c4MjZCYjJGV2h3THFmMW1iN2pwSzVidzR6RjhIbEtwTnlnVGxWdzhfdTJVTGZPek04Z3R6NEVTdkgzQnZJMGpYZVFFZzVLN0pvTncxeXBDRDNsejduNDJvRTJUeXo4VTBqTXpHRm95UQ?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-05-15T17:27:00.000Z",
-      "tags": [
-        "Streeting"
-      ]
-    },
-    {
-      "title": "UK Labour Party says it will let Burnham run for parliamentary seat - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQanpNbHdyRlVoTzZqWHNSWmlvNTh6aWpiQlp5NkZ1OVVJcHp3UXZoUnN0Qkx6dTR1RnUzRTVadHdrdlJBd0h0b2dZM2IzVjBtUEctUTlXX0VjRTF6OVd3dVZYakhCekJRQlVfamRNMDVGZk52bUtWZnhvbWZJM1hyWXdaVWN6QlUtY2tYMEdvZEJETi1KR0QtZ2xodThGQ04ya1NtRUZRT3B4blot?oc=5",
-      "source": "Reuters",
-      "publishedAt": "2026-05-15T17:07:00.000Z",
+      "title": "Andy Burnham will push to become PM before Labour conference, allies say",
+      "url": "https://www.theguardian.com/politics/2026/may/15/andy-burnham-pm-labour-autumn-conference",
+      "source": "Guardian (Open Platform)",
+      "publishedAt": "2026-05-15T17:56:16.000Z",
       "tags": [
         "Burnham"
-      ]
-    },
-    {
-      "title": "Bolivia Shut Down by National Strike Demanding President Resigns",
-      "url": "https://novaramedia.com/2026/05/15/bolivia-shut-down-by-national-strike-demanding-president-resigns/",
-      "source": "Novara Media",
-      "publishedAt": "2026-05-15T17:04:52.000Z",
-      "tags": [
-        "Resignation"
-      ]
-    },
-    {
-      "title": "What does Makerfield make of by-election and can Burnham win?",
-      "url": "https://www.bbc.com/news/articles/cyv26e7yd89o?at_medium=RSS&at_campaign=rss",
-      "source": "BBC Politics",
-      "publishedAt": "2026-05-15T17:00:34.000Z",
-      "tags": [
-        "Burnham",
-        "Resignation"
-      ]
-    },
-    {
-      "title": "Andy Burnham's by-election and mayoral race could cost taxpayers £5m - ITVX",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQM0tGd3I4d3Q3aVlNdElTMFhsd19rbERuOGdfbUpHc1BMRjNCTnB4aHZjdkM2THhxV1VUeUg4U1NlT1o0R3A1REUycDN3YmZEY01kTmVVNW5UYzRBZmVxWEdRdWtpZHFDWHE4bWROa2VaSWl0VHlEcENFNnZybGV6bnNKdEJxTGpXSnFSMXNsWGRmZnUydXIwZ0JJTWNhQlJHLXZqNlRTTnFzZ2lKYzVn?oc=5",
-      "source": "ITVX",
-      "publishedAt": "2026-05-15T16:56:05.000Z",
-      "tags": [
-        "Burnham"
-      ]
-    },
-    {
-      "title": "Ireland Sent Dual-Use Tech Worth €20m to Israel Despite Genocide",
-      "url": "https://novaramedia.com/2026/05/15/ireland-sent-dual-use-tech-worth-e20m-to-israel-despite-genocide/",
-      "source": "Novara Media",
-      "publishedAt": "2026-05-15T16:47:11.000Z",
-      "tags": [
-        "Cabinet"
-      ]
-    },
-    {
-      "title": "Gilts Slump as Investors Brace for Burnham Challenge to Starmer - Bloomberg.com",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQMnNlTnRFTmNFOXp6LWdhQTB1RkpwVjgxMllxTDFRUnpJZ3F5bzVSN2dXOVJpRi0ycHAwcWgtUjZxVmpSRGN5bjdrOVUyVTVYMG9Lc2IwcFo1NE5NQ2NpY0dZWkY2UzFzWi1iTXBBeU1td3B5Sm9qMHJRT3M2YzFZY25zSTQ0bEF0WVI5d3p3ZXpGb0tzT1BuMXZJZDRFWFpyNkNuR3kzdlROdzlTbW51dV9hRTA?oc=5",
-      "source": "Bloomberg.com",
-      "publishedAt": "2026-05-15T16:42:36.000Z",
-      "tags": [
-        "Burnham"
-      ]
-    },
-    {
-      "title": "Mandelson papers being withheld, says intelligence watchdog",
-      "url": "https://www.bbc.com/news/articles/c98rewjjwg9o?at_medium=RSS&at_campaign=rss",
-      "source": "BBC Politics",
-      "publishedAt": "2026-05-15T16:24:36.000Z",
-      "tags": [
-        "Mandelson"
-      ]
-    },
-    {
-      "title": "Digested week: Starmer’s day of reckoning was foreseen – just not the level of drama | John Crace - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNUlJBbFcyWnhNZVlBOWpMVHMxaEZZWE54WTRqUmRoN3VPRG04dHBZTTV4WTRwbENoQ29zN3BwSHZIQmNxdlNBVHBsU2VTb21rei1EVlVBeTNfTWlEbTlUb3pIcjZ1SkJzREpvbFdmVFZUYk92aHp1ajhXY3NYNmZSZVFTV0JWTG8yVmp2MjFPRkJOdjFDU01UeF9GeDNvR1lQNWtZakFCUVpCUzBW?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-05-15T16:21:00.000Z",
-      "tags": [
-        "Starmer"
-      ]
-    },
-    {
-      "title": "Martin Rowson on the battle for the Labour leadership – cartoon - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNMzFWbmZiNU85dEhpWU1yOUNEMGRCbFZkaU5KYmtfNjVHc0NEOGkwY1hNM0paVzg0eGQyU3RzOTJMWXo3cHhrU1RDNDZNQWtKY1AzTUUtM2xVWng0RjJLUVpjZFViYWNyQ2lkOWJJNFlHTUdJTmJMUUQ0a3BrUzFxOHZQdG1pby1TNUhscTRZQkVJbE5ZM3Fmcnl3WG8wd0VpemlGZkQzaUN2Wm9ud2pleFE1SjMweXkxbFBtVThOcXdnRk40?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-05-15T16:20:00.000Z",
-      "tags": [
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Dale Vince: I’d give Starmer cash to fight off leadership rivals - The Telegraph",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOVDdmSnN0bWMxYUxOM3Y4cXQ2WlhocDJpSmRQeE5UOW01eTBTc1lfWXB3NjVQRTc5eHJDRERncHQ2TzhNbldudXBKWEg5VE1DbkVoVHozMVZKdHRHTDlBSU5idGltSW5VcTBfVk41NDJsYjg3dnFGdmV0M0VWWW5uZDlkOG9CN05yUW5hNWwzQS1Sa0dOTHVSYmpweGdmX0dfdFhTSGM3MHA?oc=5",
-      "source": "The Telegraph",
-      "publishedAt": "2026-05-15T16:15:00.000Z",
-      "tags": [
-        "Leadership"
       ]
     }
   ],
@@ -2545,8 +2555,8 @@
     ]
   },
   "escalation": {
-    "stage": 5,
-    "stageLabel": "Delegation / formal challenge",
+    "stage": 4,
+    "stageLabel": "Paired senior exits",
     "pairedSenior": true,
     "pairedSeniorInExits": true,
     "pairedSeniorInNews": false,
@@ -2555,44 +2565,20 @@
     "delegationHits": [],
     "seniorResignHits": []
   },
-  "highSignalNews": [
-    {
-      "title": "What could happen next in Labour leadership challenge? | Labour party leadership - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNcEJSSm5GT1VqenFOb09CaVFUMDZNLWZWUFhUOEtVQkViU2Z6ekpuVmlVTTRSQXpTZUNYd2xTaUNoRjNIMy03aDJ2QVNoLXo0aEdoM1B2cmZqSTdMWWFPY1pxR3F0b19ISEt1Wl9WcjFIWVl2cl8wYW81MnYzN0tpOWhIZkRKZUxRUEpRamhpaXA2TEZjRDA4aGFwT3NTZ2w5d0dpcklfMWc0cjFuQ3NESnFQQlhPT2VuS2xiWnl3LWNtUQ?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-05-15T17:43:00.000Z",
-      "description": "What could happen next in Labour leadership challenge? | Labour party leadership The Guardian",
-      "tags": [
-        "Leadership"
-      ],
-      "signalTag": "Leadership-challenge language"
-    },
-    {
-      "title": "The £800m skyscraper deal casting a shadow over Burnham’s leadership bid - The Telegraph",
-      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPc2FXS0ExRktwQnBaLWpZVU1NU1otYWZ1Rnc0RzlGMFRlc2dhclotNXgzazk5TU9fTlNaeXJhUUJ3cDM4Qkhkb2RLVGRKRmJYdDlIeWQ0OTQwOWY2dTdoNVpqX3ZzM1hWSWdWQXBtMjM3bVJLcVVVMnRxVzFqUVM3Q05hMUJDOUk1UUZXQUdVVzNObXFhODVQelRGYXpGWmhpRlUwZkFPVEhHdHM?oc=5",
-      "source": "The Telegraph",
-      "publishedAt": "2026-05-15T17:30:00.000Z",
-      "description": "The £800m skyscraper deal casting a shadow over Burnham’s leadership bid The Telegraph",
-      "tags": [
-        "Burnham",
-        "Leadership"
-      ],
-      "signalTag": "Leadership-challenge language"
-    }
-  ],
+  "highSignalNews": [],
   "hourlyPulse": {
-    "generatedAt": "2026-05-16T10:46:54.045Z",
-    "windowMinutes": 360,
+    "generatedAt": "2026-05-16T10:48:40.547Z",
+    "windowMinutes": 60,
     "lines": [
       {
         "kind": "story",
-        "text": "Top story (1 source): What an Andy Burnham premiership would look like - The Telegraph",
-        "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNSEkwSkMyOHZOamlMRkFwSDhGMjJSTXIyVGdTcVlEdVNUYnQ0LXdlbkJyZ1ZsdDVfZkF0MkVDZ0R6LWpWYXdFRkpmTDFVS19SMWd0UVVxSDYzVENwMG91bFhtV1Aya2xlVzRqZ2FkNWl2MGhMclhwMzJQc1JPNWpGYUwtcGxfd1hvOENtVGJGekxJSGZlbWc?oc=5",
-        "source": "The Telegraph"
+        "text": "Top story (1 source): ‘An hour of abuse’: Jeremy Corbyn on Labour coups, and whether he feels sorry for Starmer",
+        "url": "https://www.theguardian.com/politics/2026/may/16/jeremy-corbyn-target-labour-coup-keir-starmer-andy-burnham-wes-streeting-angela-rayner-leadership",
+        "source": "Guardian (Open Platform)"
       },
       {
         "kind": "escalation",
-        "text": "Escalation stage 5/6 — Delegation / formal challenge; paired senior resignations."
+        "text": "Escalation stage 4/6 — Paired senior exits; paired senior resignations."
       },
       {
         "kind": "market",
@@ -2610,7 +2596,7 @@
   "nextCatalysts": [
     {
       "level": "red",
-      "label": "Escalation stage 5/6 — Delegation / formal challenge",
+      "label": "Escalation stage 4/6 — Paired senior exits",
       "detail": "Truss/Johnson timeline mapping. Stage 4+ corresponds to paired senior resignations; stage 5 is delegation/1922-style language; stage 6 is resignation imminent."
     },
     {
@@ -2629,25 +2615,9 @@
       "detail": "Cabinet stability breaking. Watch for cascade — three or more exits historically precedes leader resignations."
     },
     {
-      "level": "red",
-      "label": "Possible challenge signal in headlines (2 hits in 72h).",
-      "detail": "Keyword matches: leadership challenge, leadership bid.",
-      "examples": [
-        {
-          "keyword": "leadership challenge",
-          "title": "What could happen next in Labour leadership challenge? | Labour party leadership - The Guardian",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNcEJSSm5GT1VqenFOb09CaVFUMDZNLWZWUFhUOEtVQkViU2Z6ekpuVmlVTTRSQXpTZUNYd2xTaUNoRjNIMy03aDJ2QVNoLXo0aEdoM1B2cmZqSTdMWWFPY1pxR3F0b19ISEt1Wl9WcjFIWVl2cl8wYW81MnYzN0tpOWhIZkRKZUxRUEpRamhpaXA2TEZjRDA4aGFwT3NTZ2w5d0dpcklfMWc0cjFuQ3NESnFQQlhPT2VuS2xiWnl3LWNtUQ?oc=5",
-          "source": "The Guardian",
-          "publishedAt": "2026-05-15T17:43:00.000Z"
-        },
-        {
-          "keyword": "leadership bid",
-          "title": "The £800m skyscraper deal casting a shadow over Burnham’s leadership bid - The Telegraph",
-          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPc2FXS0ExRktwQnBaLWpZVU1NU1otYWZ1Rnc0RzlGMFRlc2dhclotNXgzazk5TU9fTlNaeXJhUUJ3cDM4Qkhkb2RLVGRKRmJYdDlIeWQ0OTQwOWY2dTdoNVpqX3ZzM1hWSWdWQXBtMjM3bVJLcVVVMnRxVzFqUVM3Q05hMUJDOUk1UUZXQUdVVzNObXFhODVQelRGYXpGWmhpRlUwZkFPVEhHdHM?oc=5",
-          "source": "The Telegraph",
-          "publishedAt": "2026-05-15T17:30:00.000Z"
-        }
-      ]
+      "level": "info",
+      "label": "No formal leadership-challenge language detected in headlines (72h).",
+      "detail": "Keyword sweep for 'leadership bid', 'announces challenge', 'candidacy', etc."
     }
   ],
   "sources": [
@@ -2655,7 +2625,7 @@
       "id": "labourlist-tracker",
       "name": "LabourList tracker",
       "url": "https://labourlist.org/2026/05/labourlist-labour-mp-starmer-resignation-tracker/",
-      "fetchedAt": "2026-05-16T10:46:27.187Z",
+      "fetchedAt": "2026-05-16T10:48:15.714Z",
       "ok": true,
       "note": "Parsed headline counts and 94 named public-call rows."
     },
@@ -2663,7 +2633,7 @@
       "id": "sky-politics",
       "name": "Sky News Politics",
       "url": "https://feeds.skynews.com/feeds/rss/politics.xml",
-      "fetchedAt": "2026-05-16T10:46:28.512Z",
+      "fetchedAt": "2026-05-16T10:48:16.133Z",
       "ok": true,
       "note": "Parsed 8 relevant items."
     },
@@ -2671,7 +2641,7 @@
       "id": "guardian-politics",
       "name": "Guardian Politics",
       "url": "https://news.google.com/rss/search?q=site:theguardian.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:29.737Z",
+      "fetchedAt": "2026-05-16T10:48:16.637Z",
       "ok": true,
       "note": "Parsed 84 relevant items."
     },
@@ -2679,7 +2649,7 @@
       "id": "bbc-politics",
       "name": "BBC Politics",
       "url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
-      "fetchedAt": "2026-05-16T10:46:30.447Z",
+      "fetchedAt": "2026-05-16T10:48:17.122Z",
       "ok": true,
       "note": "Parsed 40 relevant items."
     },
@@ -2687,7 +2657,7 @@
       "id": "labourlist-feed",
       "name": "LabourList",
       "url": "https://labourlist.org/feed/",
-      "fetchedAt": "2026-05-16T10:46:30.750Z",
+      "fetchedAt": "2026-05-16T10:48:17.356Z",
       "ok": true,
       "note": "Parsed 5 relevant items."
     },
@@ -2695,39 +2665,39 @@
       "id": "ft-uk-politics",
       "name": "FT UK Politics",
       "url": "https://www.ft.com/uk-politics?format=rss",
-      "fetchedAt": "2026-05-16T10:46:31.516Z",
-      "ok": false,
-      "note": "RSS failed: HTTP 403"
+      "fetchedAt": "2026-05-16T10:48:18.264Z",
+      "ok": true,
+      "note": "Parsed 16 relevant items."
     },
     {
       "id": "telegraph-politics",
       "name": "Telegraph Politics",
       "url": "https://news.google.com/rss/search?q=site:telegraph.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:32.044Z",
+      "fetchedAt": "2026-05-16T10:48:18.693Z",
       "ok": true,
-      "note": "Parsed 60 relevant items."
+      "note": "Parsed 61 relevant items."
     },
     {
       "id": "times-redbox",
       "name": "The Times Politics",
       "url": "https://news.google.com/rss/search?q=site:thetimes.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:32.514Z",
+      "fetchedAt": "2026-05-16T10:48:19.129Z",
       "ok": true,
-      "note": "Parsed 42 relevant items."
+      "note": "Parsed 41 relevant items."
     },
     {
       "id": "politico-uk",
       "name": "Politico UK",
       "url": "https://www.politico.eu/section/uk/feed/",
-      "fetchedAt": "2026-05-16T10:46:32.959Z",
-      "ok": false,
-      "note": "RSS failed: HTTP 403"
+      "fetchedAt": "2026-05-16T10:48:19.541Z",
+      "ok": true,
+      "note": "Parsed 0 relevant items."
     },
     {
       "id": "new-statesman-politics",
       "name": "New Statesman Politics",
       "url": "https://www.newstatesman.com/politics/feed",
-      "fetchedAt": "2026-05-16T10:46:33.808Z",
+      "fetchedAt": "2026-05-16T10:48:19.842Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -2735,7 +2705,7 @@
       "id": "spectator",
       "name": "Spectator",
       "url": "https://news.google.com/rss/search?q=site:spectator.co.uk+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:35.670Z",
+      "fetchedAt": "2026-05-16T10:48:20.060Z",
       "ok": true,
       "note": "Parsed 2 relevant items."
     },
@@ -2743,7 +2713,7 @@
       "id": "conservativehome",
       "name": "ConservativeHome",
       "url": "https://conservativehome.com/feed/",
-      "fetchedAt": "2026-05-16T10:46:35.949Z",
+      "fetchedAt": "2026-05-16T10:48:20.416Z",
       "ok": true,
       "note": "Parsed 3 relevant items."
     },
@@ -2751,7 +2721,7 @@
       "id": "tortoise",
       "name": "Tortoise",
       "url": "https://news.google.com/rss/search?q=site:tortoisemedia.com+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:36.932Z",
+      "fetchedAt": "2026-05-16T10:48:20.687Z",
       "ok": true,
       "note": "Parsed 18 relevant items."
     },
@@ -2759,7 +2729,7 @@
       "id": "reuters-uk",
       "name": "Reuters UK",
       "url": "https://news.google.com/rss/search?q=site:reuters.com+UK+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:37.394Z",
+      "fetchedAt": "2026-05-16T10:48:21.305Z",
       "ok": true,
       "note": "Parsed 28 relevant items."
     },
@@ -2767,7 +2737,7 @@
       "id": "bloomberg-uk",
       "name": "Bloomberg UK",
       "url": "https://news.google.com/rss/search?q=site:bloomberg.com+UK+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:37.856Z",
+      "fetchedAt": "2026-05-16T10:48:21.779Z",
       "ok": true,
       "note": "Parsed 48 relevant items."
     },
@@ -2775,39 +2745,39 @@
       "id": "mirror-politics",
       "name": "Mirror Politics",
       "url": "https://news.google.com/rss/search?q=site:mirror.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:38.345Z",
+      "fetchedAt": "2026-05-16T10:48:22.217Z",
       "ok": true,
-      "note": "Parsed 42 relevant items."
+      "note": "Parsed 38 relevant items."
     },
     {
       "id": "inews-politics",
       "name": "i Politics",
       "url": "https://inews.co.uk/category/news/politics/feed",
-      "fetchedAt": "2026-05-16T10:46:38.789Z",
-      "ok": false,
-      "note": "RSS failed: HTTP 403"
+      "fetchedAt": "2026-05-16T10:48:22.723Z",
+      "ok": true,
+      "note": "Parsed 9 relevant items."
     },
     {
       "id": "itv-politics",
       "name": "ITV Politics",
       "url": "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:39.295Z",
+      "fetchedAt": "2026-05-16T10:48:22.953Z",
       "ok": true,
-      "note": "Parsed 40 relevant items."
+      "note": "Parsed 39 relevant items."
     },
     {
       "id": "independent-uk-politics",
       "name": "Independent UK Politics",
       "url": "https://www.independent.co.uk/news/uk/politics/rss",
-      "fetchedAt": "2026-05-16T10:46:39.718Z",
-      "ok": false,
-      "note": "RSS failed: HTTP 403"
+      "fetchedAt": "2026-05-16T10:48:23.550Z",
+      "ok": true,
+      "note": "Parsed 10 relevant items."
     },
     {
       "id": "sam-freedman",
       "name": "Sam Freedman — Comment is Freed",
       "url": "https://news.google.com/rss/search?q=site:samf.substack.com+OR+%22Sam+Freedman%22+Starmer&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-05-16T10:46:40.169Z",
+      "fetchedAt": "2026-05-16T10:48:23.682Z",
       "ok": true,
       "note": "Parsed 8 relevant items."
     },
@@ -2815,7 +2785,7 @@
       "id": "byline-times",
       "name": "Byline Times",
       "url": "https://bylinetimes.com/feed/",
-      "fetchedAt": "2026-05-16T10:46:40.455Z",
+      "fetchedAt": "2026-05-16T10:48:24.190Z",
       "ok": true,
       "note": "Parsed 7 relevant items."
     },
@@ -2823,7 +2793,7 @@
       "id": "novara-media",
       "name": "Novara Media",
       "url": "https://novaramedia.com/feed/",
-      "fetchedAt": "2026-05-16T10:46:41.405Z",
+      "fetchedAt": "2026-05-16T10:48:24.450Z",
       "ok": true,
       "note": "Parsed 6 relevant items."
     },
@@ -2831,7 +2801,7 @@
       "id": "bluesky-lobby",
       "name": "Bluesky lobby journalists",
       "url": "https://public.api.bsky.app",
-      "fetchedAt": "2026-05-16T10:46:42.076Z",
+      "fetchedAt": "2026-05-16T10:48:24.808Z",
       "ok": true,
       "note": "Pulled 63 relevant posts from 11/15 handles."
     },
@@ -2839,15 +2809,15 @@
       "id": "guardian-open-platform",
       "name": "Guardian Open Platform",
       "url": "https://content.guardianapis.com/search",
-      "fetchedAt": "2026-05-16T10:46:47.116Z",
-      "ok": false,
-      "note": "Set GUARDIAN_API_KEY (free signup at open-platform.theguardian.com) to enable."
+      "fetchedAt": "2026-05-16T10:48:29.905Z",
+      "ok": true,
+      "note": "Pulled 30 Guardian politics items via Open Platform."
     },
     {
       "id": "wikipedia-edits",
       "name": "Wikipedia edits (Starmer-orbit)",
       "url": "https://en.wikipedia.org/w/api.php",
-      "fetchedAt": "2026-05-16T10:46:47.117Z",
+      "fetchedAt": "2026-05-16T10:48:31.065Z",
       "ok": true,
       "note": "Collected 0 recent revisions across 0 pages."
     },
@@ -2855,7 +2825,7 @@
       "id": "cc-news-meta",
       "name": "Common Crawl CC-NEWS (metadata)",
       "url": "https://data.commoncrawl.org",
-      "fetchedAt": "2026-05-16T10:46:47.773Z",
+      "fetchedAt": "2026-05-16T10:48:31.222Z",
       "ok": true,
       "note": "Latest CC-NEWS warc.paths.gz available · 1452 bytes · Sat, 16 May 2026 08:05:12 GMT"
     },
@@ -2863,7 +2833,7 @@
       "id": "parliament-members-api",
       "name": "UK Parliament Members API",
       "url": "https://members-api.parliament.uk/api/Parties/StateOfTheParties",
-      "fetchedAt": "2026-05-16T10:46:48.867Z",
+      "fetchedAt": "2026-05-16T10:48:31.325Z",
       "ok": true,
       "note": "PLP size 403; 20% trigger = 81."
     },
@@ -2871,15 +2841,15 @@
       "id": "gdelt-doc-api",
       "name": "GDELT document API",
       "url": "https://api.gdeltproject.org/api/v2/doc/doc",
-      "fetchedAt": "2026-05-16T10:46:49.570Z",
-      "ok": true,
-      "note": "Optional discovery is disabled by default. Set ENABLE_GDELT=1 to include it."
+      "fetchedAt": "2026-05-16T10:48:36.367Z",
+      "ok": false,
+      "note": "Discovery skipped: HTTP 429."
     },
     {
       "id": "polymarket-public-search",
       "name": "Polymarket public search",
       "url": "https://gamma-api.polymarket.com/public-search",
-      "fetchedAt": "2026-05-16T10:46:49.570Z",
+      "fetchedAt": "2026-05-16T10:48:36.367Z",
       "ok": true,
       "note": "Parsed 59 active relevant markets."
     },
