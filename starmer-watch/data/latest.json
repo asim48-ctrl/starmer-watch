@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-03T18:40:34.440Z",
+  "generatedAt": "2026-06-03T18:50:35.163Z",
   "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 59/100 (elevated). Polymarket's top Starmer-exit signal is 9.5%.",
   "counts": {
     "resignCalls": {
@@ -39,12 +39,12 @@
     "formula": "Weighted: 35% PLP exit-call share (saturates at 1.5× the contest trigger so MPs above 81 still register), 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity over a 12h window (negation-aware lexicon ensembled with winkNLP). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
     "perEntitySentiment": {
       "starmer": {
-        "mentions": 12,
-        "avg": 0.19
+        "mentions": 13,
+        "avg": 0.17
       },
       "streeting": {
-        "mentions": 1,
-        "avg": 0.5
+        "mentions": 0,
+        "avg": 0
       },
       "burnham": {
         "mentions": 3,
@@ -89,17 +89,17 @@
         "weight": 25,
         "normalised": 0.095,
         "raw": "9.5% · Starmer out by June 30, 2026?",
-        "lastChangedMinutes": 210,
+        "lastChangedMinutes": 221,
         "contribution": 2.4
       },
       {
         "id": "newsSentiment",
         "label": "News intensity × negativity",
         "weight": 15,
-        "normalised": 0.6112794117647059,
-        "raw": "34 clusters (12h, 3-shingle Jaccard ≥0.5), 34 scored via ensemble (winkNLP + lexicon), avg 0.22",
+        "normalised": 0.6039264705882352,
+        "raw": "34 clusters (12h, 3-shingle Jaccard ≥0.5), 34 scored via ensemble (winkNLP + lexicon), avg 0.21",
         "lastChangedMinutes": 0,
-        "contribution": 9.2
+        "contribution": 9.1
       }
     ],
     "marketProb": 0.095,
@@ -108,7 +108,7 @@
       "yesPrice": 0.095,
       "noPrice": 0.905,
       "url": "https://polymarket.com/event/starmer-out-in-2025",
-      "volume": 5159174.396246007,
+      "volume": 5159185.385246007,
       "horizonDate": "2026-06-30T00:00:00.000Z"
     },
     "marketDeltas": {
@@ -125,14 +125,6 @@
     }
   },
   "history": [
-    {
-      "t": "2026-06-02T04:10:33.030Z",
-      "pressure": 97,
-      "support": 111,
-      "ministers": 5,
-      "index": 60,
-      "marketProb": 0.145
-    },
     {
       "t": "2026-06-02T04:20:39.332Z",
       "pressure": 97,
@@ -2044,6 +2036,14 @@
       "ministers": 5,
       "index": 59,
       "marketProb": 0.095
+    },
+    {
+      "t": "2026-06-03T18:50:35.163Z",
+      "pressure": 97,
+      "support": 111,
+      "ministers": 5,
+      "index": 59,
+      "marketProb": 0.095
     }
   ],
   "resignationCalls": [
@@ -2436,9 +2436,8 @@
       "role": "Former Health Secretary — out of cabinet",
       "pressureScore": 6,
       "posture": "Out of cabinet. Resignation reframes him as the live succession candidate — every public move now reads as positioning. Watch for an explicit leadership bid, a campaign team, and any allied MPs declaring.",
-      "latestMove": "Wes Streeting Vows UK Leadership Challenge Won’t Be a Coronation - Bloomberg",
+      "latestMove": "Watch for cabinet meeting and health-department proxy signals",
       "signals": [
-        "Bloomberg: Wes Streeting Vows UK Leadership Challenge Won’t Be a Coronation - Bloomberg",
         "Zubir Ahmed left a health role; treat this as a Streeting-orbit pressure signal, not proof of direction."
       ]
     },
@@ -2609,6 +2608,13 @@
     {
       "name": "News resignation signal",
       "role": "Source headline",
+      "move": "Starmer pushes ‘bucket list’ policies as fatalistic mood descends on Number 10",
+      "alignment": "source corroboration",
+      "source": "FT UK Politics"
+    },
+    {
+      "name": "News resignation signal",
+      "role": "Source headline",
       "move": "Watch in full: Starmer grilled at PMQs after violent clashes over Henry Nowak death",
       "alignment": "source corroboration",
       "source": "Independent UK Politics"
@@ -2619,13 +2625,6 @@
       "move": "Labour split as minister criticises party’s attempts to reform welfare",
       "alignment": "source corroboration",
       "source": "Independent UK Politics"
-    },
-    {
-      "name": "News resignation signal",
-      "role": "Source headline",
-      "move": "Swinney ‘has no plans’ to meet Trump during US visit for World Cup",
-      "alignment": "source corroboration",
-      "source": "Independent UK Politics"
     }
   ],
   "markets": [
@@ -2634,9 +2633,9 @@
       "question": "Starmer out by June 30, 2026?",
       "yesPrice": 0.095,
       "noPrice": 0.905,
-      "volume": 5159174.396246007,
-      "liquidity": 72822.0593,
-      "updatedAt": "2026-06-03T18:33:40.997658Z",
+      "volume": 5159185.385246007,
+      "liquidity": 72371.4417,
+      "updatedAt": "2026-06-03T18:43:12.311348Z",
       "url": "https://polymarket.com/event/starmer-out-in-2025"
     },
     {
@@ -2645,18 +2644,18 @@
       "yesPrice": 0.715,
       "noPrice": 0.285,
       "volume": 2897847.8129109787,
-      "liquidity": 74979.7297,
-      "updatedAt": "2026-06-03T18:34:12.527473Z",
+      "liquidity": 74570.7473,
+      "updatedAt": "2026-06-03T18:43:37.819102Z",
       "url": "https://polymarket.com/event/starmer-out-in-2025"
     },
     {
       "eventTitle": "Next UK Prime Minister in 2026?",
       "question": "Will Andy Burnham be the next Prime Minister of the United Kingdom in 2026?",
-      "yesPrice": 0.5805,
-      "noPrice": 0.4195,
+      "yesPrice": 0.58,
+      "noPrice": 0.42,
       "volume": 704433.4684140017,
-      "liquidity": 48854.22134,
-      "updatedAt": "2026-06-03T18:32:56.98537Z",
+      "liquidity": 49035.81616,
+      "updatedAt": "2026-06-03T18:42:27.579175Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2665,8 +2664,8 @@
       "yesPrice": 0.0025,
       "noPrice": 0.9975,
       "volume": 623014.3592890024,
-      "liquidity": 54011.57635,
-      "updatedAt": "2026-06-03T18:35:49.489513Z",
+      "liquidity": 52707.13035,
+      "updatedAt": "2026-06-03T18:45:18.227546Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2675,8 +2674,8 @@
       "yesPrice": 0.065,
       "noPrice": 0.935,
       "volume": 536772.8179710037,
-      "liquidity": 57816.1884,
-      "updatedAt": "2026-06-03T18:35:51.843273Z",
+      "liquidity": 56637.5835,
+      "updatedAt": "2026-06-03T18:45:19.97176Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2685,8 +2684,8 @@
       "yesPrice": 0.0015,
       "noPrice": 0.9985,
       "volume": 437181.6022400001,
-      "liquidity": 75809.8814,
-      "updatedAt": "2026-06-03T18:34:06.911754Z",
+      "liquidity": 73977.7494,
+      "updatedAt": "2026-06-03T18:43:30.506584Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2695,8 +2694,8 @@
       "yesPrice": 0.0085,
       "noPrice": 0.9915,
       "volume": 359365.0574960013,
-      "liquidity": 40072.03909,
-      "updatedAt": "2026-06-03T18:34:50.639544Z",
+      "liquidity": 38789.75279,
+      "updatedAt": "2026-06-03T18:44:17.674751Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2705,8 +2704,8 @@
       "yesPrice": 0.0085,
       "noPrice": 0.9915,
       "volume": 342187.54040600016,
-      "liquidity": 47690.87879,
-      "updatedAt": "2026-06-03T18:34:16.490878Z",
+      "liquidity": 47188.17446,
+      "updatedAt": "2026-06-03T18:43:44.20407Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2715,8 +2714,8 @@
       "yesPrice": 0.0175,
       "noPrice": 0.9825,
       "volume": 340992.3206529997,
-      "liquidity": 66099.02213,
-      "updatedAt": "2026-06-03T18:39:52.744948Z",
+      "liquidity": 65831.55757,
+      "updatedAt": "2026-06-03T18:49:44.953036Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2724,9 +2723,9 @@
       "question": "Starmer out by June 15, 2026?",
       "yesPrice": 0.0165,
       "noPrice": 0.9835,
-      "volume": 200805.7029,
-      "liquidity": 41142.00896,
-      "updatedAt": "2026-06-03T18:31:58.27454Z",
+      "volume": 200820.7029,
+      "liquidity": 41428.03011,
+      "updatedAt": "2026-06-03T18:50:46.752765Z",
       "url": "https://polymarket.com/event/starmer-out-in-2025"
     },
     {
@@ -2735,8 +2734,8 @@
       "yesPrice": 0.735,
       "noPrice": 0.265,
       "volume": 192106.445453,
-      "liquidity": 43331.1546,
-      "updatedAt": "2026-06-03T18:33:09.842168Z",
+      "liquidity": 44548.1966,
+      "updatedAt": "2026-06-03T18:42:38.675529Z",
       "url": "https://polymarket.com/event/makerfield-by-election-winner"
     },
     {
@@ -2746,7 +2745,7 @@
       "noPrice": 0.265,
       "volume": 53482.5863080002,
       "liquidity": 9194.5692,
-      "updatedAt": "2026-06-03T18:40:38.691075Z",
+      "updatedAt": "2026-06-03T18:50:20.162971Z",
       "url": "https://polymarket.com/event/andy-burnham-becomes-an-mp-by-june-30"
     }
   ],
@@ -2758,16 +2757,6 @@
       "publishedAt": "2026-06-03T17:50:22.000Z",
       "tags": [
         "Starmer"
-      ]
-    },
-    {
-      "title": "Wes Streeting Vows UK Leadership Challenge Won’t Be a Coronation - Bloomberg",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQeTZMNExTc19uS3hsRHpKMV9MV0hpVWlINE85UkdrVGlqRGM0ZzV6UDV2NXRDVXllZ1JrNl9tMmNEeEdTSklsWV9Ybl93Y0U1YkVuRTgtZ3BaNThMNHY0RnVfMDVvYm1OUV9jQmZ6ZEIyY2tWLWk5TmJ4QnBjRE5WdUU2SEhVU1ktUUlHRGo4V21ucmJsYjVBa0RLcXowOUtjc1VhSGtsR2xRSTB2Nmh2N2ZVb1YwQQ?oc=5",
-      "source": "Bloomberg",
-      "publishedAt": "2026-06-03T17:47:50.000Z",
-      "tags": [
-        "Streeting",
-        "Leadership"
       ]
     },
     {
@@ -2795,6 +2784,16 @@
       "publishedAt": "2026-06-03T17:02:00.000Z",
       "tags": [
         "Starmer"
+      ]
+    },
+    {
+      "title": "Starmer pushes ‘bucket list’ policies as fatalistic mood descends on Number 10",
+      "url": "https://www.ft.com/content/d14d5eca-5cfb-41a1-afd2-b659008a3fc0",
+      "source": "FT UK Politics",
+      "publishedAt": "2026-06-03T16:49:34.000Z",
+      "tags": [
+        "Burnham",
+        "Cabinet"
       ]
     },
     {
@@ -3087,15 +3086,6 @@
       ]
     },
     {
-      "title": "Minister dismisses Labor colleague Ed Husic’s criticism of secondhand Aukus submarines deal as ‘disingenuous’ - The Guardian",
-      "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQR3JvRk1haTVReGV4LXdUN2k2UkNJdHpMRDdIT0JPRkNrVk44ZDIyQzZnWU5FTHNUWmQtLW5RZURQNzlaZXhFRk4xb3otN0Jsc20yc1E3ZTFZZlZZSFJySzJkeTJrUVpodVdhVnpIaGZIaGJNZjNYbkJaWmhzZ0EwUmdkYWgzRnY5ellQc05mSElMcFZSWUlobllkWVJzY0d1WXNOSzBrM0hHVk5DZGFkSFFWQkF1UjlBQVJvMl94em1QdTBVRTFXeEpLVQ?oc=5",
-      "source": "The Guardian",
-      "publishedAt": "2026-06-03T03:54:00.000Z",
-      "tags": [
-        "Cabinet"
-      ]
-    },
-    {
       "title": "Watch Starmer Accuses Farage of Inciting Rage Following Teen's Murder - Bloomberg",
       "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNaGczcHpRTV9XN19UcnJUbklFV0tudjVELUliVjZnYTFnckZNWG02aVpPMXZqeldQNkVZeHB3Njducm5UOFctbko1U1pGY3pvZU80SFlsZHJqZlpBaFFBZnppVHpnM0pOdjZkV1hYeDlvZk5hZzR3OENPajVMUG9UMjM1QjczRGdBX0JzT2JHZDZiNm5HdFFDV01tcktpajUwRHVLMjhVMmJoNDJhLTRIXw?oc=5",
       "source": "Bloomberg",
@@ -3109,6 +3099,15 @@
       "url": "https://www.ft.com/content/1f9cf0bb-8e11-4808-a66b-08326d09d324",
       "source": "FT UK Politics",
       "publishedAt": "2026-06-02T22:12:38.000Z",
+      "tags": [
+        "Cabinet"
+      ]
+    },
+    {
+      "title": "'Keir Starmer made us promises - and we thought they'd be kept'",
+      "url": "https://news.sky.com/story/gaza-boys-evacuated-to-britain-for-nhs-treatment-say-starmer-has-broken-promises-13550288",
+      "source": "Sky News Politics",
+      "publishedAt": "2026-06-02T21:53:00.000Z",
       "tags": [
         "Cabinet"
       ]
@@ -3245,8 +3244,8 @@
     ]
   },
   "escalation": {
-    "stage": 5,
-    "stageLabel": "Delegation / formal challenge",
+    "stage": 4,
+    "stageLabel": "Paired senior exits",
     "pairedSenior": true,
     "pairedSeniorInExits": true,
     "pairedSeniorInNews": false,
@@ -3255,23 +3254,10 @@
     "delegationHits": [],
     "seniorResignHits": []
   },
-  "highSignalNews": [
-    {
-      "title": "Wes Streeting Vows UK Leadership Challenge Won’t Be a Coronation - Bloomberg",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQeTZMNExTc19uS3hsRHpKMV9MV0hpVWlINE85UkdrVGlqRGM0ZzV6UDV2NXRDVXllZ1JrNl9tMmNEeEdTSklsWV9Ybl93Y0U1YkVuRTgtZ3BaNThMNHY0RnVfMDVvYm1OUV9jQmZ6ZEIyY2tWLWk5TmJ4QnBjRE5WdUU2SEhVU1ktUUlHRGo4V21ucmJsYjVBa0RLcXowOUtjc1VhSGtsR2xRSTB2Nmh2N2ZVb1YwQQ?oc=5",
-      "source": "Bloomberg",
-      "publishedAt": "2026-06-03T17:47:50.000Z",
-      "description": "Wes Streeting Vows UK Leadership Challenge Won’t Be a Coronation Bloomberg",
-      "tags": [
-        "Streeting",
-        "Leadership"
-      ],
-      "signalTag": "Leadership-challenge language"
-    }
-  ],
+  "highSignalNews": [],
   "hourlyPulse": {
-    "generatedAt": "2026-06-03T18:41:05.171Z",
-    "windowMinutes": 60,
+    "generatedAt": "2026-06-03T18:51:15.633Z",
+    "windowMinutes": 360,
     "lines": [
       {
         "kind": "story",
@@ -3281,7 +3267,7 @@
       },
       {
         "kind": "escalation",
-        "text": "Escalation stage 5/6 — Delegation / formal challenge; paired senior resignations."
+        "text": "Escalation stage 4/6 — Paired senior exits; paired senior resignations."
       },
       {
         "kind": "market",
@@ -3293,19 +3279,13 @@
         "text": "Lobby voice: Very good from Starmer.",
         "url": "https://bsky.app/profile/iandunt.bsky.social/post/3mnf6hf4apc2a",
         "source": "Bluesky · @iandunt.bsky.social"
-      },
-      {
-        "kind": "highsignal",
-        "text": "[Leadership-challenge language] Wes Streeting Vows UK Leadership Challenge Won’t Be a Coronation - Bloomberg",
-        "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQeTZMNExTc19uS3hsRHpKMV9MV0hpVWlINE85UkdrVGlqRGM0ZzV6UDV2NXRDVXllZ1JrNl9tMmNEeEdTSklsWV9Ybl93Y0U1YkVuRTgtZ3BaNThMNHY0RnVfMDVvYm1OUV9jQmZ6ZEIyY2tWLWk5TmJ4QnBjRE5WdUU2SEhVU1ktUUlHRGo4V21ucmJsYjVBa0RLcXowOUtjc1VhSGtsR2xRSTB2Nmh2N2ZVb1YwQQ?oc=5",
-        "source": "Bloomberg"
       }
     ]
   },
   "nextCatalysts": [
     {
       "level": "red",
-      "label": "Escalation stage 5/6 — Delegation / formal challenge",
+      "label": "Escalation stage 4/6 — Paired senior exits",
       "detail": "Truss/Johnson timeline mapping. Stage 4+ corresponds to paired senior resignations; stage 5 is delegation/1922-style language; stage 6 is resignation imminent."
     },
     {
@@ -3324,18 +3304,9 @@
       "detail": "Cabinet stability breaking. Watch for cascade — three or more exits historically precedes leader resignations."
     },
     {
-      "level": "red",
-      "label": "Possible challenge signal in headlines (1 hit in 72h).",
-      "detail": "Keyword matches: leadership challenge.",
-      "examples": [
-        {
-          "keyword": "leadership challenge",
-          "title": "Wes Streeting Vows UK Leadership Challenge Won’t Be a Coronation - Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQeTZMNExTc19uS3hsRHpKMV9MV0hpVWlINE85UkdrVGlqRGM0ZzV6UDV2NXRDVXllZ1JrNl9tMmNEeEdTSklsWV9Ybl93Y0U1YkVuRTgtZ3BaNThMNHY0RnVfMDVvYm1OUV9jQmZ6ZEIyY2tWLWk5TmJ4QnBjRE5WdUU2SEhVU1ktUUlHRGo4V21ucmJsYjVBa0RLcXowOUtjc1VhSGtsR2xRSTB2Nmh2N2ZVb1YwQQ?oc=5",
-          "source": "Bloomberg",
-          "publishedAt": "2026-06-03T17:47:50.000Z"
-        }
-      ]
+      "level": "info",
+      "label": "No formal leadership-challenge language detected in headlines (72h).",
+      "detail": "Keyword sweep for 'leadership bid', 'announces challenge', 'candidacy', etc."
     }
   ],
   "sources": [
@@ -3343,7 +3314,7 @@
       "id": "labourlist-tracker",
       "name": "LabourList tracker",
       "url": "https://labourlist.org/2026/05/labourlist-labour-mp-starmer-resignation-tracker/",
-      "fetchedAt": "2026-06-03T18:40:34.440Z",
+      "fetchedAt": "2026-06-03T18:50:35.164Z",
       "ok": true,
       "note": "Parsed headline counts and 95 named public-call rows."
     },
@@ -3351,7 +3322,7 @@
       "id": "sky-politics",
       "name": "Sky News Politics",
       "url": "https://feeds.skynews.com/feeds/rss/politics.xml",
-      "fetchedAt": "2026-06-03T18:40:34.932Z",
+      "fetchedAt": "2026-06-03T18:50:35.677Z",
       "ok": true,
       "note": "Parsed 5 relevant items."
     },
@@ -3359,15 +3330,15 @@
       "id": "guardian-politics",
       "name": "Guardian Politics",
       "url": "https://news.google.com/rss/search?q=site:theguardian.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:35.277Z",
+      "fetchedAt": "2026-06-03T18:50:36.022Z",
       "ok": true,
-      "note": "Parsed 23 relevant items."
+      "note": "Parsed 22 relevant items."
     },
     {
       "id": "bbc-politics",
       "name": "BBC Politics",
       "url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
-      "fetchedAt": "2026-06-03T18:40:35.879Z",
+      "fetchedAt": "2026-06-03T18:50:36.550Z",
       "ok": true,
       "note": "Parsed 35 relevant items."
     },
@@ -3375,7 +3346,7 @@
       "id": "labourlist-feed",
       "name": "LabourList",
       "url": "https://labourlist.org/feed/",
-      "fetchedAt": "2026-06-03T18:40:35.999Z",
+      "fetchedAt": "2026-06-03T18:50:36.761Z",
       "ok": true,
       "note": "Parsed 1 relevant items."
     },
@@ -3383,15 +3354,15 @@
       "id": "ft-uk-politics",
       "name": "FT UK Politics",
       "url": "https://www.ft.com/uk-politics?format=rss",
-      "fetchedAt": "2026-06-03T18:40:37.072Z",
+      "fetchedAt": "2026-06-03T18:50:37.682Z",
       "ok": true,
-      "note": "Parsed 9 relevant items."
+      "note": "Parsed 8 relevant items."
     },
     {
       "id": "telegraph-politics",
       "name": "Telegraph Politics",
       "url": "https://news.google.com/rss/search?q=site:telegraph.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:37.468Z",
+      "fetchedAt": "2026-06-03T18:50:37.995Z",
       "ok": true,
       "note": "Parsed 18 relevant items."
     },
@@ -3399,15 +3370,15 @@
       "id": "times-redbox",
       "name": "The Times Politics",
       "url": "https://news.google.com/rss/search?q=site:thetimes.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:37.907Z",
+      "fetchedAt": "2026-06-03T18:50:38.518Z",
       "ok": true,
-      "note": "Parsed 43 relevant items."
+      "note": "Parsed 44 relevant items."
     },
     {
       "id": "politico-uk",
       "name": "Politico UK",
       "url": "https://www.politico.eu/section/uk/feed/",
-      "fetchedAt": "2026-06-03T18:40:38.511Z",
+      "fetchedAt": "2026-06-03T18:50:39.131Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -3415,7 +3386,7 @@
       "id": "new-statesman-politics",
       "name": "New Statesman Politics",
       "url": "https://www.newstatesman.com/politics/feed",
-      "fetchedAt": "2026-06-03T18:40:39.020Z",
+      "fetchedAt": "2026-06-03T18:50:39.626Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -3423,7 +3394,7 @@
       "id": "spectator",
       "name": "Spectator",
       "url": "https://news.google.com/rss/search?q=site:spectator.co.uk+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:39.150Z",
+      "fetchedAt": "2026-06-03T18:50:39.784Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -3431,7 +3402,7 @@
       "id": "conservativehome",
       "name": "ConservativeHome",
       "url": "https://conservativehome.com/feed/",
-      "fetchedAt": "2026-06-03T18:40:39.591Z",
+      "fetchedAt": "2026-06-03T18:50:40.258Z",
       "ok": true,
       "note": "Parsed 2 relevant items."
     },
@@ -3439,7 +3410,7 @@
       "id": "tortoise",
       "name": "Tortoise",
       "url": "https://news.google.com/rss/search?q=site:tortoisemedia.com+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:39.775Z",
+      "fetchedAt": "2026-06-03T18:50:40.377Z",
       "ok": true,
       "note": "Parsed 25 relevant items."
     },
@@ -3447,23 +3418,23 @@
       "id": "reuters-uk",
       "name": "Reuters UK",
       "url": "https://news.google.com/rss/search?q=site:reuters.com+UK+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:40.517Z",
+      "fetchedAt": "2026-06-03T18:50:41.163Z",
       "ok": true,
-      "note": "Parsed 10 relevant items."
+      "note": "Parsed 8 relevant items."
     },
     {
       "id": "bloomberg-uk",
       "name": "Bloomberg UK",
       "url": "https://news.google.com/rss/search?q=site:bloomberg.com+UK+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:40.998Z",
+      "fetchedAt": "2026-06-03T18:50:41.638Z",
       "ok": true,
-      "note": "Parsed 51 relevant items."
+      "note": "Parsed 49 relevant items."
     },
     {
       "id": "mirror-politics",
       "name": "Mirror Politics",
       "url": "https://news.google.com/rss/search?q=site:mirror.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:41.466Z",
+      "fetchedAt": "2026-06-03T18:50:42.085Z",
       "ok": true,
       "note": "Parsed 49 relevant items."
     },
@@ -3471,7 +3442,7 @@
       "id": "inews-politics",
       "name": "i Politics",
       "url": "https://inews.co.uk/category/news/politics/feed",
-      "fetchedAt": "2026-06-03T18:40:41.958Z",
+      "fetchedAt": "2026-06-03T18:50:42.574Z",
       "ok": true,
       "note": "Parsed 6 relevant items."
     },
@@ -3479,15 +3450,15 @@
       "id": "itv-politics",
       "name": "ITV Politics",
       "url": "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:42.187Z",
+      "fetchedAt": "2026-06-03T18:50:42.592Z",
       "ok": true,
-      "note": "Parsed 35 relevant items."
+      "note": "Parsed 37 relevant items."
     },
     {
       "id": "independent-uk-politics",
       "name": "Independent UK Politics",
       "url": "https://www.independent.co.uk/news/uk/politics/rss",
-      "fetchedAt": "2026-06-03T18:40:42.744Z",
+      "fetchedAt": "2026-06-03T18:50:43.403Z",
       "ok": true,
       "note": "Parsed 12 relevant items."
     },
@@ -3495,7 +3466,7 @@
       "id": "sam-freedman",
       "name": "Sam Freedman — Comment is Freed",
       "url": "https://news.google.com/rss/search?q=site:samf.substack.com+OR+%22Sam+Freedman%22+Starmer&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-03T18:40:42.893Z",
+      "fetchedAt": "2026-06-03T18:50:43.641Z",
       "ok": true,
       "note": "Parsed 10 relevant items."
     },
@@ -3503,7 +3474,7 @@
       "id": "byline-times",
       "name": "Byline Times",
       "url": "https://bylinetimes.com/feed/",
-      "fetchedAt": "2026-06-03T18:40:43.469Z",
+      "fetchedAt": "2026-06-03T18:50:44.102Z",
       "ok": true,
       "note": "Parsed 5 relevant items."
     },
@@ -3511,7 +3482,7 @@
       "id": "novara-media",
       "name": "Novara Media",
       "url": "https://novaramedia.com/feed/",
-      "fetchedAt": "2026-06-03T18:40:43.795Z",
+      "fetchedAt": "2026-06-03T18:50:44.428Z",
       "ok": true,
       "note": "Parsed 3 relevant items."
     },
@@ -3519,7 +3490,7 @@
       "id": "bluesky-lobby",
       "name": "Bluesky lobby journalists",
       "url": "https://public.api.bsky.app",
-      "fetchedAt": "2026-06-03T18:40:43.963Z",
+      "fetchedAt": "2026-06-03T18:50:44.611Z",
       "ok": true,
       "note": "Pulled 36 relevant posts from 11/15 handles."
     },
@@ -3527,7 +3498,7 @@
       "id": "guardian-open-platform",
       "name": "Guardian Open Platform",
       "url": "https://content.guardianapis.com/search",
-      "fetchedAt": "2026-06-03T18:40:49.159Z",
+      "fetchedAt": "2026-06-03T18:50:49.795Z",
       "ok": true,
       "note": "Pulled 30 Guardian politics items via Open Platform."
     },
@@ -3535,7 +3506,7 @@
       "id": "wikipedia-edits",
       "name": "Wikipedia edits (Starmer-orbit)",
       "url": "https://en.wikipedia.org/w/api.php",
-      "fetchedAt": "2026-06-03T18:40:50.023Z",
+      "fetchedAt": "2026-06-03T18:50:50.604Z",
       "ok": true,
       "note": "Collected 0 recent revisions across 0 pages."
     },
@@ -3543,7 +3514,7 @@
       "id": "cc-news-meta",
       "name": "Common Crawl CC-NEWS (metadata)",
       "url": "https://data.commoncrawl.org",
-      "fetchedAt": "2026-06-03T18:40:50.112Z",
+      "fetchedAt": "2026-06-03T18:50:50.667Z",
       "ok": true,
       "note": "Latest CC-NEWS warc.paths.gz available · 343 bytes · Wed, 03 Jun 2026 18:05:12 GMT"
     },
@@ -3551,7 +3522,7 @@
       "id": "parliament-members-api",
       "name": "UK Parliament Members API",
       "url": "https://members-api.parliament.uk/api/Parties/StateOfTheParties",
-      "fetchedAt": "2026-06-03T18:40:50.259Z",
+      "fetchedAt": "2026-06-03T18:50:51.060Z",
       "ok": true,
       "note": "PLP size 402; 20% trigger = 81."
     },
@@ -3559,7 +3530,7 @@
       "id": "gdelt-doc-api",
       "name": "GDELT document API",
       "url": "https://api.gdeltproject.org/api/v2/doc/doc",
-      "fetchedAt": "2026-06-03T18:41:00.910Z",
+      "fetchedAt": "2026-06-03T18:51:11.401Z",
       "ok": false,
       "note": "Discovery skipped: HTTP 429."
     },
@@ -3567,7 +3538,7 @@
       "id": "polymarket-public-search",
       "name": "Polymarket public search",
       "url": "https://gamma-api.polymarket.com/public-search",
-      "fetchedAt": "2026-06-03T18:41:00.910Z",
+      "fetchedAt": "2026-06-03T18:51:11.402Z",
       "ok": true,
       "note": "Parsed 34 active relevant markets."
     },
