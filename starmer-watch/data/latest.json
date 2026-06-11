@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T19:40:32.036Z",
+  "generatedAt": "2026-06-11T19:48:31.347Z",
   "headline": "Public pressure bloc is above the modeled 81 MP trigger. Pressure Index 62/100 (elevated). Polymarket's top Starmer-exit signal is 17.5%.",
   "counts": {
     "resignCalls": {
@@ -21,7 +21,7 @@
       "source": "UK Parliament Members API"
     },
     "ministersOut": {
-      "value": 6,
+      "value": 7,
       "label": "Ministers out",
       "note": "Ministerial resignations found in tracker/news copy.",
       "source": "News"
@@ -39,8 +39,8 @@
     "formula": "Weighted: 35% PLP exit-call share (saturates at 1.5× the contest trigger so MPs above 81 still register), 15% support deficit, 10% minister exits, 25% Polymarket exit probability, 15% news intensity × negativity over a 12h window (negation-aware lexicon ensembled with winkNLP). Each input is normalised to 0-1 before weighting; missing inputs are dropped and remaining weights re-scaled.",
     "perEntitySentiment": {
       "starmer": {
-        "mentions": 21,
-        "avg": 0.35
+        "mentions": 20,
+        "avg": 0.33
       },
       "streeting": {
         "mentions": 0,
@@ -79,8 +79,8 @@
         "label": "Minister-exit momentum",
         "weight": 10,
         "normalised": 1,
-        "raw": "6 exits · escalation boost ×1.5 paired senior resignations",
-        "lastChangedMinutes": 511,
+        "raw": "7 exits · escalation boost ×1.5 paired senior resignations",
+        "lastChangedMinutes": 9,
         "contribution": 10
       },
       {
@@ -89,14 +89,14 @@
         "weight": 25,
         "normalised": 0.175,
         "raw": "17.5% · Starmer out by June 30, 2026?",
-        "lastChangedMinutes": 21,
+        "lastChangedMinutes": 29,
         "contribution": 4.4
       },
       {
         "id": "newsSentiment",
         "label": "News intensity × negativity",
         "weight": 15,
-        "normalised": 0.6654903846153846,
+        "normalised": 0.66703952991453,
         "raw": "39 clusters (12h, 3-shingle Jaccard ≥0.5), 39 scored via ensemble (winkNLP + lexicon), avg 0.33",
         "lastChangedMinutes": 0,
         "contribution": 10
@@ -112,27 +112,19 @@
       "horizonDate": "2026-06-30T00:00:00.000Z"
     },
     "marketDeltas": {
-      "sinceLast": -0.5,
+      "sinceLast": 0,
       "last1h": 0.5,
       "last24h": 1
     },
     "biggestMover": {
       "question": "Starmer out by December 31, 2026?",
-      "yesPrice": 0.84,
+      "yesPrice": 0.835,
       "url": "https://polymarket.com/event/starmer-out-in-2025",
       "deltaPp": 66,
       "direction": "up"
     }
   },
   "history": [
-    {
-      "t": "2026-06-10T04:30:38.745Z",
-      "pressure": 97,
-      "support": 111,
-      "ministers": 5,
-      "index": 55,
-      "marketProb": 0.145
-    },
     {
       "t": "2026-06-10T04:40:32.620Z",
       "pressure": 97,
@@ -2044,6 +2036,14 @@
       "ministers": 6,
       "index": 62,
       "marketProb": 0.175
+    },
+    {
+      "t": "2026-06-11T19:48:31.347Z",
+      "pressure": 97,
+      "support": 111,
+      "ministers": 7,
+      "index": 62,
+      "marketProb": 0.175
     }
   ],
   "resignationCalls": [
@@ -2598,6 +2598,13 @@
       "source": "LabourList"
     },
     {
+      "name": "as John Healey",
+      "role": "Cabinet minister",
+      "move": "as John Healey resigned as Cabinet minister.",
+      "alignment": "cabinet exit",
+      "source": "News (auto-detected)"
+    },
+    {
       "name": "John Healey",
       "role": "Cabinet minister",
       "move": "John Healey resigned as Cabinet minister.",
@@ -2614,9 +2621,9 @@
     {
       "name": "News resignation signal",
       "role": "Source headline",
-      "move": "Labour rising star Al Carns resigns as Armed Forces minister - with PM in defence crisis",
+      "move": "Armed forces minister Al Carns quits over defence spending plan – UK politics live",
       "alignment": "source corroboration",
-      "source": "i Politics"
+      "source": "Guardian (Open Platform)"
     },
     {
       "name": "News resignation signal",
@@ -2628,9 +2635,9 @@
     {
       "name": "News resignation signal",
       "role": "Source headline",
-      "move": "Armed forces minister Al Carns quits over defence spending plan – UK politics live",
+      "move": "Call me cynical, but nothing says “I was waiting to see if I was offered defence secretary” like waiting the best part of six hours after your boss has quit to resign.",
       "alignment": "source corroboration",
-      "source": "Guardian (Open Platform)"
+      "source": "Bluesky · @stephenkb.bsky.social"
     }
   ],
   "markets": [
@@ -2647,21 +2654,21 @@
     {
       "eventTitle": "Starmer out by...?",
       "question": "Starmer out by December 31, 2026?",
-      "yesPrice": 0.84,
-      "noPrice": 0.16,
+      "yesPrice": 0.835,
+      "noPrice": 0.165,
       "volume": 3029365.7588869864,
-      "liquidity": 76880.5225,
-      "updatedAt": "2026-06-11T19:36:06.078809Z",
+      "liquidity": 90239.5704,
+      "updatedAt": "2026-06-11T19:47:30.192644Z",
       "url": "https://polymarket.com/event/starmer-out-in-2025"
     },
     {
       "eventTitle": "Next UK Prime Minister in 2026?",
       "question": "Will Andy Burnham be the next Prime Minister of the United Kingdom in 2026?",
-      "yesPrice": 0.6665,
-      "noPrice": 0.3335,
-      "volume": 750196.2386850002,
-      "liquidity": 60504.08623,
-      "updatedAt": "2026-06-11T19:30:54.457839Z",
+      "yesPrice": 0.6625,
+      "noPrice": 0.3375,
+      "volume": 750284.8186850002,
+      "liquidity": 55441.92762,
+      "updatedAt": "2026-06-11T19:42:04.479662Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2680,8 +2687,8 @@
       "yesPrice": 0.0275,
       "noPrice": 0.9725,
       "volume": 562835.9907450045,
-      "liquidity": 41538.46799,
-      "updatedAt": "2026-06-11T19:35:39.482216Z",
+      "liquidity": 40980.39467,
+      "updatedAt": "2026-06-11T19:47:06.321155Z",
       "url": "https://polymarket.com/event/next-uk-prime-minister-in-2026-122"
     },
     {
@@ -2700,8 +2707,8 @@
       "yesPrice": 0.805,
       "noPrice": 0.195,
       "volume": 410360.4025459997,
-      "liquidity": 41067.6424,
-      "updatedAt": "2026-06-11T19:37:12.728055Z",
+      "liquidity": 38106.8713,
+      "updatedAt": "2026-06-11T19:49:05.85947Z",
       "url": "https://polymarket.com/event/makerfield-by-election-winner"
     },
     {
@@ -2750,27 +2757,74 @@
       "yesPrice": 0.445,
       "noPrice": 0.555,
       "volume": 196778.13383500028,
-      "liquidity": 52394.825,
-      "updatedAt": "2026-06-11T19:36:58.604798Z",
+      "liquidity": 57527.6891,
+      "updatedAt": "2026-06-11T19:48:17.652135Z",
       "url": "https://polymarket.com/event/starmer-out-in-2025"
     }
   ],
   "news": [
     {
-      "title": "Labour rising star Al Carns resigns as Armed Forces minister - with PM in defence crisis",
-      "url": "https://inews.co.uk/news/politics/labour-rising-star-al-carns-resigns-as-armed-forces-minister-with-pm-in-defence-crisis-4471553",
-      "source": "i Politics",
-      "publishedAt": "2026-06-11T19:38:38.000Z",
+      "title": "Armed forces minister Al Carns quits over defence spending plan – UK politics live",
+      "url": "https://www.theguardian.com/politics/live/2026/jun/11/belfast-riots-hilary-benn-anti-immigrant-injured-police-latest-news-updates",
+      "source": "Guardian (Open Platform)",
+      "publishedAt": "2026-06-11T19:47:41.000Z",
       "tags": [
         "Resignation",
         "Cabinet"
       ]
     },
     {
-      "title": "Armed Forces minister resigns from Starmer’s cabinet after John Healey quits over military spending - live updates",
-      "url": "https://www.independent.co.uk/news/uk/politics/john-healey-resigns-defence-secretary-spending-plan-latest-news-b2993909.html",
+      "title": "Starmer’s post-election speech gets worse with age. \n\nHe said “incremental change won’t cut it” on defence, growth and Europe and has offered… exactly that.",
+      "url": "https://bsky.app/profile/georgeeaton.bsky.social/post/3mnzyh2bk6s2d",
+      "source": "Bluesky · @georgeeaton.bsky.social",
+      "publishedAt": "2026-06-11T19:45:25.964Z",
+      "tags": [
+        "Starmer"
+      ]
+    },
+    {
+      "title": "Starmer in fresh crisis as Healey quits government with scathing attack on PM’s plan to protect Britain",
+      "url": "https://www.independent.co.uk/news/uk/politics/john-healey-quits-defence-secretary-starmer-b2994020.html",
       "source": "Independent UK Politics",
-      "publishedAt": "2026-06-11T19:38:15.000Z",
+      "publishedAt": "2026-06-11T19:44:38.000Z",
+      "tags": [
+        "Starmer"
+      ]
+    },
+    {
+      "title": "Armed Forces minister resigns from Starmer’s cabinet after John Healey quits over military spending - live updates",
+      "url": "https://www.independent.co.uk/news/uk/politics/al-carns-resigns-starmer-john-healey-live-updates-b2994289.html",
+      "source": "Independent UK Politics",
+      "publishedAt": "2026-06-11T19:44:22.000Z",
+      "tags": [
+        "Resignation",
+        "Cabinet"
+      ]
+    },
+    {
+      "title": "Call me cynical, but nothing says “I was waiting to see if I was offered defence secretary” like waiting the best part of six hours after your boss has quit to resign.",
+      "url": "https://bsky.app/profile/stephenkb.bsky.social/post/3mnzyd3i7a22w",
+      "source": "Bluesky · @stephenkb.bsky.social",
+      "publishedAt": "2026-06-11T19:43:13.016Z",
+      "tags": [
+        "Resignation"
+      ]
+    },
+    {
+      "title": "Al Carns resigns as armed forces minister over funding row",
+      "url": "https://labourlist.org/2026/06/al-carns-resigns-armed-forces-minister/",
+      "source": "LabourList",
+      "publishedAt": "2026-06-11T19:41:37.000Z",
+      "tags": [
+        "Resignation",
+        "Cabinet"
+      ]
+    },
+    {
+      "title": "Labour rising star Al Carns resigns as Armed Forces minister - with PM in defence crisis",
+      "url": "https://inews.co.uk/news/politics/labour-rising-star-al-carns-resigns-as-armed-forces-minister-with-pm-in-defence-crisis-4471553",
+      "source": "i Politics",
+      "publishedAt": "2026-06-11T19:38:38.000Z",
       "tags": [
         "Resignation",
         "Cabinet"
@@ -2783,35 +2837,6 @@
       "publishedAt": "2026-06-11T19:35:42.000Z",
       "tags": [
         "Starmer"
-      ]
-    },
-    {
-      "title": "Armed forces minister Al Carns quits over defence spending plan – UK politics live",
-      "url": "https://www.theguardian.com/politics/live/2026/jun/11/belfast-riots-hilary-benn-anti-immigrant-injured-police-latest-news-updates",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-06-11T19:30:54.000Z",
-      "tags": [
-        "Resignation",
-        "Cabinet"
-      ]
-    },
-    {
-      "title": "Healey resignation torpedoes Starmer - The Telegraph",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNZkJOYzA5THBEeWJkRk9UcHVYM3kwSFhDSk5aWkRneVg2dHBkOGN4WS1YVXFFUUZ2VE5mMDExMnFRemNDWkZZQVRza3JPdE1acDZramtkTDdpd1BoTHpyUnNCWUZ5RkVkRktrb3kxaTNPbVJWa1BwUks3YWhTRVBNd0IyTjJ5VmlpSVlTMnZDN0Q5ZVNLRG5HcEoyOWRVZXpLVmQ0bGN1TTA?oc=5",
-      "source": "The Telegraph",
-      "publishedAt": "2026-06-11T19:24:00.000Z",
-      "tags": [
-        "Resignation"
-      ]
-    },
-    {
-      "title": "Starmer in fresh crisis as Healey quits government with scathing attack on PM’s plan to protect Britain",
-      "url": "https://www.independent.co.uk/news/uk/politics/john-healey-quits-defence-secretary-starmer-b2994020.html",
-      "source": "Independent UK Politics",
-      "publishedAt": "2026-06-11T19:18:36.000Z",
-      "tags": [
-        "Resignation",
-        "Cabinet"
       ]
     },
     {
@@ -2882,6 +2907,15 @@
       "url": "https://www.ft.com/content/ad03c4ee-f47b-44bb-9565-729847560227",
       "source": "FT UK Politics",
       "publishedAt": "2026-06-11T18:24:24.000Z",
+      "tags": [
+        "Resignation"
+      ]
+    },
+    {
+      "title": "The latest headlines - as John Healey resigns as defence secretary - Latest From ITV News - ITVX",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPbElGTmZ0djhBd2R6UHRtNUNFMXYzanFuVTJKd1dVUnVMZ1Z3SWxablUwZnNQbTEtZUpFNEUxd0FaM2JueVhqTjNJV1ZlVkRQSlM5M3MwU1k4MlJMRTBEejBtNTl4WnN0UDlSb05wS29xWHlkZ0R6dzlLLTlNYzI0bTNwMGhLUXVsaVN6QkE3VFY0ZFJDNXZDM2xrQUVUTlRfajBtaExB?oc=5",
+      "source": "ITVX",
+      "publishedAt": "2026-06-11T18:20:00.000Z",
       "tags": [
         "Resignation"
       ]
@@ -3097,32 +3131,6 @@
       "tags": [
         "Burnham"
       ]
-    },
-    {
-      "title": "John Healey’s departure shows even the most sturdy MPs have a breaking point",
-      "url": "https://www.theguardian.com/politics/2026/jun/11/john-healey-defence-secretary-departure-less-surprise-than-might-seem",
-      "source": "Guardian (Open Platform)",
-      "publishedAt": "2026-06-11T14:56:59.000Z",
-      "tags": []
-    },
-    {
-      "title": "LIZZY BUCHAN: John Healey's resignation is a bomb under Keir Starmer's leadership - The Mirror",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOdTd2cGVYOUJFZXJEMzR2cERQdkhWOWVYV1hiblpYbno3SGdHWXFoTFZTOEVhbndVbldnUXFFS3RZLW1uWm1DSHNtdlFmSWdGV2ltWEl1OURUT3I2NnZmWmhwV2tzVGdLa0NhRnhNWEF6ZWE3aFhlSnJrTDZjLTBCZ0gtbEFRNkoyVFlF0gGQAUFVX3lxTE41S1ktd0E2Q3l6ZHUtMlNJeDFVeEEwTjlXejJUbS00YkVQSHRjSTNZT05UOE02dWR0TkFsNElKYjY2VFlhX2Z1N2JhRXo3dS1RTmpBSllIQVJmcXN3b0F3bXljb1pGMmZ3TzRMMEN5eWpHRzF2V2lJc1hTNm81WGo3bm5NNEVnNnBSeUlTQlNtUg?oc=5",
-      "source": "The Mirror",
-      "publishedAt": "2026-06-11T14:55:36.000Z",
-      "tags": [
-        "Resignation",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Ousted Turkish opposition leader's team resigns to trigger chairman vote - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNVnI1Y09qa3dBQ0Q4Vm5XaVUtM2JNd1U4Y2dJVDVvZlFnLVFWWGdYUUZoeS0tX2RCcEI4M3VoRDJDQ1lYZC1ERVhOb1lybWp1WG9ybTJQZmxoSHJ3cmxPZ2tfLTdnREl4MXhrcndWQXBZTG82dTI1amRRdkNhQWF2bTRteTVTeE1zMFRreGszb3VxcDdRY2NCTTBzdm52Zzh6bWNSUDRxS1pWWmtxRlZyalNxVmNPdw?oc=5",
-      "source": "Reuters",
-      "publishedAt": "2026-06-11T14:27:35.000Z",
-      "tags": [
-        "Resignation"
-      ]
     }
   ],
   "wikipediaEdits": [],
@@ -3261,21 +3269,21 @@
     "pairedSenior": true,
     "pairedSeniorInExits": true,
     "pairedSeniorInNews": false,
-    "seniorExitCount": 6,
+    "seniorExitCount": 7,
     "seniorResignHeadlineCount": 0,
     "delegationHits": [],
     "seniorResignHits": []
   },
   "highSignalNews": [],
   "hourlyPulse": {
-    "generatedAt": "2026-06-11T19:41:22.999Z",
+    "generatedAt": "2026-06-11T19:49:13.579Z",
     "windowMinutes": 60,
     "lines": [
       {
         "kind": "story",
-        "text": "Top story (1 source): Labour rising star Al Carns resigns as Armed Forces minister - with PM in defence crisis",
-        "url": "https://inews.co.uk/news/politics/labour-rising-star-al-carns-resigns-as-armed-forces-minister-with-pm-in-defence-crisis-4471553",
-        "source": "i Politics"
+        "text": "Top story (1 source): Armed forces minister Al Carns quits over defence spending plan – UK politics live",
+        "url": "https://www.theguardian.com/politics/live/2026/jun/11/belfast-riots-hilary-benn-anti-immigrant-injured-police-latest-news-updates",
+        "source": "Guardian (Open Platform)"
       },
       {
         "kind": "escalation",
@@ -3288,9 +3296,9 @@
       },
       {
         "kind": "social",
-        "text": "Lobby voice: I disagree only in that I think it will probably be one of the disasters where Starmer himself had the right instincts from the start that ends up being the definitive case study.",
-        "url": "https://bsky.app/profile/stephenkb.bsky.social/post/3mnzwlgiksk2w",
-        "source": "Bluesky · @stephenkb.bsky.social"
+        "text": "Lobby voice: Starmer’s post-election speech gets worse with age. \n\nHe said “incremental change won’t cut it” on defence, growth and Europe and has offered… exactly that.",
+        "url": "https://bsky.app/profile/georgeeaton.bsky.social/post/3mnzyh2bk6s2d",
+        "source": "Bluesky · @georgeeaton.bsky.social"
       }
     ]
   },
@@ -3302,7 +3310,7 @@
     },
     {
       "level": "red",
-      "label": "Paired senior resignations detected (6 cabinet/sec-of-state exits, 0 senior-resign headlines).",
+      "label": "Paired senior resignations detected (7 cabinet/sec-of-state exits, 0 senior-resign headlines).",
       "detail": "Two senior departures within 48h is the Truss/Johnson cascade signal — within 24-48h of this pattern, both PMs were out."
     },
     {
@@ -3312,7 +3320,7 @@
     },
     {
       "level": "high",
-      "label": "6 ministerial exits recorded.",
+      "label": "7 ministerial exits recorded.",
       "detail": "Cabinet stability breaking. Watch for cascade — three or more exits historically precedes leader resignations."
     },
     {
@@ -3326,7 +3334,7 @@
       "id": "labourlist-tracker",
       "name": "LabourList tracker",
       "url": "https://labourlist.org/2026/05/labourlist-labour-mp-starmer-resignation-tracker/",
-      "fetchedAt": "2026-06-11T19:40:32.037Z",
+      "fetchedAt": "2026-06-11T19:48:31.347Z",
       "ok": true,
       "note": "Parsed headline counts and 95 named public-call rows."
     },
@@ -3334,7 +3342,7 @@
       "id": "sky-politics",
       "name": "Sky News Politics",
       "url": "https://feeds.skynews.com/feeds/rss/politics.xml",
-      "fetchedAt": "2026-06-11T19:40:34.331Z",
+      "fetchedAt": "2026-06-11T19:48:31.762Z",
       "ok": true,
       "note": "Parsed 6 relevant items."
     },
@@ -3342,7 +3350,7 @@
       "id": "guardian-politics",
       "name": "Guardian Politics",
       "url": "https://news.google.com/rss/search?q=site:theguardian.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:34.988Z",
+      "fetchedAt": "2026-06-11T19:48:32.056Z",
       "ok": true,
       "note": "Parsed 18 relevant items."
     },
@@ -3350,7 +3358,7 @@
       "id": "bbc-politics",
       "name": "BBC Politics",
       "url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
-      "fetchedAt": "2026-06-11T19:40:35.487Z",
+      "fetchedAt": "2026-06-11T19:48:32.644Z",
       "ok": true,
       "note": "Parsed 27 relevant items."
     },
@@ -3358,15 +3366,15 @@
       "id": "labourlist-feed",
       "name": "LabourList",
       "url": "https://labourlist.org/feed/",
-      "fetchedAt": "2026-06-11T19:40:35.735Z",
+      "fetchedAt": "2026-06-11T19:48:32.852Z",
       "ok": true,
-      "note": "Parsed 3 relevant items."
+      "note": "Parsed 4 relevant items."
     },
     {
       "id": "ft-uk-politics",
       "name": "FT UK Politics",
       "url": "https://www.ft.com/uk-politics?format=rss",
-      "fetchedAt": "2026-06-11T19:40:36.588Z",
+      "fetchedAt": "2026-06-11T19:48:33.738Z",
       "ok": true,
       "note": "Parsed 10 relevant items."
     },
@@ -3374,15 +3382,15 @@
       "id": "telegraph-politics",
       "name": "Telegraph Politics",
       "url": "https://news.google.com/rss/search?q=site:telegraph.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:36.993Z",
+      "fetchedAt": "2026-06-11T19:48:34.072Z",
       "ok": true,
-      "note": "Parsed 19 relevant items."
+      "note": "Parsed 18 relevant items."
     },
     {
       "id": "times-redbox",
       "name": "The Times Politics",
       "url": "https://news.google.com/rss/search?q=site:thetimes.com+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:37.497Z",
+      "fetchedAt": "2026-06-11T19:48:34.557Z",
       "ok": true,
       "note": "Parsed 31 relevant items."
     },
@@ -3390,7 +3398,7 @@
       "id": "politico-uk",
       "name": "Politico UK",
       "url": "https://www.politico.eu/section/uk/feed/",
-      "fetchedAt": "2026-06-11T19:40:37.971Z",
+      "fetchedAt": "2026-06-11T19:48:35.021Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -3398,7 +3406,7 @@
       "id": "new-statesman-politics",
       "name": "New Statesman Politics",
       "url": "https://www.newstatesman.com/politics/feed",
-      "fetchedAt": "2026-06-11T19:40:38.545Z",
+      "fetchedAt": "2026-06-11T19:48:35.525Z",
       "ok": true,
       "note": "Parsed 0 relevant items."
     },
@@ -3406,7 +3414,7 @@
       "id": "spectator",
       "name": "Spectator",
       "url": "https://news.google.com/rss/search?q=site:spectator.co.uk+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:38.688Z",
+      "fetchedAt": "2026-06-11T19:48:35.642Z",
       "ok": true,
       "note": "Parsed 2 relevant items."
     },
@@ -3414,7 +3422,7 @@
       "id": "conservativehome",
       "name": "ConservativeHome",
       "url": "https://conservativehome.com/feed/",
-      "fetchedAt": "2026-06-11T19:40:39.280Z",
+      "fetchedAt": "2026-06-11T19:48:36.316Z",
       "ok": true,
       "note": "Parsed 2 relevant items."
     },
@@ -3422,39 +3430,39 @@
       "id": "tortoise",
       "name": "Tortoise",
       "url": "https://news.google.com/rss/search?q=site:tortoisemedia.com+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:39.341Z",
+      "fetchedAt": "2026-06-11T19:48:36.364Z",
       "ok": true,
-      "note": "Parsed 28 relevant items."
+      "note": "Parsed 29 relevant items."
     },
     {
       "id": "reuters-uk",
       "name": "Reuters UK",
       "url": "https://news.google.com/rss/search?q=site:reuters.com+UK+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:40.244Z",
+      "fetchedAt": "2026-06-11T19:48:37.062Z",
       "ok": true,
-      "note": "Parsed 9 relevant items."
+      "note": "Parsed 12 relevant items."
     },
     {
       "id": "bloomberg-uk",
       "name": "Bloomberg UK",
       "url": "https://news.google.com/rss/search?q=site:bloomberg.com+UK+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:40.706Z",
+      "fetchedAt": "2026-06-11T19:48:37.579Z",
       "ok": true,
-      "note": "Parsed 41 relevant items."
+      "note": "Parsed 40 relevant items."
     },
     {
       "id": "mirror-politics",
       "name": "Mirror Politics",
       "url": "https://news.google.com/rss/search?q=site:mirror.co.uk+(Starmer+OR+Labour+leadership)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:41.193Z",
+      "fetchedAt": "2026-06-11T19:48:38.158Z",
       "ok": true,
-      "note": "Parsed 50 relevant items."
+      "note": "Parsed 48 relevant items."
     },
     {
       "id": "inews-politics",
       "name": "i Politics",
       "url": "https://inews.co.uk/category/news/politics/feed",
-      "fetchedAt": "2026-06-11T19:40:41.624Z",
+      "fetchedAt": "2026-06-11T19:48:38.654Z",
       "ok": true,
       "note": "Parsed 8 relevant items."
     },
@@ -3462,15 +3470,15 @@
       "id": "itv-politics",
       "name": "ITV Politics",
       "url": "https://news.google.com/rss/search?q=site:itv.com+politics+(Starmer+OR+Labour)&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:43.679Z",
+      "fetchedAt": "2026-06-11T19:48:38.896Z",
       "ok": true,
-      "note": "Parsed 45 relevant items."
+      "note": "Parsed 46 relevant items."
     },
     {
       "id": "independent-uk-politics",
       "name": "Independent UK Politics",
       "url": "https://www.independent.co.uk/news/uk/politics/rss",
-      "fetchedAt": "2026-06-11T19:40:44.111Z",
+      "fetchedAt": "2026-06-11T19:48:39.543Z",
       "ok": true,
       "note": "Parsed 9 relevant items."
     },
@@ -3478,15 +3486,15 @@
       "id": "sam-freedman",
       "name": "Sam Freedman — Comment is Freed",
       "url": "https://news.google.com/rss/search?q=site:samf.substack.com+OR+%22Sam+Freedman%22+Starmer&hl=en-GB&gl=GB&ceid=GB:en",
-      "fetchedAt": "2026-06-11T19:40:44.457Z",
+      "fetchedAt": "2026-06-11T19:48:39.985Z",
       "ok": true,
-      "note": "Parsed 8 relevant items."
+      "note": "Parsed 9 relevant items."
     },
     {
       "id": "byline-times",
       "name": "Byline Times",
       "url": "https://bylinetimes.com/feed/",
-      "fetchedAt": "2026-06-11T19:40:44.761Z",
+      "fetchedAt": "2026-06-11T19:48:40.285Z",
       "ok": true,
       "note": "Parsed 4 relevant items."
     },
@@ -3494,7 +3502,7 @@
       "id": "novara-media",
       "name": "Novara Media",
       "url": "https://novaramedia.com/feed/",
-      "fetchedAt": "2026-06-11T19:40:45.212Z",
+      "fetchedAt": "2026-06-11T19:48:40.704Z",
       "ok": true,
       "note": "Parsed 4 relevant items."
     },
@@ -3502,15 +3510,15 @@
       "id": "bluesky-lobby",
       "name": "Bluesky lobby journalists",
       "url": "https://public.api.bsky.app",
-      "fetchedAt": "2026-06-11T19:40:45.739Z",
+      "fetchedAt": "2026-06-11T19:48:40.986Z",
       "ok": true,
-      "note": "Pulled 49 relevant posts from 11/15 handles."
+      "note": "Pulled 51 relevant posts from 11/15 handles."
     },
     {
       "id": "guardian-open-platform",
       "name": "Guardian Open Platform",
       "url": "https://content.guardianapis.com/search",
-      "fetchedAt": "2026-06-11T19:40:50.724Z",
+      "fetchedAt": "2026-06-11T19:48:46.160Z",
       "ok": true,
       "note": "Pulled 30 Guardian politics items via Open Platform."
     },
@@ -3518,7 +3526,7 @@
       "id": "wikipedia-edits",
       "name": "Wikipedia edits (Starmer-orbit)",
       "url": "https://en.wikipedia.org/w/api.php",
-      "fetchedAt": "2026-06-11T19:40:51.684Z",
+      "fetchedAt": "2026-06-11T19:48:46.824Z",
       "ok": true,
       "note": "Collected 0 recent revisions across 0 pages."
     },
@@ -3526,7 +3534,7 @@
       "id": "cc-news-meta",
       "name": "Common Crawl CC-NEWS (metadata)",
       "url": "https://data.commoncrawl.org",
-      "fetchedAt": "2026-06-11T19:40:52.067Z",
+      "fetchedAt": "2026-06-11T19:48:46.975Z",
       "ok": true,
       "note": "Latest CC-NEWS warc.paths.gz available · 1111 bytes · Thu, 11 Jun 2026 19:05:12 GMT"
     },
@@ -3534,7 +3542,7 @@
       "id": "parliament-members-api",
       "name": "UK Parliament Members API",
       "url": "https://members-api.parliament.uk/api/Parties/StateOfTheParties",
-      "fetchedAt": "2026-06-11T19:40:52.336Z",
+      "fetchedAt": "2026-06-11T19:48:47.331Z",
       "ok": true,
       "note": "PLP size 402; 20% trigger = 81."
     },
@@ -3542,15 +3550,15 @@
       "id": "gdelt-doc-api",
       "name": "GDELT document API",
       "url": "https://api.gdeltproject.org/api/v2/doc/doc",
-      "fetchedAt": "2026-06-11T19:40:53.152Z",
-      "ok": true,
-      "note": "Transient unavailable (GDELT upstream often flaky): This operation was aborted. Will retry next run."
+      "fetchedAt": "2026-06-11T19:49:09.318Z",
+      "ok": false,
+      "note": "Discovery skipped: HTTP 429."
     },
     {
       "id": "polymarket-public-search",
       "name": "Polymarket public search",
       "url": "https://gamma-api.polymarket.com/public-search",
-      "fetchedAt": "2026-06-11T19:41:18.653Z",
+      "fetchedAt": "2026-06-11T19:49:09.318Z",
       "ok": true,
       "note": "Parsed 62 active relevant markets."
     },
